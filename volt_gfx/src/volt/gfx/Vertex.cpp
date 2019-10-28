@@ -1,22 +1,50 @@
 #include "volt/gfx/Vertex.hpp"
 #include "volt/gfx/GLUtilities.hpp"
 
-Vertex::Vertex() {}
+volt::gfx::Vertex::Vertex() {}
 
-Vertex::Vertex(const Vertex &other) {}
+volt::gfx::Vertex::Vertex(const volt::gfx::Vertex &other)
+{
+    this->position[0] = other.position[0];
+    this->position[1] = other.position[1];
+    this->position[2] = other.position[2];
 
-Vertex &Vertex::operator=(const Vertex &other) { return *this; }
+    this->uv[0] = other.uv[0];
+    this->uv[1] = other.uv[1];
+}
 
-Vertex &Vertex::operator=(Vertex &&other) { return *this; }
+volt::gfx::Vertex &volt::gfx::Vertex::operator=(const volt::gfx::Vertex &other)
+{
+    this->position[0] = other.position[0];
+    this->position[1] = other.position[1];
+    this->position[2] = other.position[2];
 
-Vertex::~Vertex() {}
+    this->uv[0] = other.uv[0];
+    this->uv[1] = other.uv[1];
+
+    return *this;
+}
+
+// volt::gfx::Vertex &volt::gfx::Vertex::operator=(volt::gfx::Vertex &&other)
+// {
+//     this->position[0] = other.position[0];
+//     this->position[1] = other.position[1];
+//     this->position[2] = other.position[2];
+
+//     this->uv[0] = other.uv[0];
+//     this->uv[1] = other.uv[1];
+
+//     return *this;
+// }
+
+volt::gfx::Vertex::~Vertex() {}
 
 #define GenAttrib(attr, attrType)                                              \
     GLCall(glVertexAttribPointer(                                              \
         currentIndex++, sizeof(attr) / sizeof(attrType), GL_FLOAT, GL_FALSE,   \
         sizeof(Vertex), reinterpret_cast<void *>(offsetof(Vertex, attr))))
 
-GLuint Vertex::GenerateVAO()
+GLuint volt::gfx::Vertex::GenerateVAO()
 {
     GLuint vao = 0;
     GLCall(glGenVertexArrays(1, &vao));

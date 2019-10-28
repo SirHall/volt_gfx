@@ -3,22 +3,24 @@
 #define VOLT_GFX_VERTEX_HPP
 
 #include <GL/glew.h>
-
-class Vertex
+namespace volt::gfx
 {
-private:
-protected:
-public:
-    Vertex();
-    Vertex(const Vertex &other);
-    Vertex &operator=(const Vertex &other);
-    Vertex &operator=(Vertex &&other);
-    ~Vertex();
+    class Vertex
+    {
+    private:
+    protected:
+    public:
+        Vertex();
+        Vertex(const Vertex &other);
+        Vertex &operator=(const Vertex &other);
+        // Vertex &operator=(Vertex &&other);
+        ~Vertex();
 
-    static GLuint GenerateVAO();
+        static GLuint GenerateVAO();
 
-    GLfloat position[3] = {0.0f, 0.0f, 0.0f};
-    GLfloat uv[2]       = {0.0f, 0.0f};
-};
+        GLfloat position[3] = {0.0f, 0.0f, 0.0f};
+        GLfloat uv[2]       = {0.0f, 0.0f};
+    };
+} // namespace volt::gfx
 
 #endif
