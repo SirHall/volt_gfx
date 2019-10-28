@@ -1,8 +1,8 @@
 #include "volt/gfx/Texture.hpp"
 
-Texture::Texture() : height(0), width(0) {}
+volt::gfx::Texture::Texture() : height(0), width(0) {}
 
-Texture::Texture(const Texture &other)
+volt::gfx::Texture::Texture(const volt::gfx::Texture &other)
 {
     this->height                           = other.height;
     this->width                            = other.width;
@@ -11,24 +11,25 @@ Texture::Texture(const Texture &other)
     std::copy(other.imageData.begin(), other.imageData.end(), insert_it);
 }
 
-Texture::Texture(const std::vector<std::uint8_t> &data)
+volt::gfx::Texture::Texture(const std::vector<std::uint8_t> &data)
 {
     std::copy(data.begin(), data.end(), this->imageData.begin());
 }
 
-Texture::Texture(std::vector<std::uint8_t> &&data)
+volt::gfx::Texture::Texture(std::vector<std::uint8_t> &&data)
 {
     this->imageData = std::move(data);
 }
 
-Texture::Texture(Texture &&other)
+volt::gfx::Texture::Texture(volt::gfx::Texture &&other)
 {
     this->height    = other.height;
     this->width     = other.width;
     this->imageData = std::move(other.imageData);
 }
 
-Texture &Texture::operator=(const Texture &other)
+volt::gfx::Texture &
+    volt::gfx::Texture::operator=(const volt::gfx::Texture &other)
 {
     this->height = other.height;
     this->width  = other.width;
@@ -37,7 +38,7 @@ Texture &Texture::operator=(const Texture &other)
     return *this;
 }
 
-Texture &Texture::operator=(Texture &&other)
+volt::gfx::Texture &volt::gfx::Texture::operator=(volt::gfx::Texture &&other)
 {
     this->height    = other.height;
     this->width     = other.width;
@@ -45,4 +46,4 @@ Texture &Texture::operator=(Texture &&other)
     return *this;
 }
 
-Texture::~Texture() {}
+volt::gfx::Texture::~Texture() {}

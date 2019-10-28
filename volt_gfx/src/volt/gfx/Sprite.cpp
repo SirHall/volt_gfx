@@ -1,8 +1,8 @@
 #include "volt/gfx/Sprite.hpp"
 
-Sprite::Sprite() {}
+volt::gfx::Sprite::Sprite() {}
 
-Sprite::Sprite(const Sprite &other)
+volt::gfx::Sprite::Sprite(const Sprite &other)
 {
     this->srcRect = other.srcRect;
     this->tex     = other.tex;
@@ -14,8 +14,11 @@ Sprite::Sprite(const Sprite &other)
 //     this->tex     = std::move(other.tex);
 // }
 
-Sprite &Sprite::operator=(const Sprite &other) { return *this; }
+volt::gfx::Sprite &volt::gfx::Sprite::operator=(const Sprite &other)
+{
+    return *this;
+}
 
 // Sprite &Sprite::operator=(Sprite &&other) { return *this; }
 
-Sprite::~Sprite() {}
+volt::gfx::Sprite::~Sprite() {}

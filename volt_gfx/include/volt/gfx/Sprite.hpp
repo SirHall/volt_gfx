@@ -8,20 +8,23 @@
 
 #include <memory>
 
-class Sprite
+namespace volt::gfx
 {
-private:
-    std::shared_ptr<Texture> tex;
-    glm::vec4                srcRect;
+    class Sprite
+    {
+    private:
+        std::shared_ptr<Texture> tex;
+        glm::vec4                srcRect;
 
-protected:
-public:
-    Sprite();
-    Sprite(const Sprite &other);
-    // Sprite(Sprite &&other);
-    Sprite &operator=(const Sprite &other);
-    // Sprite &operator=(Sprite &&other);
-    ~Sprite();
-};
+    protected:
+    public:
+        Sprite();
+        Sprite(const Sprite &other);
+        // Sprite(Sprite &&other);
+        Sprite &operator=(const Sprite &other);
+        // Sprite &operator=(Sprite &&other);
+        ~Sprite();
+    };
+} // namespace volt::gfx
 
 #endif
