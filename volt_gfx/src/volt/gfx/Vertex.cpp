@@ -3,6 +3,17 @@
 
 volt::gfx::Vertex::Vertex() {}
 
+volt::gfx::Vertex::Vertex(GLfloat pos_x, GLfloat pos_y, GLfloat pos_z,
+                          GLfloat uv_x, GLfloat uv_y)
+{
+    position[0] = pos_x;
+    position[1] = pos_y;
+    position[2] = pos_z;
+
+    uv[0] = uv_x;
+    uv[1] = uv_y;
+}
+
 volt::gfx::Vertex::Vertex(const volt::gfx::Vertex &other)
 {
     this->position[0] = other.position[0];
@@ -55,17 +66,16 @@ GLuint volt::gfx::Vertex::GenerateVAO()
     GLuint currentIndex = 0;
 
     // Model position attribute
-    GenAttrib(position, GLfloat);
-    // GLCall(glVertexAttribPointer(
-    //     currentIndex++, sizeof(position) / sizeof(GLfloat), GL_FLOAT,
-    //     GL_FALSE, sizeof(Vertex), reinterpret_cast<void *>(offsetof(Vertex,
-    //     position))));
+    // GenAttrib(position, GLfloat);
+    GLCall(glVertexAttribPointer(
+        currentIndex++, sizeof(position) / sizeof(GLfloat), GL_FLOAT, GL_FALSE,
+        sizeof(Vertex), reinterpret_cast<void *>(offsetof(Vertex, position))));
 
     // UV Coordinate Attribute
-    GenAttrib(uv, GLfloat);
-    // GLCall(glVertexAttribPointer(
-    //     currentIndex++, sizeof(uv) / sizeof(GLfloat), GL_FLOAT, GL_FALSE,
-    //     sizeof(Vertex), reinterpret_cast<void *>(offsetof(Vertex, uv))));
+    // GenAttrib(uv, GLfloat);
+    GLCall(glVertexAttribPointer(
+        currentIndex++, sizeof(uv) / sizeof(GLfloat), GL_FLOAT, GL_FALSE,
+        sizeof(Vertex), reinterpret_cast<void *>(offsetof(Vertex, uv))));
 
     return vao;
 }

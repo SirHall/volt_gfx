@@ -11,6 +11,8 @@ namespace volt::gfx
     protected:
     public:
         Vertex();
+        Vertex(GLfloat pos_x, GLfloat pos_y, GLfloat pos_z, GLfloat uv_x = 0.0f,
+               GLfloat uv_y = 0.0f);
         Vertex(const Vertex &other);
         Vertex &operator=(const Vertex &other);
         // Vertex &operator=(Vertex &&other);
