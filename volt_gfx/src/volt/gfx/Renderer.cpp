@@ -9,18 +9,27 @@
 // OpenGL End
 
 #include <iostream>
+#include <thread>
 
 using namespace volt::gfx;
 
 Renderer::Renderer() {}
 
-Renderer::Renderer(const Renderer &other) {}
+// Renderer::Renderer(const Renderer &other) {}
 
-Renderer::Renderer(Renderer &&other) {}
+// Renderer::Renderer(Renderer &&other) {}
 
-Renderer &Renderer::operator=(const Renderer &other) { return *this; }
+// Renderer &Renderer::operator=(const Renderer &other) { return *this; }
 
-Renderer &Renderer::operator=(Renderer &&other) { return *this; }
+Renderer &Renderer::operator=(Renderer &&other)
+{
+    this->bufferHeight = other.bufferHeight;
+    this->bufferWidth  = other.bufferWidth;
+    this->initialized  = other.initialized;
+    this->window       = other.window;
+    other.window       = nullptr;
+    return *this;
+}
 
 Renderer::~Renderer()
 {
@@ -104,6 +113,10 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
     GLCall(std::cout << "OpenGL Version: " << glGetString(GL_VERSION)
                      << std::endl);
     initialized = true;
+
+    startOfThisFrameTimePoint = steady_clock::now();
+    endOfLastFrameTimePoint   = steady_clock::now();
+
     return true;
 }
 
@@ -112,7 +125,34 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
 //     this->renderMode = renderMode;
 // }
 
-void Renderer::DirectRender(Transform transform, Mesh mesh, Shader shader)
+void Renderer::DirectRender(const Transform &transform, const Mesh &mesh,
+                            const Shader &shader)
+{
+    GLuint vao = mesh.GetVAO(), vbo = mesh.GetVBO(), ibo = mesh.GetIBO();
+    if (vao == 0 || vbo == 0 || ibo == 0)
+    {
+        std::cerr << "Attempted to direct render with incomplete data: vao: "
+                  << vao << ", vbo: " << vbo << ", ibo: " << ibo << std::endl;
+        return;
+    }
+
+    shader.SetInUse();
+
+    GLCall(glBindVertexArray(vao));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo)); // Probably not needed
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+
+    // The draw call
+    GLCall(glDrawElements(GL_TRIANGLES, mesh.GetIndices().size(),
+                          GL_UNSIGNED_INT, 0));
+
+    GLCall(glBindVertexArray(0));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0)); // Probably not needed
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+}
+
+void Renderer::InstancedRender(const std::vector<Transform> &transforms,
+                               const Mesh &                  mesh)
 {
     GLuint vao = mesh.GetVAO(), vbo = mesh.GetVBO(), ibo = mesh.GetIBO();
     if (vao == 0 || vbo == 0 || ibo == 0)
@@ -126,6 +166,13 @@ void Renderer::DirectRender(Transform transform, Mesh mesh, Shader shader)
     // GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo)); // Probably not needed
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
 
+    glBindVertexArray(mesh.GetVAO());
+
+    glDrawElementsInstanced(GL_TRIANGLES, mesh.GetIndices().size(),
+                            GL_UNSIGNED_INT, 0, transforms.size());
+
+    glBindVertexArray(0);
+
     // The draw call
     GLCall(glDrawElements(GL_TRIANGLES, mesh.GetIndices().size(),
                           GL_UNSIGNED_INT, 0));
@@ -135,13 +182,53 @@ void Renderer::DirectRender(Transform transform, Mesh mesh, Shader shader)
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }
 
-void Renderer::InstancedRender(const std::vector<Transform> &transforms,
-                               const Mesh &                  mesh)
-{
-}
-
 void Renderer::DisplayFrame()
 {
     GLCall(glfwSwapBuffers(window));
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+}
+
+bool Renderer::WindowOpen() { return !glfwWindowShouldClose(window); }
+
+int Renderer::GetBufferWidth() { return bufferWidth; }
+
+int Renderer::GetBufferHeight() { return bufferHeight; }
+
+// GetTime implemented just to make time handling here easier
+float GetTime(steady_clock::time_point start, steady_clock::time_point now)
+{
+    steady_clock::duration duration = now - start;
+    return float(duration.count()) * steady_clock::period::num /
+           steady_clock::period::den;
+}
+
+float GetTime(steady_clock::time_point start)
+{
+    return GetTime(start, steady_clock::now());
+}
+
+void Renderer::SetTargetFPS(float fps) { targetFPS = fps; }
+
+float Renderer::GetDeltaTime() { return GetTime(endOfLastFrameTimePoint); }
+
+void Renderer::SleepForFrame()
+{
+    endOfLastFrameTimePoint = steady_clock::now();
+
+    // The amount of time left for this frame in seconds
+    float timeLeft = (1.0f / targetFPS) - (GetTime(startOfThisFrameTimePoint,
+                                                   endOfLastFrameTimePoint));
+
+    // Only sleep if we are running ahead of schedule
+    if (timeLeft > 0.0f)
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds((int)(1000 * timeLeft)));
+
+    startOfThisFrameTimePoint = steady_clock::now();
+}
+
+void Renderer::PollEvents()
+{
+    // Poll for and process events
+    GLCall(glfwPollEvents());
 }
