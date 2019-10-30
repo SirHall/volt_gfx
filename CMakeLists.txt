@@ -7,6 +7,9 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 message(STATUS "SDL2_Libs: ${CONAN_LIBS}")
 
+# Copy resource files to build output 
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/volt_gfx/res DESTINATION ${CMAKE_BINARY_DIR}/bin/.)
+
 # Add in volt_gfx
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/volt_gfx/)
 
