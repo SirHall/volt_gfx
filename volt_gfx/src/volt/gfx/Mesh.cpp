@@ -91,12 +91,15 @@ Mesh::Mesh(Mesh &&other)
     indices  = std::move(other.indices);
 }
 
-GLuint Mesh::GetVAO() { return this->vao; }
+GLuint Mesh::GetVAO() const { return this->vao; }
 
-GLuint Mesh::GetVBO() { return this->vbo; }
+GLuint Mesh::GetVBO() const { return this->vbo; }
 
-GLuint Mesh::GetIBO() { return this->ibo; }
+GLuint Mesh::GetIBO() const { return this->ibo; }
 
-const std::vector<Vertex> &Mesh::GetVertices() { return this->vertices; }
+const std::vector<Vertex> &Mesh::GetVertices() const { return this->vertices; }
 
-const std::vector<std::uint32_t> &Mesh::GetIndices() { return this->indices; }
+const std::vector<std::uint32_t> &Mesh::GetIndices() const
+{
+    return this->indices;
+}

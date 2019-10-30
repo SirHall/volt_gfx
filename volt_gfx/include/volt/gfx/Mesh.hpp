@@ -33,12 +33,12 @@ namespace volt::gfx
         void RenderMesh();
         void ClearMesh();
 
-        GLuint GetVAO();
-        GLuint GetVBO();
-        GLuint GetIBO();
+        GLuint GetVAO() const;
+        GLuint GetVBO() const;
+        GLuint GetIBO() const;
 
-        const std::vector<Vertex> &       GetVertices();
-        const std::vector<std::uint32_t> &GetIndices();
+        const std::vector<Vertex> &       GetVertices() const;
+        const std::vector<std::uint32_t> &GetIndices() const;
     };
 } // namespace volt::gfx
 
