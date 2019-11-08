@@ -52,7 +52,7 @@ std::vector<ShaderSource>
                     auto root    = pt::ptree();
                     try
                     {
-                        pt::read_json(dir.path(), root);
+                        pt::read_json(dir.path().generic_string(), root);
                         // Determine if this JSON file represents a shader
                         // program
                         boost::optional<std::string> jsonType =
@@ -154,7 +154,7 @@ std::vector<ShaderSource>
                             }
                             shaderSource.AddShadelet(
                                 ShadeletSource(shadeletContents, shadeletType,
-                                               shadeletFullPath));
+                                               shadeletFullPath.generic_string()));
                         }
                         sources.push_back(shaderSource);
                     }
