@@ -4,6 +4,8 @@
 
 #include <cstdint>
 #include <vector>
+#include <algorithm>
+#include <iterator>
 
 namespace volt::gfx
 {
