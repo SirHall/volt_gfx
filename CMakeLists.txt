@@ -1,21 +1,21 @@
 cmake_minimum_required(VERSION 3.7)
 
 # Setup Hunter 
-set(HUNTER_ROOT "${CMAKE_BINARY_DIR}/hunter/")
+# set(HUNTER_ROOT ${CMAKE_BINARY_DIR}/hunter/)
+# Prefer pre-built binaries over building from source
 set(HUNTER_USE_CACHE_SERVERS YES)
 
-include("cmake/HunterGate.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/HunterGate.cmake")
 
 HunterGate(
     URL "https://github.com/ruslo/hunter/archive/v0.23.214.tar.gz"
     SHA1 "e14bc153a7f16d6a5eeec845fb0283c8fad8c358"
 )
 
-
 project(volt_ge_gfx)
 
-if(NOT DEFINED CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Debug")
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug)
 endif()
 
 # Setup Conan
@@ -24,7 +24,7 @@ endif()
 # message(STATUS "SDL2_Libs: ${CONAN_LIBS}")
 
 # Copy resource files to build output 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/volt_gfx/res DESTINATION ${CMAKE_BINARY_DIR}/bin/.)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/volt_gfx/res DESTINATION ${CMAKE_BINARY_DIR}/volt_gfx/.)
 
 # Add in volt_gfx
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/volt_gfx/)
