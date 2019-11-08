@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 // OpenGL End
 
-#include "volt/event/observer.hpp"
 #include "volt/gfx/GLUtilities.hpp"
 #include "volt/gfx/Mesh.hpp"
 #include "volt/gfx/Renderer.hpp"
