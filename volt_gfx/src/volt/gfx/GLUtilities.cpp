@@ -3,9 +3,11 @@
 #include <cassert>
 #include <iostream>
 
+#include <boost/stacktrace.hpp>
+
 void GLClearError()
 {
-    while (glGetError() != GL_NO_ERROR) {}
+    // while (glGetError() != GL_NO_ERROR) {}
 }
 
 void GLCheckError(const char *func, const char *file, int line)
@@ -14,9 +16,11 @@ void GLCheckError(const char *func, const char *file, int line)
     while (GLenum err = glGetError())
     {
         std::cout << "[OpenGL Error] > 0x" << std::hex << err << std::dec
-                  << "\n\t In: " << file << ":" << line << "\n\t" << func
+                  << "\n\tIn: " << file << ":" << line << "\n\t" << func
                   << std::endl;
         PrintGLError(err);
+        std::cout << "Stacktrace:\n"
+                  << boost::stacktrace::stacktrace() << std::endl;
         hadError = true;
     }
     if (hadError)
@@ -31,48 +35,56 @@ void PrintGLError(GLenum errorCode)
     switch (errorCode)
     {
         case GL_NO_ERROR:
-            std::cerr << "No error has been recorded. The value of this "
+            std::cerr << "[GL_NO_ERROR] No error has been recorded. The value "
+                         "of this "
                          "symbolic constant is guaranteed to be 0."
                       << std::endl;
             break;
         case GL_INVALID_ENUM:
-            std::cerr << "An unacceptable value is specified for an enumerated "
+            std::cerr << "[GL_INVALID_ENUM] An unacceptable value is specified "
+                         "for an enumerated "
                          "argument. The offending command is ignored and has "
                          "no other side effect than to set the error flag."
                       << std::endl;
             break;
         case GL_INVALID_VALUE:
-            std::cerr << "A numeric argument is out of range. The offending "
+            std::cerr << "[GL_INVALID_VALUE] A numeric argument is out of "
+                         "range. The offending "
                          "command is ignored and has no other side effect than "
                          "to set the error flag."
                       << std::endl;
             break;
         case GL_INVALID_OPERATION:
-            std::cerr << "The specified operation is not allowed in the "
+            std::cerr << "[GL_INVALID_OPERATION] The specified operation is "
+                         "not allowed in the "
                          "current state. The offending command is ignored and "
                          "has no other side effect than to set the error flag."
                       << std::endl;
             break;
         case GL_INVALID_FRAMEBUFFER_OPERATION:
-            std::cerr << "The framebuffer object is not complete. The "
+            std::cerr << "[GL_INVALID_FRAMEBUFFER_OPERATION] The framebuffer "
+                         "object is not complete. The "
                          "offending command is ignored and has no other side "
                          "effect than to set the error flag."
                       << std::endl;
             break;
         case GL_OUT_OF_MEMORY:
             std::cerr
-                << "There is not enough memory left to execute the command. "
+                << "[GL_OUT_OF_MEMORY] There is not enough memory left to "
+                   "execute the command. "
                    "The state of the GL is undefined, except for the state of "
                    "the error flags, after this error is recorded."
                 << std::endl;
             break;
         case GL_STACK_UNDERFLOW:
-            std::cerr << "An attempt has been made to perform an operation "
+            std::cerr << "[GL_STACK_UNDERFLOW] An attempt has been made to "
+                         "perform an operation "
                          "that would cause an internal stack to underflow."
                       << std::endl;
             break;
         case GL_STACK_OVERFLOW:
-            std::cerr << "An attempt has been made to perform an operation "
+            std::cerr << "[GL_STACK_OVERFLOW] An attempt has been made to "
+                         "perform an operation "
                          "that would cause an internal stack to overflow."
                       << std::endl;
             break;
