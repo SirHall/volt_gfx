@@ -35,7 +35,7 @@ Renderer::~Renderer()
 {
     if (initialized)
     {
-        GLCall(glfwTerminate());
+        glfwTerminate();
         initialized = false;
     }
 }
@@ -47,15 +47,15 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
     if (!glfwInit())
     {
         std::cerr << "Failed to initialize GLFW, quitting." << std::endl;
-        GLCall(glfwTerminate());
+        glfwTerminate();
         return false;
     }
 
     // Tell OpenGL to use GLSL 3.30
-    GLCall(glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3));
-    GLCall(glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3));
-    GLCall(glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE));
-    GLCall(glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE));
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 
     GLFWmonitor *      monitor = glfwGetPrimaryMonitor();
     const GLFWvidmode *mode    = glfwGetVideoMode(monitor);
@@ -64,31 +64,33 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-    GLCall(glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE));
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     // Create a windowed mode window and its OpenGL context
-    GLCall(window =
-               glfwCreateWindow(windowSettings.width, windowSettings.height,
-                                windowSettings.title.c_str(), NULL, NULL));
+    window = glfwCreateWindow(windowSettings.width, windowSettings.height,
+                              windowSettings.title.c_str(), NULL, NULL);
 
     if (!window)
     {
         std::cerr << "Failed to create window" << std::endl;
-        GLCall(glfwTerminate());
+        glfwTerminate();
         return false;
     }
 
     // Get window buffer size
-    GLCall(glfwGetFramebufferSize(window, &bufferWidth, &bufferHeight));
+    glfwGetFramebufferSize(window, &bufferWidth, &bufferHeight);
 
     // Make the window's context current
-    GLCall(glfwMakeContextCurrent(window));
+    glfwMakeContextCurrent(window);
+
+    // Only after the contect has been made current can we use glGetError()
+    // calls on Windows
 
     // Allow experimental features
     glewExperimental = GL_TRUE;
 
     // Turn VSync on
-    glfwSwapInterval(1);
+    GLCall(glfwSwapInterval(1));
 
     GLenum err = glewInit();
     if (err != GLEW_OK)
@@ -116,7 +118,6 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
 
     startOfThisFrameTimePoint = steady_clock::now();
     endOfLastFrameTimePoint   = steady_clock::now();
-
     return true;
 }
 
