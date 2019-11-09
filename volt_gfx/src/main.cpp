@@ -22,14 +22,16 @@ int main(int argc, char *argv[])
 
     auto renderer = Renderer();
 
+    auto windowSettings   = WindowCreationDataSettings();
+    windowSettings.height = 640;
+    windowSettings.width  = 640;
+    windowSettings.title  = "VoltGFX";
+    if (!renderer.Initialize(windowSettings))
     {
-        auto windowSettings   = WindowCreationDataSettings();
-        windowSettings.height = 640;
-        windowSettings.width  = 640;
-        windowSettings.title  = "VoltGFX";
-        renderer.Initialize(windowSettings);
-        renderer.SetTargetFPS(60.0f);
+        std::cout << "Failed to initialize window" << std::endl;
+        exit(1);
     }
+    renderer.SetTargetFPS(60.0f);
 
 #pragma endregion
 
@@ -44,19 +46,20 @@ int main(int argc, char *argv[])
     auto shaderSources =
         ShaderSource::ReadShaderSources(execPath.generic_string() + "/res");
     auto shaderCompileErrors = std::make_unique<std::vector<std::string>>();
-    auto shaders             = Shader::CompileShaders(
-        shaderSources, shaderCompileErrors); // Compile(shaderSources);
+    auto shaders = Shader::CompileShaders(shaderSources, shaderCompileErrors);
 
     if (shaderCompileErrors->size() > 0)
     {
         for (auto error : *shaderCompileErrors)
             std::cout << error << std::endl;
-        return 1;
+        exit(1);
     }
     else
     {
         std::cout << "All shaders compiled successfully" << std::endl;
     }
+
+    std::cout << "Compiled " << shaders->size() << " shaders" << std::endl;
 
 #pragma endregion
 
@@ -73,7 +76,6 @@ int main(int argc, char *argv[])
                      Vertex(1.f, -1.f, -1.f, 0.0f, 0.0f)}, // 7
                     {0, 1, 3, 3, 1, 2, 2, 6, 7, 7, 3, 2, 7, 6, 5, 5, 4, 7,
                      5, 1, 4, 4, 1, 0, 4, 3, 7, 3, 4, 0, 5, 6, 2, 5, 1, 2});
-
     // Projection matrix
     // glm::mat4 projection =
     //     glm::ortho(0.0f, (GLfloat)1, (GLfloat)1, 0.0f, 0.1f, 100.0f);
