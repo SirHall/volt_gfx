@@ -19,10 +19,11 @@ namespace volt::gfx
     public:
         Transform();
         Transform(glm::mat4 initTransform);
-        Transform(const Transform &other) = delete;
-        Transform(Transform &&other)      = delete;
-        Transform &operator=(const Transform &other) = delete;
-        Transform &operator=(Transform &&other) = delete;
+        Transform(glm::vec3 pos);
+        Transform(const Transform &other);
+        // Transform(Transform &&other);
+        Transform &operator=(const Transform &other);
+        // Transform &operator=(Transform &&other);
         ~Transform();
 
         glm::vec3 GetPosition() const;

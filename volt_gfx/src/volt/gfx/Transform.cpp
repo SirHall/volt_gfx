@@ -6,13 +6,26 @@ Transform::Transform() : transform(glm::mat4(1.0f)) {}
 
 Transform::Transform(glm::mat4 initTransform) : transform(initTransform) {}
 
-// Transform::Transform(const Transform &other) {}
+Transform::Transform(glm::vec3 pos)
+    : transform(glm::translate(glm::mat4(1.0f), pos))
+{
+}
 
-// Transform::Transform(Transform &&other) {}
+Transform::Transform(const Transform &other) : transform(other.transform) {}
 
-// Transform &Transform::operator=(const Transform &other) { return *this; }
+// Transform::Transform(Transform &&other) : transform(other.transform) {}
 
-// Transform &Transform::operator=(Transform &&other) { return *this; }
+Transform &Transform::operator=(const Transform &other)
+{
+    transform = other.transform;
+    return *this;
+}
+
+// Transform &Transform::operator=(Transform &&other)
+// {
+//     transform = other.transform;
+//     return *this;
+// }
 
 Transform::~Transform() {}
 
