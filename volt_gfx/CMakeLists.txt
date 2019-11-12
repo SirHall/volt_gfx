@@ -11,36 +11,19 @@ file(GLOB_RECURSE SRCS
     RELATIVE_PATH
 )
 
+# Copy resource files to build output 
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res DESTINATION ${CMAKE_BINARY_DIR}/bin/.)
 
 set(OpenGL_GL_PREFERENCE GLVND)
 
 find_package (Threads)
 
-hunter_add_package(Boost COMPONENTS system filesystem)
-find_package(Boost CONFIG REQUIRED system filesystem)
-hunter_add_package(glew)
-find_package(glew CONFIG REQUIRED)
-hunter_add_package(glfw)
-find_package(glfw3 CONFIG REQUIRED)
-hunter_add_package(glm)
-find_package(glm CONFIG REQUIRED)
-
 # add_library(volt_gfx ${SRCS})
 add_executable(volt_gfx ${SRCS})
 target_include_directories(volt_gfx PUBLIC ${INCLUDE_DIR})
-target_link_libraries(volt_gfx PUBLIC ${CMAKE_THREAD_LIBS_INIT})
-#Enable experimental features for glm
-add_compile_definitions(volt_gfx PRIVATE GLM_ENABLE_EXPERIMENTAL)
-target_link_libraries(volt_gfx PUBLIC
-    glfw
-    glew::glew
-    glm
-    Boost::filesystem
-    Boost::system
-)
-
+target_link_libraries(volt_gfx ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(volt_gfx ${CONAN_LIBS})
 # target_link_libraries(volt_gfx volt_event)
-# target_link_libraries(volt_gfx ${CONAN_LIBS})
 # target_link_libraries(volt_gfx LINK_PUBLIC ${Boost_LIBRARIES})
 
 # Flags
