@@ -19,8 +19,6 @@ void GLCheckError(const char *func, const char *file, int line)
                   << "\n\tIn: " << file << ":" << line << "\n\t" << func
                   << std::endl;
         PrintGLError(err);
-        std::cout << "Stacktrace:\n"
-                  << boost::stacktrace::stacktrace() << std::endl;
         hadError = true;
     }
     if (hadError)

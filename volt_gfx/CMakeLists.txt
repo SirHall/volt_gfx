@@ -16,8 +16,8 @@ set(OpenGL_GL_PREFERENCE GLVND)
 
 find_package (Threads)
 
-hunter_add_package(Boost COMPONENTS system filesystem stacktrace)
-find_package(Boost CONFIG REQUIRED system filesystem stacktrace)
+hunter_add_package(Boost COMPONENTS system filesystem)
+find_package(Boost CONFIG REQUIRED system filesystem)
 hunter_add_package(glew)
 find_package(glew CONFIG REQUIRED)
 hunter_add_package(glfw)
@@ -37,7 +37,6 @@ target_link_libraries(volt_gfx PUBLIC
     glm
     Boost::filesystem
     Boost::system
-    Boost::stacktrace
 )
 
 # target_link_libraries(volt_gfx volt_event)
