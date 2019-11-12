@@ -93,3 +93,37 @@ void PrintGLError(GLenum errorCode)
             break;
     }
 }
+
+// Get OpenGL types intelligently and at compile time
+// template <typename T>
+// constexpr GLenum GetGlType();
+
+template <>
+constexpr GLenum GetGlType<float>()
+{
+    return GL_FLOAT;
+}
+
+template <>
+constexpr GLenum GetGlType<int>()
+{
+    return GL_INT;
+}
+
+template <>
+constexpr GLenum GetGlType<unsigned int>()
+{
+    return GL_UNSIGNED_INT;
+}
+
+template <>
+constexpr GLenum GetGlType<char>()
+{
+    return GL_BYTE;
+}
+
+template <>
+constexpr GLenum GetGlType<unsigned char>()
+{
+    return GL_UNSIGNED_BYTE;
+}
