@@ -132,7 +132,8 @@ void Renderer::DirectRender(const Transform &transform, const Mesh &mesh,
     GLuint vao = mesh.GetVAO(), vbo = mesh.GetVBO(), ibo = mesh.GetIBO();
     if (vao == 0 || vbo == 0 || ibo == 0)
     {
-        std::cerr << "Attempted to direct render with incomplete data: vao: "
+        std::cerr << "Attempted to perform a direct render with incomplete "
+                     "data: vao: "
                   << vao << ", vbo: " << vbo << ", ibo: " << ibo << std::endl;
         return;
     }
