@@ -53,8 +53,8 @@ namespace volt::gfx
         void DirectRender(const Transform &transform, const Mesh &mesh,
                           const Shader &shader);
 
-        void InstancedRender(const std::vector<Transform> &transforms,
-                             const Mesh &                  mesh);
+        // void InstancedRender(const std::vector<Transform> &transforms,
+        //                      const Mesh &                  mesh);
 
         void DisplayFrame();
 
