@@ -3,8 +3,6 @@
 #include <cassert>
 #include <iostream>
 
-#include <boost/stacktrace.hpp>
-
 void GLClearError()
 {
     // while (glGetError() != GL_NO_ERROR) {}
@@ -22,8 +20,9 @@ void GLCheckError(const char *func, const char *file, int line)
         hadError = true;
     }
     if (hadError)
-        std::cout << std::endl;
-    assert(!hadError);
+    {
+        std::exit(1);
+    }
 }
 
 void PrintGLError(GLenum errorCode)
