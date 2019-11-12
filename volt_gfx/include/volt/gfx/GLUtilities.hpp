@@ -2,8 +2,11 @@
 #ifndef OpenGLExtensions_hpp
 #define OpenGLExtensions_hpp
 
+// GLEW must come first
 #include <GL/glew.h>
+// Spacing to prevent re-ordering
 #include <GLFW/glfw3.h>
+// Ending
 
 void GLClearError();
 
@@ -22,5 +25,24 @@ void PrintGLError(GLenum errorCode);
 // Release mode
 #define GLCall(x) x
 #endif
+
+// Get OpenGL types intelligently and at compile time
+template <typename T>
+constexpr GLenum GetGlType();
+
+template <>
+constexpr GLenum GetGlType<float>();
+
+template <>
+constexpr GLenum GetGlType<int>();
+
+template <>
+constexpr GLenum GetGlType<unsigned int>();
+
+template <>
+constexpr GLenum GetGlType<char>();
+
+template <>
+constexpr GLenum GetGlType<unsigned char>();
 
 #endif
