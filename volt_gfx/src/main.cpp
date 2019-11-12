@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
         std::cout << "All shaders compiled successfully" << std::endl;
     }
 
-    std::cout << "Compiled " << shaders->size() << " shaders" << std::endl;
+    std::cout << "Compiled " << shaders->size() << " shader(s)" << std::endl;
 
 #pragma endregion
 
@@ -98,6 +98,7 @@ int main(int argc, char *argv[])
         renderer.PollEvents();
 
         Shader &shader = shaders->at(0);
+        shader.SetInUse();
 
         GLint uniformLoc = -1;
         if (shader.GetUniformLocation("projection", uniformLoc))
