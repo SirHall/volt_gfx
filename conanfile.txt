@@ -2,7 +2,7 @@
 glfw/3.3@bincrafters/stable
 glew/2.1.0@bincrafters/stable
 glm/0.9.9.5@g-truc/stable
-volt_event/0.0.1@volt/stable
+volt_event/0.0.1@volt/dev
 boost/1.71.0@conan/stable
 
 [generators]
