@@ -1,6 +1,7 @@
 #include "volt/gfx/Renderer.hpp"
 #include "volt/gfx/GLUtilities.hpp"
 #include "volt/gfx/Shader.hpp"
+#include "volt/gfx/global_events/GFXEventKeyCallback.hpp"
 
 // OpenGL Start
 #include <GL/glew.h>
@@ -31,14 +32,7 @@ Renderer &Renderer::operator=(Renderer &&other)
     return *this;
 }
 
-Renderer::~Renderer()
-{
-    if (initialized)
-    {
-        glfwTerminate();
-        initialized = false;
-    }
-}
+Renderer::~Renderer() { this->Close(); }
 
 bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
 {
@@ -109,6 +103,14 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
 
     GLCall(fprintf(stdout, "Status: Using GLEW %s\n",
                    glewGetString(GLEW_VERSION)));
+
+    // Setup callbacks
+    glfwSetKeyCallback(this->window, [](GLFWwindow *window, int key,
+                                        int scancode, int action, int mods) {
+        volt::event::global_event<GFXEventKeyCallback>::call_event(
+            GFXEventKeyCallback(key, scancode, static_cast<KeyAction>(action),
+                                mods));
+    });
 
     //--- OpenGL Code starts here ---//
 
@@ -234,4 +236,14 @@ void Renderer::PollEvents()
 {
     // Poll for and process events
     GLCall(glfwPollEvents());
+}
+
+void Renderer::Close()
+{
+    if (initialized)
+    {
+        // glfwTerminate();
+        glfwSetWindowShouldClose(this->window, GLFW_TRUE);
+        initialized = false;
+    }
 }

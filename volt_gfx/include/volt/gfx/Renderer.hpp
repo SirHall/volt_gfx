@@ -7,6 +7,7 @@
 #include "volt/gfx/Transform.hpp"
 
 #include <chrono>
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -71,6 +72,8 @@ namespace volt::gfx
         void SleepForFrame();
 
         void PollEvents();
+
+        void Close();
     };
 } // namespace volt::gfx
 
