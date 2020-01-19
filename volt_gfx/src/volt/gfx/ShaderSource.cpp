@@ -152,9 +152,9 @@ std::vector<ShaderSource>
                                     << shadeletTypeStr << "'" << std::endl;
                                 continue;
                             }
-                            shaderSource.AddShadelet(
-                                ShadeletSource(shadeletContents, shadeletType,
-                                               shadeletFullPath.generic_string()));
+                            shaderSource.AddShadelet(ShadeletSource(
+                                shadeletContents, shadeletType,
+                                shadeletFullPath.generic_string()));
                         }
                         sources.push_back(shaderSource);
                     }
