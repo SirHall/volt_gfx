@@ -4,11 +4,14 @@
 #include <GLFW/glfw3.h>
 // OpenGL End
 
+#include "volt/event.hpp"
+
 #include "volt/gfx/GLUtilities.hpp"
 #include "volt/gfx/Mesh.hpp"
 #include "volt/gfx/Renderer.hpp"
 #include "volt/gfx/Shader.hpp"
 #include "volt/gfx/Vertex.hpp"
+#include "volt/gfx/global_events/GFXEventKeyCallback.hpp"
 
 #include <iostream>
 
@@ -29,9 +32,23 @@ int main(int argc, char *argv[])
     if (!renderer.Initialize(windowSettings))
     {
         std::cout << "Failed to initialize window" << std::endl;
-        exit(1);
+        std::exit(1);
     }
     renderer.SetTargetFPS(60.0f);
+
+    auto keyStrikeObserver = volt::event::observer<GFXEventKeyCallback>(
+        [&](GFXEventKeyCallback const &e) {
+            if (e.GetAction() == KeyAction::Press)
+            {
+                char const *keyName =
+                    glfwGetKeyName(e.GetKey(), e.GetScanCode());
+                if (keyName != nullptr)
+                    std::cout << '[' << keyName << ']' << std::endl;
+            }
+
+            if (e.GetKey() == GLFW_KEY_ESCAPE)
+                renderer.Close();
+        });
 
 #pragma endregion
 
