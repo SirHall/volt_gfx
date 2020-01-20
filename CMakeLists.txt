@@ -35,4 +35,4 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/volt_gfx/)
 enable_testing()
 
 # Add in tests
-# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests/client_server/)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests/)
