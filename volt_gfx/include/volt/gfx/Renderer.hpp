@@ -39,6 +39,8 @@ namespace volt::gfx
         steady_clock::time_point endOfLastFrameTimePoint,
             startOfThisFrameTimePoint;
 
+        void SetupCallbacks();
+
     public:
         Renderer();
         Renderer(const Renderer &other) = delete;

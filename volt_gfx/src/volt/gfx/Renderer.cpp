@@ -11,8 +11,14 @@
 
 #include <iostream>
 #include <thread>
+#include <unordered_map>
 
 using namespace volt::gfx;
+
+// I doubt shared_ptr's are necessary, the raw pointers to Renderer
+// TODO Should access to this be guarded with a read/write mutex?
+std::unordered_map<GLFWwindow *, Renderer *> windowToRenderers =
+    std::unordered_map<GLFWwindow *, Renderer *>();
 
 Renderer::Renderer() {}
 
@@ -33,6 +39,18 @@ Renderer &Renderer::operator=(Renderer &&other)
 }
 
 Renderer::~Renderer() { this->Close(); }
+
+void Renderer::SetupCallbacks()
+{
+    // Keyboard input callback
+    glfwSetKeyCallback(this->window, [](GLFWwindow *window, int key,
+                                        int scancode, int action, int mods) {
+        volt::event::global_event<GFXEventKeyCallback>::call_event(
+            GFXEventKeyCallback(*windowToRenderers[window], key, scancode,
+                                static_cast<KeyAction>(action), mods));
+    });
+    windowToRenderers[this->window];
+}
 
 bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
 {
@@ -63,6 +81,9 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
     // Create a windowed mode window and its OpenGL context
     window = glfwCreateWindow(windowSettings.width, windowSettings.height,
                               windowSettings.title.c_str(), NULL, NULL);
+
+    // Add this renderer to the static windowToRenderers unordered map
+    windowToRenderers.insert_or_assign(window, this);
 
     if (!window)
     {
@@ -104,13 +125,7 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
     GLCall(fprintf(stdout, "Status: Using GLEW %s\n",
                    glewGetString(GLEW_VERSION)));
 
-    // Setup callbacks
-    glfwSetKeyCallback(this->window, [](GLFWwindow *window, int key,
-                                        int scancode, int action, int mods) {
-        volt::event::global_event<GFXEventKeyCallback>::call_event(
-            GFXEventKeyCallback(key, scancode, static_cast<KeyAction>(action),
-                                mods));
-    });
+    this->SetupCallbacks();
 
     //--- OpenGL Code starts here ---//
 
@@ -242,7 +257,7 @@ void Renderer::Close()
 {
     if (initialized)
     {
-        // glfwTerminate();
+        windowToRenderers.erase(this->window);
         glfwSetWindowShouldClose(this->window, GLFW_TRUE);
         initialized = false;
     }
