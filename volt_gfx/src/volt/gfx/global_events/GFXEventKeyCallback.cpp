@@ -2,10 +2,10 @@
 
 using namespace volt::gfx;
 
-GFXEventKeyCallback::GFXEventKeyCallback(/*Renderer &rendererRef,*/ int keyCode,
+GFXEventKeyCallback::GFXEventKeyCallback(Renderer &rendererRef, int keyCode,
                                          int scanCodeID, KeyAction keyAction,
                                          int modifiers)
-    : /* renderer(rendererRef), */ key(keyCode), scanCode(scanCodeID),
+    : renderer(rendererRef), key(keyCode), scanCode(scanCodeID),
       action(keyAction), mods(modifiers)
 {
 }
