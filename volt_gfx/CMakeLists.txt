@@ -18,8 +18,7 @@ set(OpenGL_GL_PREFERENCE GLVND)
 
 find_package (Threads)
 
-# add_library(volt_gfx ${SRCS})
-add_executable(volt_gfx ${SRCS})
+add_library(volt_gfx ${SRCS})
 target_include_directories(volt_gfx PUBLIC ${INCLUDE_DIR})
 target_link_libraries(volt_gfx ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(volt_gfx ${CONAN_LIBS})
