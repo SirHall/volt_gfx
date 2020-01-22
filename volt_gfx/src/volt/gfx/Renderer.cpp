@@ -1,7 +1,7 @@
 #include "volt/gfx/Renderer.hpp"
 #include "volt/gfx/GLUtilities.hpp"
 #include "volt/gfx/Shader.hpp"
-#include "volt/gfx/global_events/GFXEventKeyCallback.hpp"
+#include "volt/gfx/global_events/GFXEvents.hpp"
 
 // OpenGL Start
 #include <GL/glew.h>
@@ -45,11 +45,44 @@ void Renderer::SetupCallbacks()
     // Keyboard input callback
     glfwSetKeyCallback(this->window, [](GLFWwindow *window, int key,
                                         int scancode, int action, int mods) {
-        volt::event::global_event<GFXEventKeyCallback>::call_event(
-            GFXEventKeyCallback(*windowToRenderers[window], key, scancode,
-                                static_cast<KeyAction>(action), mods));
+        volt::event::global_event<GFXEventKey>::call_event(
+            GFXEventKey(*windowToRenderers[window], key, scancode,
+                        static_cast<KeyAction>(action), mods));
     });
-    windowToRenderers[this->window];
+
+    glfwSetErrorCallback([](int errorCode, const char *errorMsg) {
+        volt::event::global_event<GFXEventError>::call_event(
+            GFXEventError(errorCode, std::string(errorMsg)));
+    });
+
+    glfwSetCharCallback(
+        this->window, [](GLFWwindow *window, unsigned int character) {
+            volt::event::global_event<GFXEventChar>::call_event(
+                GFXEventChar(*windowToRenderers[window], character));
+        });
+
+    //--- All available & unimplemented glfw callbacks ---//
+    // glfwSetCharModsCallback
+    // glfwSetCursorEnterCallback
+    // glfwSetCursorPosCallback
+    // glfwSetDropCallback
+    // glfwSetErrorCallback
+    // glfwSetFramebufferSizeCallback
+    // glfwSetJoystickCallback
+    // glfwSetKeyCallback
+    // glfwSetMonitorCallback
+    // glfwSetMouseButtonCallback
+    // glfwSetMousePosCallback
+    // glfwSetMouseWheelCallback
+    // glfwSetScrollCallback
+    // glfwSetWindowCloseCallback
+    // glfwSetWindowContentScaleCallback
+    // glfwSetWindowFocusCallback
+    // glfwSetWindowIconifyCallback
+    // glfwSetWindowMaximizeCallback
+    // glfwSetWindowPosCallback
+    // glfwSetWindowRefreshCallback
+    // glfwSetWindowSizeCallback
 }
 
 bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
