@@ -1,6 +1,6 @@
 #pragma once
-#ifndef VOLT_GFX_GLOBAL_EVENTS_GFXEVENTKEYCALLBACK_HPP
-#define VOLT_GFX_GLOBAL_EVENTS_GFXEVENTKEYCALLBACK_HPP
+#ifndef VOLT_GFX_GLOBAL_EVENTS_GFXEVENTKEY_HPP
+#define VOLT_GFX_GLOBAL_EVENTS_GFXEVENTKEY_HPP
 
 #include "volt/event.hpp"
 
@@ -25,7 +25,7 @@ namespace volt::gfx
         Unknown = GLFW_KEY_UNKNOWN
     };
 
-    struct GFXEventKeyCallback
+    struct GFXEventKey
     {
     private:
         Renderer &      renderer;
@@ -35,8 +35,8 @@ namespace volt::gfx
         int             mods;
 
     public:
-        GFXEventKeyCallback(Renderer &rendererRef, int keyCode, int scanCodeID,
-                            KeyAction keyAction, int modifiers);
+        GFXEventKey(Renderer &rendererRef, int keyCode, int scanCodeID,
+                    KeyAction keyAction, int modifiers);
 
         inline Renderer &GetRenderer() { return this->renderer; }
         inline int       GetKey() const { return this->key; }
