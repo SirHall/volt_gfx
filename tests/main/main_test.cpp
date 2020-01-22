@@ -5,13 +5,7 @@
 // OpenGL End
 
 #include "volt/event.hpp"
-
-#include "volt/gfx/GLUtilities.hpp"
-#include "volt/gfx/Mesh.hpp"
-#include "volt/gfx/Renderer.hpp"
-#include "volt/gfx/Shader.hpp"
-#include "volt/gfx/Vertex.hpp"
-#include "volt/gfx/global_events/GFXEventKeyCallback.hpp"
+#include "volt/gfx.hpp"
 
 #include <iostream>
 
@@ -36,8 +30,8 @@ int main(int argc, char *argv[])
     }
     renderer.SetTargetFPS(60.0f);
 
-    auto keyStrikeObserver = volt::event::observer<GFXEventKeyCallback>(
-        [&](GFXEventKeyCallback const &e) {
+    auto keyStrikeObserver =
+        volt::event::observer<GFXEventKey>([&](GFXEventKey const &e) {
             if (e.GetAction() == KeyAction::Press)
             {
                 char const *keyName =
