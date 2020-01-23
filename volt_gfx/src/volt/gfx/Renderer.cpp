@@ -3,6 +3,8 @@
 #include "volt/gfx/Shader.hpp"
 #include "volt/gfx/global_events/GFXEvents.hpp"
 
+#include "volt/event.hpp"
+
 // OpenGL Start
 #include <GL/glew.h>
 // glew must be imported before glfw3
@@ -61,19 +63,27 @@ void Renderer::SetupCallbacks()
                 GFXEventChar(*windowToRenderers[window], character));
         });
 
+    glfwSetMouseButtonCallback(this->window, [](GLFWwindow *window, int button,
+                                                int action, int mods) {
+        volt::event::global_event<GFXEventMouseButton>::call_event(
+            GFXEventMouseButton(*windowToRenderers[window],
+                                static_cast<MouseButton>(button),
+                                static_cast<MouseButtonAction>(action), mods));
+    });
+
+    glfwSetCursorPosCallback(
+        this->window, [](GLFWwindow *window, double x, double y) {
+            volt::event::global_event<GFXEventCursorPos>::call_event(
+                GFXEventCursorPos(*windowToRenderers[window], x, y));
+        });
+
     //--- All available & unimplemented glfw callbacks ---//
     // glfwSetCharModsCallback
     // glfwSetCursorEnterCallback
-    // glfwSetCursorPosCallback
     // glfwSetDropCallback
-    // glfwSetErrorCallback
     // glfwSetFramebufferSizeCallback
     // glfwSetJoystickCallback
-    // glfwSetKeyCallback
     // glfwSetMonitorCallback
-    // glfwSetMouseButtonCallback
-    // glfwSetMousePosCallback
-    // glfwSetMouseWheelCallback
     // glfwSetScrollCallback
     // glfwSetWindowCloseCallback
     // glfwSetWindowContentScaleCallback
