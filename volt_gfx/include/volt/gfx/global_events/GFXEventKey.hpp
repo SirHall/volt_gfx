@@ -2,8 +2,6 @@
 #ifndef VOLT_GFX_GLOBAL_EVENTS_GFXEVENTKEY_HPP
 #define VOLT_GFX_GLOBAL_EVENTS_GFXEVENTKEY_HPP
 
-#include "volt/event.hpp"
-
 #include "volt/gfx/Renderer.hpp"
 
 // OpenGL Start
