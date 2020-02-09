@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
     auto keyStrikeObserver =
         volt::event::observer<GFXEventKey>([&](GFXEventKey const &e) {
-            if (e.GetAction() == KeyAction::Press)
+            if (e.GetAction().Get() == KeyAction::Press().Get())
             {
                 char const *keyName =
                     glfwGetKeyName(e.GetKey(), e.GetScanCode());
