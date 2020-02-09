@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.7)
 # Set some default values
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/)
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Find all source files
 file(GLOB_RECURSE SRCS
@@ -24,6 +24,7 @@ target_link_libraries(volt_gfx ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(volt_gfx ${CONAN_LIBS})
 # target_link_libraries(volt_gfx volt_event)
 # target_link_libraries(volt_gfx LINK_PUBLIC ${Boost_LIBRARIES})
+set_property(TARGET volt_gfx PROPERTY CXX_STANDARD 20)
 
 # Flags
 if(MSVC)
