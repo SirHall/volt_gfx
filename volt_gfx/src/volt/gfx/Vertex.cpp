@@ -36,24 +36,13 @@ volt::gfx::Vertex &volt::gfx::Vertex::operator=(const volt::gfx::Vertex &other)
     return *this;
 }
 
-// volt::gfx::Vertex &volt::gfx::Vertex::operator=(volt::gfx::Vertex &&other)
-// {
-//     this->position[0] = other.position[0];
-//     this->position[1] = other.position[1];
-//     this->position[2] = other.position[2];
-
-//     this->uv[0] = other.uv[0];
-//     this->uv[1] = other.uv[1];
-
-//     return *this;
-// }
-
 volt::gfx::Vertex::~Vertex() {}
 
 #define GenAttrib(attr, attrType)                                              \
     GLCall(glVertexAttribPointer(                                              \
-        currentIndex++, sizeof(attr) / sizeof(attrType), GL_FLOAT, GL_FALSE,   \
-        sizeof(Vertex), reinterpret_cast<void *>(offsetof(Vertex, attr))))
+        currentIndex++, sizeof(attr) / sizeof(attrType),                       \
+        GetGlType<attrType>(), GL_FALSE, sizeof(Vertex),                       \
+        reinterpret_cast<void *>(offsetof(Vertex, attr))))
 
 GLuint volt::gfx::Vertex::GenerateVAO()
 {
