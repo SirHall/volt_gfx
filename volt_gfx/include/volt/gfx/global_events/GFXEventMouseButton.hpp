@@ -12,26 +12,40 @@
 
 namespace volt::gfx
 {
-    enum MouseButtonAction
+    struct MouseButtonAction
     {
-        Press   = GLFW_PRESS,
-        Release = GLFW_RELEASE
+    private:
+        int const val;
+
+    public:
+        MouseButtonAction(int v);
+        inline int Get() const { return val; }
+
+        static MouseButtonAction Press();
+        static MouseButtonAction Release();
     };
 
-    enum MouseButton
+    struct MouseButton
     {
-        Left   = GLFW_MOUSE_BUTTON_LEFT,
-        Middle = GLFW_MOUSE_BUTTON_MIDDLE,
-        Right  = GLFW_MOUSE_BUTTON_RIGHT,
-        _1     = GLFW_MOUSE_BUTTON_1,
-        _2     = GLFW_MOUSE_BUTTON_2,
-        _3     = GLFW_MOUSE_BUTTON_3,
-        _4     = GLFW_MOUSE_BUTTON_4,
-        _5     = GLFW_MOUSE_BUTTON_5,
-        _6     = GLFW_MOUSE_BUTTON_6,
-        _7     = GLFW_MOUSE_BUTTON_7,
-        _8     = GLFW_MOUSE_BUTTON_8,
-        Last   = GLFW_MOUSE_BUTTON_LAST
+    private:
+        int const val;
+
+    public:
+        MouseButton(int v);
+        inline int Get() const { return val; }
+
+        static MouseButton Left();
+        static MouseButton Middle();
+        static MouseButton Right();
+        static MouseButton Num1();
+        static MouseButton Num2();
+        static MouseButton Num3();
+        static MouseButton Num4();
+        static MouseButton Num5();
+        static MouseButton Num6();
+        static MouseButton Num7();
+        static MouseButton Num8();
+        static MouseButton Last();
     };
 
     class GFXEventMouseButton

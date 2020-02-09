@@ -15,12 +15,19 @@ using namespace volt::gfx;
 namespace volt::gfx
 {
 
-    enum KeyAction
+    class KeyAction
     {
-        Press   = GLFW_PRESS,
-        Lift    = GLFW_RELEASE,
-        Hold    = GLFW_REPEAT,
-        Unknown = GLFW_KEY_UNKNOWN
+    private:
+        int const val;
+
+    public:
+        KeyAction(int v);
+        inline int Get() const { return val; }
+
+        static KeyAction Press();
+        static KeyAction Release();
+        static KeyAction Hold();
+        static KeyAction Unknown();
     };
 
     struct GFXEventKey
