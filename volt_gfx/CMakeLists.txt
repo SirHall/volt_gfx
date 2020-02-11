@@ -1,12 +1,7 @@
 cmake_minimum_required(VERSION 3.7)
 
-# Set some default values
-set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/)
-set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 # Find all source files
-file(GLOB_RECURSE SRCS
+file(GLOB_RECURSE VOLT_GFX_SRCS
     "src/*.cpp"
     RELATIVE_PATH
 )
@@ -18,8 +13,8 @@ set(OpenGL_GL_PREFERENCE GLVND)
 
 find_package (Threads)
 
-add_library(volt_gfx ${SRCS})
-target_include_directories(volt_gfx PUBLIC ${INCLUDE_DIR})
+add_library(volt_gfx ${VOLT_GFX_SRCS})
+target_include_directories(volt_gfx PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
 target_link_libraries(volt_gfx ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(volt_gfx ${CONAN_LIBS})
 # target_link_libraries(volt_gfx volt_event)
