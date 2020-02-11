@@ -7,5 +7,6 @@
 #include "volt/gfx/global_events/GFXEventError.hpp"
 #include "volt/gfx/global_events/GFXEventKey.hpp"
 #include "volt/gfx/global_events/GFXEventMouseButton.hpp"
+#include "volt/gfx/global_events/GFXEventWindowSize.hpp"
 
 #endif

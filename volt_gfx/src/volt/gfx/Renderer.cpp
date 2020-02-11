@@ -75,6 +75,14 @@ void Renderer::SetupCallbacks()
                 cursorPosEvent);
         });
 
+    glfwSetWindowSizeCallback(
+        this->window, [](GLFWwindow *window, int width, int height) {
+            auto windowSizeEvent =
+                GFXEventWindowSize(windowToRenderers[window], width, height);
+            volt::event::global_event<GFXEventWindowSize>::call_event(
+                windowSizeEvent);
+        });
+
     //--- All available & unimplemented glfw callbacks ---//
     // glfwSetCharModsCallback
     // glfwSetCursorEnterCallback
@@ -90,7 +98,6 @@ void Renderer::SetupCallbacks()
     // glfwSetWindowMaximizeCallback
     // glfwSetWindowPosCallback
     // glfwSetWindowRefreshCallback
-    // glfwSetWindowSizeCallback
 }
 
 bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
