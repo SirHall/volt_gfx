@@ -2,7 +2,8 @@
 #ifndef VOLT_GFX_VERTEX_HPP
 #define VOLT_GFX_VERTEX_HPP
 
-#include <GL/glew.h>
+#include "volt/gfx/GLImport.hpp"
+
 namespace volt::gfx
 {
     class Vertex

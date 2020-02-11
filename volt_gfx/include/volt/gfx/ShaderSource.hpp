@@ -7,8 +7,7 @@
 #include <string>
 #include <vector>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "volt/gfx/GLImport.hpp"
 
 namespace volt::gfx
 {

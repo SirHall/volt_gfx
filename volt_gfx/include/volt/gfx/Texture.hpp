@@ -2,10 +2,10 @@
 #ifndef VOLT_GFX_TEXTURE_HPP
 #define VOLT_GFX_TEXTURE_HPP
 
-#include <cstdint>
-#include <vector>
 #include <algorithm>
+#include <cstdint>
 #include <iterator>
+#include <vector>
 
 namespace volt::gfx
 {

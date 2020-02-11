@@ -2,6 +2,7 @@
 #ifndef shader_hpp
 #define shader_hpp
 
+#include "volt/gfx/GLImport.hpp"
 #include "volt/gfx/ShaderSource.hpp"
 
 #include <memory>
@@ -14,9 +15,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtx/quaternion.hpp>
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 
 namespace volt::gfx
 {

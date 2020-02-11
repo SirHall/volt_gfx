@@ -47,23 +47,24 @@ volt::gfx::Vertex::~Vertex() {}
 GLuint volt::gfx::Vertex::GenerateVAO()
 {
     GLuint vao = 0;
-    GLCall(glGenVertexArrays(1, &vao));
-    GLCall(glBindVertexArray(vao));
+    GLCall(gl::GenVertexArrays(1, &vao));
+    GLCall(gl::BindVertexArray(vao));
     // Vertex attributes
-    GLCall(glEnableVertexAttribArray(0));
+    GLCall(gl::EnableVertexAttribArray(0));
 
     GLuint currentIndex = 0;
 
     // Model position attribute
     // GenAttrib(position, GLfloat);
-    GLCall(glVertexAttribPointer(
-        currentIndex++, sizeof(position) / sizeof(GLfloat), GL_FLOAT, GL_FALSE,
-        sizeof(Vertex), reinterpret_cast<void *>(offsetof(Vertex, position))));
+    GLCall(gl::VertexAttribPointer(
+        currentIndex++, sizeof(position) / sizeof(GLfloat), gl::FLOAT,
+        gl::FALSE_, sizeof(Vertex),
+        reinterpret_cast<void *>(offsetof(Vertex, position))));
 
     // UV Coordinate Attribute
     // GenAttrib(uv, GLfloat);
-    GLCall(glVertexAttribPointer(
-        currentIndex++, sizeof(uv) / sizeof(GLfloat), GL_FLOAT, GL_FALSE,
+    GLCall(gl::VertexAttribPointer(
+        currentIndex++, sizeof(uv) / sizeof(GLfloat), gl::FLOAT, gl::FALSE_,
         sizeof(Vertex), reinterpret_cast<void *>(offsetof(Vertex, uv))));
 
     return vao;

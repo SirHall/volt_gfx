@@ -2,11 +2,7 @@
 #ifndef OpenGLExtensions_hpp
 #define OpenGLExtensions_hpp
 
-// GLEW must come first
-#include <GL/glew.h>
-// Spacing to prevent re-ordering
-#include <GLFW/glfw3.h>
-// Ending
+#include "volt/gfx/GLImport.hpp"
 
 void GLClearError();
 

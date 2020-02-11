@@ -2,13 +2,8 @@
 #ifndef VOLT_GFX_GLOBAL_EVENTS_GFXEVENTMOUSEBUTTON_HPP
 #define VOLT_GFX_GLOBAL_EVENTS_GFXEVENTMOUSEBUTTON_HPP
 
+#include "volt/gfx/GLImport.hpp"
 #include "volt/gfx/Renderer.hpp"
-
-// OpenGL Start
-#include <GL/glew.h>
-// glew must be imported before glfw3
-#include <GLFW/glfw3.h>
-// OpenGL End
 
 namespace volt::gfx
 {

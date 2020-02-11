@@ -190,9 +190,9 @@ bool ShaderSource::GetShaderType(std::string const &typeString, GLenum &type)
 {
     // List of shader type extensions and their corresponding GL shader types
     const auto shaderTypes = std::vector<std::pair<std::string, GLenum>>(
-        {{"vertex", GL_VERTEX_SHADER},
-         {"fragment", GL_FRAGMENT_SHADER},
-         {"geometry", GL_GEOMETRY_SHADER}});
+        {{"vertex", gl::VERTEX_SHADER},
+         {"fragment", gl::FRAGMENT_SHADER},
+         {"geometry", gl::GEOMETRY_SHADER}});
 
     for (auto shaderType : shaderTypes)
     {

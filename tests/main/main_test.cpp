@@ -1,9 +1,3 @@
-// OpenGL Start
-#include <GL/glew.h>
-// glew must be imported before glfw3
-#include <GLFW/glfw3.h>
-// OpenGL End
-
 #include "volt/event.hpp"
 #include "volt/gfx.hpp"
 

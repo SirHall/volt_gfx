@@ -4,8 +4,7 @@
 
 #include <string>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "GLImport.hpp"
 
 namespace volt::gfx
 {

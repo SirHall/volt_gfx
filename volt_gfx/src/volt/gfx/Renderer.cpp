@@ -1,15 +1,10 @@
 #include "volt/gfx/Renderer.hpp"
+#include "volt/gfx/GLImport.hpp"
 #include "volt/gfx/GLUtilities.hpp"
 #include "volt/gfx/Shader.hpp"
 #include "volt/gfx/global_events/GFXEvents.hpp"
 
 #include "volt/event.hpp"
-
-// OpenGL Start
-#include <GL/glew.h>
-// glew must be imported before glfw3
-#include <GLFW/glfw3.h>
-// OpenGL End
 
 #include <iostream>
 #include <thread>
@@ -121,19 +116,25 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-
     // Create a windowed mode window and its OpenGL context
     window = glfwCreateWindow(windowSettings.width, windowSettings.height,
                               windowSettings.title.c_str(), NULL, NULL);
-
     // Add this renderer to the static windowToRenderers unordered map
     windowToRenderers.insert_or_assign(window, this);
 
     if (!window)
     {
         std::cerr << "Failed to create window" << std::endl;
+        glfwTerminate();
+        return false;
+    }
+
+    gl::exts::LoadTest loaded = gl::sys::LoadFunctions();
+    if (!loaded)
+    {
+        // The context does not work with the generated headers
+        std::cerr << "Failed to load gl" << std::endl;
         glfwTerminate();
         return false;
     }
@@ -148,35 +149,24 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
     // calls on Windows
 
     // Allow experimental features
-    glewExperimental = GL_TRUE;
+    // glewExperimental = GL_TRUE;
 
     // Turn VSync on
     GLCall(glfwSwapInterval(1));
 
-    GLenum err = glewInit();
-    if (err != GLEW_OK)
-    { /* Problem: glewInit failed, something is seriously wrong. */
-        GLCall(fprintf(stderr, "Error: %s\n", glewGetErrorString(err)));
-        GLCall(glfwDestroyWindow(window));
-        GLCall(glfwTerminate());
-        return 1;
-    }
-
     // Depth buffer
-    glEnable(GL_DEPTH_TEST);
+    gl::Enable(gl::DEPTH_TEST);
 
     // Setup viewport
-    glViewport(0, 0, bufferWidth, bufferHeight);
-
-    GLCall(fprintf(stdout, "Status: Using GLEW %s\n",
-                   glewGetString(GLEW_VERSION)));
+    gl::Viewport(0, 0, bufferWidth, bufferHeight);
 
     this->SetupCallbacks();
 
     //--- OpenGL Code starts here ---//
 
-    GLCall(std::cout << "OpenGL Version: " << glGetString(GL_VERSION)
+    GLCall(std::cout << "OpenGL Driver: " << gl::GetString(gl::VERSION)
                      << std::endl);
+
     initialized = true;
 
     startOfThisFrameTimePoint = steady_clock::now();
@@ -203,17 +193,17 @@ void Renderer::DirectRender(const Transform &transform, const Mesh &mesh,
 
     shader.SetInUse();
 
-    GLCall(glBindVertexArray(vao));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo)); // Probably not needed
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+    GLCall(gl::BindVertexArray(vao));
+    GLCall(gl::BindBuffer(gl::ARRAY_BUFFER, vbo)); // Probably not needed
+    GLCall(gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ibo));
 
     // The draw call
-    GLCall(glDrawElements(GL_TRIANGLES, mesh.GetIndices().size(),
-                          GL_UNSIGNED_INT, 0));
+    GLCall(gl::DrawElements(gl::TRIANGLES, mesh.GetIndices().size(),
+                            gl::UNSIGNED_INT, 0));
 
-    GLCall(glBindVertexArray(0));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0)); // Probably not needed
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+    GLCall(gl::BindVertexArray(0));
+    GLCall(gl::BindBuffer(gl::ARRAY_BUFFER, 0)); // Probably not needed
+    GLCall(gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, 0));
 }
 
 // void Renderer::InstancedRender(const std::vector<Transform> &transforms,
@@ -251,7 +241,7 @@ void Renderer::DirectRender(const Transform &transform, const Mesh &mesh,
 void Renderer::DisplayFrame()
 {
     GLCall(glfwSwapBuffers(window));
-    GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+    GLCall(gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT));
 }
 
 bool Renderer::WindowOpen() { return !glfwWindowShouldClose(window); }

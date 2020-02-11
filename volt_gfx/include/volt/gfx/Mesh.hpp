@@ -2,12 +2,12 @@
 #ifndef Mesh_hpp
 #define Mesh_hpp
 
+#include "volt/gfx/GLImport.hpp"
 #include "volt/gfx/Vertex.hpp"
 
 #include <cstdint>
 #include <vector>
 
-#include <GL/glew.h>
 namespace volt::gfx
 {
     class Mesh
