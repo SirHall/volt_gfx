@@ -42,7 +42,7 @@ void Renderer::SetupCallbacks()
     // Keyboard input callback
     glfwSetKeyCallback(this->window, [](GLFWwindow *window, int key,
                                         int scancode, int action, int mods) {
-        auto keyEvent = GFXEventKey(*windowToRenderers[window], key, scancode,
+        auto keyEvent = GFXEventKey(windowToRenderers[window], key, scancode,
                                     KeyAction(action), mods);
         volt::event::global_event<GFXEventKey>::call_event(keyEvent);
     });
@@ -52,16 +52,16 @@ void Renderer::SetupCallbacks()
         volt::event::global_event<GFXEventError>::call_event(errorEvent);
     });
 
-    glfwSetCharCallback(this->window, [](GLFWwindow * window,
-                                         unsigned int character) {
-        auto charEvent = GFXEventChar(*windowToRenderers[window], character);
-        volt::event::global_event<GFXEventChar>::call_event(charEvent);
-    });
+    glfwSetCharCallback(
+        this->window, [](GLFWwindow *window, unsigned int character) {
+            auto charEvent = GFXEventChar(windowToRenderers[window], character);
+            volt::event::global_event<GFXEventChar>::call_event(charEvent);
+        });
 
     glfwSetMouseButtonCallback(this->window, [](GLFWwindow *window, int button,
                                                 int action, int mods) {
         auto mouseButtonEvent =
-            GFXEventMouseButton(*windowToRenderers[window], MouseButton(button),
+            GFXEventMouseButton(windowToRenderers[window], MouseButton(button),
                                 MouseButtonAction(action), mods);
         volt::event::global_event<GFXEventMouseButton>::call_event(
             mouseButtonEvent);
@@ -70,7 +70,7 @@ void Renderer::SetupCallbacks()
     glfwSetCursorPosCallback(
         this->window, [](GLFWwindow *window, double x, double y) {
             auto cursorPosEvent =
-                GFXEventCursorPos(*windowToRenderers[window], x, y);
+                GFXEventCursorPos(windowToRenderers[window], x, y);
             volt::event::global_event<GFXEventCursorPos>::call_event(
                 cursorPosEvent);
         });

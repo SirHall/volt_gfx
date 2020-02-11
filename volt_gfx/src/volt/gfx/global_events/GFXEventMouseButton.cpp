@@ -2,7 +2,7 @@
 
 using namespace volt::gfx;
 
-GFXEventMouseButton::GFXEventMouseButton(Renderer &        renderer,
+GFXEventMouseButton::GFXEventMouseButton(Renderer *        renderer,
                                          MouseButton       mouseButton,
                                          MouseButtonAction buttonAction,
                                          int               modifiers)

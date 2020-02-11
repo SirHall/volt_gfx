@@ -10,13 +10,13 @@ namespace volt::gfx
     class GFXEventChar
     {
     private:
-        Renderer &         renderer;
+        Renderer *         renderer;
         unsigned int const character;
 
     public:
-        GFXEventChar(Renderer &rendererRef, unsigned int charCode);
+        GFXEventChar(Renderer *rendererRef, unsigned int charCode);
 
-        inline Renderer &GetRenderer() { return this->renderer; }
+        inline Renderer &GetRenderer() { return *this->renderer; }
         inline int       GetCharacter() const { return this->character; }
     };
 

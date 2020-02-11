@@ -2,7 +2,7 @@
 
 using namespace volt::gfx;
 
-GFXEventCursorPos::GFXEventCursorPos(Renderer &renderer, double xPos,
+GFXEventCursorPos::GFXEventCursorPos(Renderer *renderer, double xPos,
                                      double yPos)
     : rend(renderer), x(xPos), y(yPos)
 {

@@ -46,16 +46,16 @@ namespace volt::gfx
     class GFXEventMouseButton
     {
     private:
-        Renderer &              rend;
+        Renderer *              rend;
         MouseButton const       button;
         MouseButtonAction const action;
         int const               mods;
 
     public:
-        GFXEventMouseButton(Renderer &renderer, MouseButton mouseButton,
+        GFXEventMouseButton(Renderer *renderer, MouseButton mouseButton,
                             MouseButtonAction buttonAction, int modifiers);
 
-        inline Renderer &        GetRenderer() { return this->rend; }
+        inline Renderer &        GetRenderer() { return *this->rend; }
         inline MouseButton       GetButton() { return this->button; }
         inline MouseButtonAction GetAction() { return this->action; }
     };

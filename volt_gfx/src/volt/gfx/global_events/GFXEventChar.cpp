@@ -2,7 +2,7 @@
 
 using namespace volt::gfx;
 
-GFXEventChar::GFXEventChar(Renderer &rendererRef, unsigned int charCode)
+GFXEventChar::GFXEventChar(Renderer *rendererRef, unsigned int charCode)
     : renderer(rendererRef), character(charCode)
 {
 }

@@ -2,7 +2,7 @@
 
 using namespace volt::gfx;
 
-GFXEventKey::GFXEventKey(Renderer &rendererRef, int keyCode, int scanCodeID,
+GFXEventKey::GFXEventKey(Renderer *rendererRef, int keyCode, int scanCodeID,
                          KeyAction keyAction, int modifiers)
     : renderer(rendererRef), key(keyCode), scanCode(scanCodeID),
       action(keyAction), mods(modifiers)
