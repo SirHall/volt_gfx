@@ -158,10 +158,17 @@ void Renderer::SetupCallbacks()
             windowRefreshEvent);
     });
 
+    glfwSetWindowIconifyCallback(this->window, [](GLFWwindow *window,
+                                                  int         iconified) {
+        auto windowIconify = GFXEventWindowIconify(windowToRenderers[window],
+                                                   iconified == GLFW_TRUE);
+        volt::event::global_event<GFXEventWindowIconify>::call_event(
+            windowIconify);
+    });
+
     //--- All available & unimplemented glfw callbacks ---//
     // glfwSetJoystickCallback
     // glfwSetMonitorCallback
-    // glfwSetWindowIconifyCallback
 }
 
 bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
