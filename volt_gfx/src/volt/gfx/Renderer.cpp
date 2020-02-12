@@ -91,8 +91,14 @@ void Renderer::SetupCallbacks()
             cursorEnterEvent);
     });
 
+    glfwSetDropCallback(this->window, [](GLFWwindow *window, int path_count,
+                                         const char *paths[]) {
+        auto dropEvent =
+            GFXEventDrop(windowToRenderers[window], path_count, paths);
+        volt::event::global_event<GFXEventDrop>::call_event(dropEvent);
+    });
+
     //--- All available & unimplemented glfw callbacks ---//
-    // glfwSetDropCallback
     // glfwSetFramebufferSizeCallback
     // glfwSetJoystickCallback
     // glfwSetMonitorCallback
