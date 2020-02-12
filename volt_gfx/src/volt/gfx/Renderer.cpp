@@ -166,8 +166,12 @@ void Renderer::SetupCallbacks()
             windowIconify);
     });
 
+    glfwSetJoystickCallback([](int jid, int event) {
+        auto joystickEvent = GFXEventJoystick(jid, JoystickEvent(event));
+        volt::event::global_event<GFXEventJoystick>::call_event(joystickEvent);
+    });
+
     //--- All available & unimplemented glfw callbacks ---//
-    // glfwSetJoystickCallback
     // glfwSetMonitorCallback
 }
 

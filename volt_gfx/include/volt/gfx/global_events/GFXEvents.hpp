@@ -8,6 +8,7 @@
 #include "volt/gfx/global_events/GFXEventDrop.hpp"
 #include "volt/gfx/global_events/GFXEventError.hpp"
 #include "volt/gfx/global_events/GFXEventFramebufferSize.hpp"
+#include "volt/gfx/global_events/GFXEventJoystick.hpp"
 #include "volt/gfx/global_events/GFXEventKey.hpp"
 #include "volt/gfx/global_events/GFXEventMouseButton.hpp"
 #include "volt/gfx/global_events/GFXEventScroll.hpp"
