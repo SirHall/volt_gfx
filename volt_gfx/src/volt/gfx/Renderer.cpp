@@ -171,8 +171,11 @@ void Renderer::SetupCallbacks()
         volt::event::global_event<GFXEventJoystick>::call_event(joystickEvent);
     });
 
-    //--- All available & unimplemented glfw callbacks ---//
-    // glfwSetMonitorCallback
+    // TODO: Make this safer
+    glfwSetMonitorCallback([](GLFWmonitor *monitor, int event) {
+        auto monitorEvent = GFXEventMonitor(monitor, MonitorEvent(event));
+        volt::event::global_event<GFXEventMonitor>::call_event(monitorEvent);
+    });
 }
 
 bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
