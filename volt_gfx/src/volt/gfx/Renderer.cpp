@@ -143,11 +143,18 @@ void Renderer::SetupCallbacks()
                 windowMaximizeEvent);
         });
 
+    glfwSetWindowPosCallback(
+        this->window, [](GLFWwindow *window, int xpos, int ypos) {
+            auto windowPosEvent =
+                GFXEventWindowPos(windowToRenderers[window], xpos, ypos);
+            volt::event::global_event<GFXEventWindowPos>::call_event(
+                windowPosEvent);
+        });
+
     //--- All available & unimplemented glfw callbacks ---//
     // glfwSetJoystickCallback
     // glfwSetMonitorCallback
     // glfwSetWindowIconifyCallback
-    // glfwSetWindowPosCallback
     // glfwSetWindowRefreshCallback
 }
 
