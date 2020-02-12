@@ -16,6 +16,7 @@
 #include "volt/gfx/global_events/GFXEventWindowFocus.hpp"
 #include "volt/gfx/global_events/GFXEventWindowMaximize.hpp"
 #include "volt/gfx/global_events/GFXEventWindowPos.hpp"
+#include "volt/gfx/global_events/GFXEventWindowRefresh.hpp"
 #include "volt/gfx/global_events/GFXEventWindowSize.hpp"
 
 #endif

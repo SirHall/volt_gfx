@@ -151,11 +151,17 @@ void Renderer::SetupCallbacks()
                 windowPosEvent);
         });
 
+    glfwSetWindowRefreshCallback(this->window, [](GLFWwindow *window) {
+        auto windowRefreshEvent =
+            GFXEventWindowRefresh(windowToRenderers[window]);
+        volt::event::global_event<GFXEventWindowRefresh>::call_event(
+            windowRefreshEvent);
+    });
+
     //--- All available & unimplemented glfw callbacks ---//
     // glfwSetJoystickCallback
     // glfwSetMonitorCallback
     // glfwSetWindowIconifyCallback
-    // glfwSetWindowRefreshCallback
 }
 
 bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
