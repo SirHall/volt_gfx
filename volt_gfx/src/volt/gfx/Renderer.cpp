@@ -113,10 +113,15 @@ void Renderer::SetupCallbacks()
             volt::event::global_event<GFXEventScroll>::call_event(scrollEvent);
         });
 
+    glfwSetWindowCloseCallback(this->window, [](GLFWwindow *window) {
+        auto windowCloseEvent = GFXEventWindowClose(windowToRenderers[window]);
+        volt::event::global_event<GFXEventWindowClose>::call_event(
+            windowCloseEvent);
+    });
+
     //--- All available & unimplemented glfw callbacks ---//
     // glfwSetJoystickCallback
     // glfwSetMonitorCallback
-    // glfwSetWindowCloseCallback
     // glfwSetWindowContentScaleCallback
     // glfwSetWindowFocusCallback
     // glfwSetWindowIconifyCallback
