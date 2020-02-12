@@ -98,8 +98,15 @@ void Renderer::SetupCallbacks()
         volt::event::global_event<GFXEventDrop>::call_event(dropEvent);
     });
 
+    glfwSetFramebufferSizeCallback(this->window, [](GLFWwindow *window,
+                                                    int width, int height) {
+        auto framebufferSizeEvent =
+            GFXEventFramebufferSize(windowToRenderers[window], width, height);
+        volt::event::global_event<GFXEventFramebufferSize>::call_event(
+            framebufferSizeEvent);
+    });
+
     //--- All available & unimplemented glfw callbacks ---//
-    // glfwSetFramebufferSizeCallback
     // glfwSetJoystickCallback
     // glfwSetMonitorCallback
     // glfwSetScrollCallback
