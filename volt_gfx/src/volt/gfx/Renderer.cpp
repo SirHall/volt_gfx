@@ -119,10 +119,17 @@ void Renderer::SetupCallbacks()
             windowCloseEvent);
     });
 
+    glfwSetWindowContentScaleCallback(
+        this->window, [](GLFWwindow *window, float xscale, float yscale) {
+            auto windowContentScaleEvent = GFXEventWindowContentScale(
+                windowToRenderers[window], xscale, yscale);
+            volt::event::global_event<GFXEventWindowContentScale>::call_event(
+                windowContentScaleEvent);
+        });
+
     //--- All available & unimplemented glfw callbacks ---//
     // glfwSetJoystickCallback
     // glfwSetMonitorCallback
-    // glfwSetWindowContentScaleCallback
     // glfwSetWindowFocusCallback
     // glfwSetWindowIconifyCallback
     // glfwSetWindowMaximizeCallback
