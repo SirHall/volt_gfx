@@ -127,10 +127,17 @@ void Renderer::SetupCallbacks()
                 windowContentScaleEvent);
         });
 
+    glfwSetWindowFocusCallback(this->window, [](GLFWwindow *window,
+                                                int         focused) {
+        auto windowFocusEvent = GFXEventWindowFocus(windowToRenderers[window],
+                                                    focused == GLFW_TRUE);
+        volt::event::global_event<GFXEventWindowFocus>::call_event(
+            windowFocusEvent);
+    });
+
     //--- All available & unimplemented glfw callbacks ---//
     // glfwSetJoystickCallback
     // glfwSetMonitorCallback
-    // glfwSetWindowFocusCallback
     // glfwSetWindowIconifyCallback
     // glfwSetWindowMaximizeCallback
     // glfwSetWindowPosCallback

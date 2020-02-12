@@ -13,6 +13,7 @@
 #include "volt/gfx/global_events/GFXEventScroll.hpp"
 #include "volt/gfx/global_events/GFXEventWindowClose.hpp"
 #include "volt/gfx/global_events/GFXEventWindowContentScale.hpp"
+#include "volt/gfx/global_events/GFXEventWindowFocus.hpp"
 #include "volt/gfx/global_events/GFXEventWindowSize.hpp"
 
 #endif
