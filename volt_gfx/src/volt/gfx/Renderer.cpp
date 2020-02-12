@@ -106,10 +106,16 @@ void Renderer::SetupCallbacks()
             framebufferSizeEvent);
     });
 
+    glfwSetScrollCallback(
+        this->window, [](GLFWwindow *window, double xoffset, double yoffset) {
+            auto scrollEvent =
+                GFXEventScroll(windowToRenderers[window], xoffset, yoffset);
+            volt::event::global_event<GFXEventScroll>::call_event(scrollEvent);
+        });
+
     //--- All available & unimplemented glfw callbacks ---//
     // glfwSetJoystickCallback
     // glfwSetMonitorCallback
-    // glfwSetScrollCallback
     // glfwSetWindowCloseCallback
     // glfwSetWindowContentScaleCallback
     // glfwSetWindowFocusCallback

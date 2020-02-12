@@ -10,6 +10,7 @@
 #include "volt/gfx/global_events/GFXEventFramebufferSize.hpp"
 #include "volt/gfx/global_events/GFXEventKey.hpp"
 #include "volt/gfx/global_events/GFXEventMouseButton.hpp"
+#include "volt/gfx/global_events/GFXEventScroll.hpp"
 #include "volt/gfx/global_events/GFXEventWindowSize.hpp"
 
 #endif
