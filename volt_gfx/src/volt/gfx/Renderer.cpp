@@ -83,9 +83,15 @@ void Renderer::SetupCallbacks()
                 windowSizeEvent);
         });
 
+    glfwSetCursorEnterCallback(this->window, [](GLFWwindow *window,
+                                                int         entered) {
+        auto cursorEnterEvent = GFXEventCursorEnter(windowToRenderers[window],
+                                                    entered == GLFW_TRUE);
+        volt::event::global_event<GFXEventCursorEnter>::call_event(
+            cursorEnterEvent);
+    });
+
     //--- All available & unimplemented glfw callbacks ---//
-    // glfwSetCharModsCallback
-    // glfwSetCursorEnterCallback
     // glfwSetDropCallback
     // glfwSetFramebufferSizeCallback
     // glfwSetJoystickCallback
