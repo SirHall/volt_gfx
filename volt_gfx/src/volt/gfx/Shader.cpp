@@ -58,8 +58,8 @@ std::unique_ptr<std::vector<Shader>>
             if (compileResult == nullptr) // No error occurred
             {
                 // shaderIDs.push_back(shadeletID);
-                gl::AttachShader(programID, shadeletID);
-                gl::DeleteShader(shadeletID);
+                GLCall(gl::AttachShader(programID, shadeletID));
+                GLCall(gl::DeleteShader(shadeletID));
             }
             else
             {
@@ -69,19 +69,19 @@ std::unique_ptr<std::vector<Shader>>
                 return shaders;
             }
         }
-        gl::LinkProgram(programID);
+        GLCall(gl::LinkProgram(programID));
 
         // Check for link-time errors
         GLint linkStatus = 0;
-        gl::GetProgramiv(programID, gl::LINK_STATUS, &linkStatus);
+        GLCall(gl::GetProgramiv(programID, gl::LINK_STATUS, &linkStatus));
         if (linkStatus == gl::FALSE_)
         {
             // Linking failed
             GLint len = 0;
-            gl::GetProgramiv(programID, gl::INFO_LOG_LENGTH, &len);
+            GLCall(gl::GetProgramiv(programID, gl::INFO_LOG_LENGTH, &len));
             GLchar *msg = (GLchar *)malloc(len);
 
-            gl::GetProgramInfoLog(programID, len, &len, msg);
+            GLCall(gl::GetProgramInfoLog(programID, len, &len, msg));
 
             std::string err = "Linker error in shader '" + source.GetName() +
                               "':\n" + std::string((char *)msg);
