@@ -38,6 +38,11 @@ int main(int argc, char *argv[])
                 renderer.Close();
         });
 
+    // Resize the context when the frame buffer gets resized
+    auto frameBufferResizeObserver =
+        volt::event::observer<GFXEventFramebufferSize>(
+            [&](GFXEventFramebufferSize &e) { renderer.CorrectContextSize(); });
+
 #pragma endregion
 
 #pragma region Compile Shaders
@@ -45,8 +50,8 @@ int main(int argc, char *argv[])
     // Get executable file path
     auto execPath = boost::filesystem::system_complete(argv[0]).parent_path();
 
-    std::cout << "Reading resources from: "
-              << execPath.generic_string() + "/res" << std::endl;
+    // std::cout << "Reading resources from: "
+    //           << execPath.generic_string() + "/res" << std::endl;
 
     auto shaderSources =
         ShaderSource::ReadShaderSources(execPath.generic_string() + "/res");
@@ -71,24 +76,30 @@ int main(int argc, char *argv[])
     Transform transform = Transform(glm::mat4(1.0f));
 
     Mesh mesh = Mesh();
-    mesh.CreateMesh({Vertex(1.f, 1.f, 1.f, 0.0f, 0.0f),    // 0
-                     Vertex(-1.f, 1.f, 1.f, 0.0f, 0.0f),   // 1
-                     Vertex(-1.f, 1.f, -1.f, 0.0f, 0.0f),  // 2
-                     Vertex(1.f, 1.f, -1.f, 0.0f, 0.0f),   // 3
-                     Vertex(1.f, -1.f, 1.f, 0.0f, 0.0f),   // 4
-                     Vertex(-1.f, -1.f, 1.f, 0.0f, 0.0f),  // 5
-                     Vertex(-1.f, -1.f, -1.f, 0.0f, 0.0f), // 6
-                     Vertex(1.f, -1.f, -1.f, 0.0f, 0.0f)}, // 7
-                    {0, 1, 3, 3, 1, 2, 2, 6, 7, 7, 3, 2, 7, 6, 5, 5, 4, 7,
-                     5, 1, 4, 4, 1, 0, 4, 3, 7, 3, 4, 0, 5, 6, 2, 5, 1, 2});
-    // Projection matrix
-    // glm::mat4 projection =
-    //     glm::ortho(0.0f, (GLfloat)1, (GLfloat)1, 0.0f, 0.1f, 100.0f);
-    glm::mat4 projection =
-        glm::perspective(45.0f,
-                         (GLfloat)renderer.GetBufferWidth() /
-                             (GLfloat)renderer.GetBufferHeight(),
-                         0.1f, 100.0f);
+    // mesh.CreateMesh({Vertex(1.f, 1.f, 1.f, 0.0f, 0.0f),    // 0
+    //                  Vertex(-1.f, 1.f, 1.f, 0.0f, 1.0f),   // 1
+    //                  Vertex(-1.f, 1.f, -1.f, 1.0f, 0.0f),  // 2
+    //                  Vertex(1.f, 1.f, -1.f, 1.0f, 1.0f),   // 3
+    //                  Vertex(1.f, -1.f, 1.f, 0.0f, 0.0f),   // 4
+    //                  Vertex(-1.f, -1.f, 1.f, 0.0f, 1.0f),  // 5
+    //                  Vertex(-1.f, -1.f, -1.f, 1.0f, 0.0f), // 6
+    //                  Vertex(1.f, -1.f, -1.f, 1.0f, 1.0f)}, // 7
+    //                 {0, 1, 3, 3, 1, 2, 2, 6, 7, 7, 3, 2, 7, 6, 5, 5, 4, 7,
+    //                  5, 1, 4, 4, 1, 0, 4, 3, 7, 3, 4, 0, 5, 6, 2, 5, 1, 2});
+
+    float f = 2.5f;
+    mesh.CreateMesh(
+        {
+            Vertex(-f, f, 0.0f, 0.0f, 0.0f),  // 0 - Top Left
+            Vertex(-f, -f, 0.0f, 0.0f, 1.0f), // 1 - Bottom Left
+            Vertex(f, -f, 0.0f, 1.0f, 1.0f),  // 2 - Bottom Right
+            Vertex(f, f, 0.0f, 1.0f, 0.0f),   // 3 - Top Right
+        },
+        {0, 1, 3, 1, 2, 3});
+
+    // Load uv sprite
+    Texture tex = Texture::LoadFromFile("res/uv.png");
+    tex.LoadIntoVRAM();
 
     glm::mat4 model =
         glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
@@ -97,9 +108,24 @@ int main(int argc, char *argv[])
         glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f),
                     glm::vec3(0.0f, 1.0f, 0.0f));
 
+    tex.Use(0);
     // Loop until the user closes the window
     while (renderer.WindowOpen())
     {
+        // Rotate model a bit
+        model = glm::rotate(model, 0.01f, glm::vec3(1.0f, 1.0f, 1.0f));
+
+        // Projection matrix
+        // glm::mat4 projection =
+        //     glm::ortho(0.0f, (GLfloat)1, (GLfloat)1, 0.0f, 0.1f, 100.0f);
+        auto [frameBufferWidth, frameBufferHeight] =
+            renderer.GetFrameBufferSize();
+
+        // This is recalculated each frame because the window can be resized
+        glm::mat4 projection = glm::perspective(
+            45.0f, (GLfloat)frameBufferWidth / (GLfloat)frameBufferHeight, 0.1f,
+            100.0f);
+
         renderer.PollEvents();
 
         Shader &shader = shaders->at(0);
@@ -114,6 +140,9 @@ int main(int argc, char *argv[])
 
         if (shader.GetUniformLocation("model", uniformLoc))
             shader.SetUniform(uniformLoc, model);
+
+        if (shader.GetUniformLocation("tex", uniformLoc))
+            shader.SetUniform(uniformLoc, 0);
 
         renderer.DirectRender(transform, mesh, shaders->at(0));
         renderer.DisplayFrame();
