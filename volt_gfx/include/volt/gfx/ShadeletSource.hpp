@@ -22,6 +22,8 @@ namespace volt::gfx
         const std::string &GetFullPath() const;
         const std::string &GetSource() const;
         GLenum             GetType() const;
+
+        bool LoadFromFile(std::string filePath, GLenum type);
     };
 } // namespace volt::gfx
 
