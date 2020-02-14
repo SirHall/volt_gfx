@@ -27,11 +27,9 @@ Renderer::Renderer() {}
 
 Renderer &Renderer::operator=(Renderer &&other)
 {
-    this->bufferHeight = other.bufferHeight;
-    this->bufferWidth  = other.bufferWidth;
-    this->initialized  = other.initialized;
-    this->window       = other.window;
-    other.window       = nullptr;
+    this->initialized = other.initialized;
+    this->window      = other.window;
+    other.window      = nullptr;
     return *this;
 }
 
@@ -202,6 +200,7 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    glfwWindowHint(GLFW_SAMPLES, 4); // Multi-sampling
     // Create a windowed mode window and its OpenGL context
     window = glfwCreateWindow(windowSettings.width, windowSettings.height,
                               windowSettings.title.c_str(), NULL, NULL);
@@ -224,9 +223,6 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
         return false;
     }
 
-    // Get window buffer size
-    glfwGetFramebufferSize(window, &bufferWidth, &bufferHeight);
-
     // Make the window's context current
     glfwMakeContextCurrent(window);
 
@@ -237,13 +233,17 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
     // glewExperimental = GL_TRUE;
 
     // Turn VSync on
-    GLCall(glfwSwapInterval(1));
+    glfwSwapInterval(1);
+
+    // Enable multi-sampling
+    GLCall(gl::Enable(gl::MULTISAMPLE));
 
     // Depth buffer
-    gl::Enable(gl::DEPTH_TEST);
+    GLCall(gl::Enable(gl::DEPTH_TEST));
 
+    auto [bufferWidth, bufferHeight] = this->GetFrameBufferSize();
     // Setup viewport
-    gl::Viewport(0, 0, bufferWidth, bufferHeight);
+    GLCall(gl::Viewport(0, 0, bufferWidth, bufferHeight));
 
     this->SetupCallbacks();
 
@@ -325,15 +325,11 @@ void Renderer::DirectRender(const Transform &transform, const Mesh &mesh,
 
 void Renderer::DisplayFrame()
 {
-    GLCall(glfwSwapBuffers(window));
+    glfwSwapBuffers(window);
     GLCall(gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT));
 }
 
 bool Renderer::WindowOpen() { return !glfwWindowShouldClose(window); }
-
-int Renderer::GetBufferWidth() { return bufferWidth; }
-
-int Renderer::GetBufferHeight() { return bufferHeight; }
 
 // GetTime implemented just to make time handling here easier
 float GetTime(steady_clock::time_point start, steady_clock::time_point now)
@@ -371,7 +367,7 @@ void Renderer::SleepForFrame()
 void Renderer::PollEvents()
 {
     // Poll for and process events
-    GLCall(glfwPollEvents());
+    glfwPollEvents();
 }
 
 void Renderer::Close()
@@ -382,4 +378,36 @@ void Renderer::Close()
         glfwSetWindowShouldClose(this->window, GLFW_TRUE);
         initialized = false;
     }
+}
+
+std::tuple<int, int> Renderer::GetWindowSize()
+{
+    int width = 0, height = 0;
+    glfwGetWindowSize(this->window, &width, &height);
+    return std::make_tuple(width, height);
+}
+
+void Renderer::SetWindowSize(std::tuple<int, int> newSize)
+{
+    auto [width, height] = newSize;
+    glfwSetWindowSize(this->window, width, height);
+}
+
+std::tuple<int, int> Renderer::GetFrameBufferSize()
+{
+    int width = 0, height = 0;
+    glfwGetFramebufferSize(this->window, &width, &height);
+    return std::make_tuple(width, height);
+}
+
+void Renderer::SetContextSize(std::tuple<int, int> newSize)
+{
+    auto [width, height] = newSize;
+    gl::Viewport(0, 0, width, height);
+}
+
+void Renderer::CorrectContextSize()
+{
+    auto [width, height] = this->GetFrameBufferSize();
+    gl::Viewport(0, 0, width, height);
 }

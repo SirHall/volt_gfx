@@ -9,6 +9,7 @@
 #include <chrono>
 #include <functional>
 #include <string>
+#include <tuple>
 #include <vector>
 
 using namespace std::chrono;
@@ -32,7 +33,7 @@ namespace volt::gfx
     private:
         bool initialized = false;
         // RenderMode renderMode;
-        int                      bufferWidth = 0, bufferHeight = 0;
+        // int                      bufferWidth = 0, bufferHeight = 0;
         GLFWwindow *             window    = nullptr;
         float                    targetFPS = 60.0f;
         float                    deltaTime = 0.0f;
@@ -63,10 +64,6 @@ namespace volt::gfx
 
         bool WindowOpen();
 
-        int GetBufferWidth();
-
-        int GetBufferHeight();
-
         void SetTargetFPS(float fps);
 
         float GetDeltaTime();
@@ -76,6 +73,16 @@ namespace volt::gfx
         void PollEvents();
 
         void Close();
+
+        std::tuple<int, int> GetWindowSize();
+
+        void SetWindowSize(std::tuple<int, int> newSize);
+
+        std::tuple<int, int> GetFrameBufferSize();
+
+        void SetContextSize(std::tuple<int, int> newSize);
+
+        void CorrectContextSize();
     };
 } // namespace volt::gfx
 
