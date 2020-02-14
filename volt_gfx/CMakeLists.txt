@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.7)
 # Find all source files
 file(GLOB_RECURSE VOLT_GFX_SRCS
     "src/*.cpp"
+    "src/*.c"
     RELATIVE_PATH
 )
 
