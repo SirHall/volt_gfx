@@ -38,34 +38,38 @@ volt::gfx::Vertex &volt::gfx::Vertex::operator=(const volt::gfx::Vertex &other)
 
 volt::gfx::Vertex::~Vertex() {}
 
-#define GenAttrib(attr, attrType)                                              \
-    GLCall(glVertexAttribPointer(                                              \
-        currentIndex++, sizeof(attr) / sizeof(attrType),                       \
-        GetGlType<attrType>(), GL_FALSE, sizeof(Vertex),                       \
-        reinterpret_cast<void *>(offsetof(Vertex, attr))))
+// #define GenAttrib(attr, attrType)                                              \
+//     GLCall(gl::VertexAttribPointer(                                            \
+//         currentIndex++, sizeof(attr) / sizeof(attrType),                       \
+//         GetGlType<attrType>(), gl::FALSE_, sizeof(Vertex),                     \
+//         reinterpret_cast<void *>(offsetof(Vertex, attr))))
 
 GLuint volt::gfx::Vertex::GenerateVAO()
 {
     GLuint vao = 0;
-    GLCall(gl::GenVertexArrays(1, &vao));
+    GLCall(gl::GenVertexArrays(2, &vao));
     GLCall(gl::BindVertexArray(vao));
     // Vertex attributes
     GLCall(gl::EnableVertexAttribArray(0));
+    GLCall(gl::EnableVertexAttribArray(1));
 
     GLuint currentIndex = 0;
 
     // Model position attribute
     // GenAttrib(position, GLfloat);
     GLCall(gl::VertexAttribPointer(
-        currentIndex++, sizeof(position) / sizeof(GLfloat), gl::FLOAT,
-        gl::FALSE_, sizeof(Vertex),
+        currentIndex, 3, gl::FLOAT, gl::FALSE_, sizeof(Vertex),
         reinterpret_cast<void *>(offsetof(Vertex, position))));
+
+    currentIndex++;
 
     // UV Coordinate Attribute
     // GenAttrib(uv, GLfloat);
     GLCall(gl::VertexAttribPointer(
-        currentIndex++, sizeof(uv) / sizeof(GLfloat), gl::FLOAT, gl::FALSE_,
-        sizeof(Vertex), reinterpret_cast<void *>(offsetof(Vertex, uv))));
+        currentIndex, 2, gl::FLOAT, gl::FALSE_, sizeof(Vertex),
+        reinterpret_cast<void *>(offsetof(Vertex, uv))));
+
+    currentIndex++;
 
     return vao;
 }

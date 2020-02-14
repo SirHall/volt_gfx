@@ -6,7 +6,7 @@
 
 namespace volt::gfx
 {
-    class Vertex
+    struct Vertex
     {
     private:
     protected:
