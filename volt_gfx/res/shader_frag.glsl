@@ -2,8 +2,15 @@
 
 out vec4 color;
 
-in vec4 vertPos;
+in vec3 vertPos;
+in vec2 texCoord;
 
 uniform vec4 u_Color;
 
-void main() { color = (vertPos * 0.5) + 0.5; }
+uniform sampler2D tex;
+
+void main()
+{
+    color = texture(tex, texCoord);
+    // color = (vertPos * 0.5) + 0.5;
+}
