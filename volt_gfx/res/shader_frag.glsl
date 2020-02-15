@@ -11,6 +11,9 @@ uniform sampler2D tex;
 
 void main()
 {
+    vec4 col = texture(tex, texCoord);
+    if (col.a < 0.85)
+        discard;
     color = texture(tex, texCoord);
     // color = (vertPos * 0.5) + 0.5;
 }
