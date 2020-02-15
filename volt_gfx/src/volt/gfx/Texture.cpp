@@ -54,19 +54,36 @@ volt::gfx::Texture::~Texture() { gl::DeleteTextures(1, &this->texGlId); }
 
 Texture Texture::LoadFromFile(std::string path)
 {
+    // Ensure that the resulting image always has four color channels (RGBA)
     int      width = 0, height = 0, colorChannelsCount = 0;
     stbi_uc *imageData =
         stbi_load(path.c_str(), &width, &height, &colorChannelsCount, 0);
-    std::size_t dataLen = (std::size_t)(width * height * colorChannelsCount);
 
     Texture tex   = Texture();
     tex.width     = width;
     tex.height    = height;
     tex.imageData = std::vector<std::uint8_t>();
-    tex.imageData.resize(dataLen);
-    for (std::size_t i = 0; i < dataLen; i++)
-        tex.imageData[i] = imageData[i];
+    tex.imageData.resize(width * height * 4);
+
+    // This loops over every pixel
+    for (std::size_t i = 0; i < width * height; i++)
+    {
+        // Ensure that this is copied over properly, filling in with apprpriate
+        // bytes for any color channel that the source image does not support
+        for (std::size_t j = 0; j < 4; j++)
+        {
+            int fillIndex = (4 * i) + j;
+            if (j < colorChannelsCount) // Source image has this color channel
+                tex.imageData[fillIndex] =
+                    imageData[(colorChannelsCount * i) + j];
+            else if (j == 3) // This is the alpha channel, fill with 255
+                tex.imageData[fillIndex] = 127;
+            else // This is a different channel, fill with 0
+                tex.imageData[fillIndex] = 0;
+        }
+    }
     stbi_image_free(imageData);
+
     return tex;
 }
 
@@ -75,14 +92,15 @@ void Texture::LoadIntoVRAM()
     GLCall(gl::GenTextures(1, &this->texGlId));
     GLCall(gl::BindTexture(gl::TEXTURE_2D, this->texGlId));
     GLCall(gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA, this->width,
-                          this->height, 0, gl::RGB, gl::UNSIGNED_BYTE,
+                          this->height, 0, gl::RGBA, gl::UNSIGNED_BYTE,
                           this->imageData.data()));
     GLCall(gl::GenerateMipmap(gl::TEXTURE_2D));
 
     GLCall(gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S,
-                             gl::CLAMP_TO_BORDER));
+                             gl::CLAMP_TO_EDGE));
     GLCall(gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T,
-                             gl::CLAMP_TO_BORDER));
+                             gl::CLAMP_TO_EDGE));
+
     GLCall(gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER,
                              gl::NEAREST_MIPMAP_LINEAR));
     GLCall(
