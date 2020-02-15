@@ -97,18 +97,29 @@ int main(int argc, char *argv[])
         },
         {0, 1, 3, 1, 2, 3});
 
+    Mesh mesh2 = Mesh();
+    mesh2.CreateMesh(
+        {
+            Vertex(-f, f, 0.0f, 0.0f, 0.0f),  // 0 - Top Left
+            Vertex(-f, -f, 0.0f, 0.0f, 1.0f), // 1 - Bottom Left
+            Vertex(f, -f, 0.0f, 1.0f, 1.0f),  // 2 - Bottom Right
+            Vertex(f, f, 0.0f, 1.0f, 0.0f),   // 3 - Top Right
+        },
+        {0, 1, 3, 1, 2, 3});
+
     // Load uv sprite
-    Texture tex = Texture::LoadFromFile("res/uv.png");
+    Texture tex = Texture::LoadFromFile("res/tree.png");
     tex.LoadIntoVRAM();
 
     glm::mat4 model =
         glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
+    glm::mat4 model2 =
+        glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.0f));
+
     glm::mat4 view =
         glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f),
                     glm::vec3(0.0f, 1.0f, 0.0f));
-
-    tex.Use(0);
     // Loop until the user closes the window
     while (renderer.WindowOpen())
     {
@@ -128,6 +139,7 @@ int main(int argc, char *argv[])
 
         renderer.PollEvents();
 
+        tex.Use(0);
         Shader &shader = shaders->at(0);
         shader.SetInUse();
 
@@ -145,6 +157,12 @@ int main(int argc, char *argv[])
             shader.SetUniform(uniformLoc, 0);
 
         renderer.DirectRender(transform, mesh, shaders->at(0));
+
+        if (shader.GetUniformLocation("model", uniformLoc))
+            shader.SetUniform(uniformLoc, model2);
+
+        renderer.DirectRender(transform, mesh, shaders->at(0));
+
         renderer.DisplayFrame();
         renderer.SleepForFrame();
     }
