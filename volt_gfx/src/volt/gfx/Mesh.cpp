@@ -19,13 +19,50 @@ std::size_t VecTotalSize(const std::vector<T> &vec)
 
 Mesh::Mesh() : vao(0), vbo(0), ibo(0) {}
 
+Mesh::Mesh(const Mesh &other) : vao(0), vbo(0), ibo(0)
+{
+    this->CreateMesh(other.vertices, other.indices);
+}
+
+Mesh &Mesh::operator=(const Mesh &other)
+{
+    vao = vbo = ibo = 0;
+    this->CreateMesh(other.vertices, other.indices);
+
+    return *this;
+}
+
+Mesh::Mesh(Mesh &&other)
+{
+    vao       = other.vao;
+    vbo       = other.vbo;
+    ibo       = other.ibo;
+    other.vao = other.vbo = other.ibo = 0; // Clear other
+
+    vertices = std::move(other.vertices);
+    indices  = std::move(other.indices);
+}
+
+Mesh &Mesh::operator=(Mesh &&other)
+{
+    vao       = other.vao;
+    vbo       = other.vbo;
+    ibo       = other.ibo;
+    other.vao = other.vbo = other.ibo = 0; // Clear other
+
+    vertices = std::move(other.vertices);
+    indices  = std::move(other.indices);
+
+    return *this;
+}
+
 Mesh::~Mesh() { ClearMesh(); }
 
-void Mesh::CreateMesh(std::vector<Vertex> &&       vertices,
-                      std::vector<std::uint32_t> &&indices)
+void Mesh::CreateMesh(std::vector<Vertex> const &       vertices,
+                      std::vector<std::uint32_t> const &indices)
 {
-    this->vertices = std::move(vertices);
-    this->indices  = std::move(indices);
+    this->vertices = vertices;
+    this->indices  = indices;
     // Vertex buffer
     GLCall(gl::GenBuffers(1, &this->vbo));
     GLCall(gl::BindBuffer(gl::ARRAY_BUFFER, this->vbo));
@@ -79,17 +116,6 @@ void Mesh::ClearMesh()
     vao = 0;
     indices.clear();
     vertices.clear();
-}
-
-Mesh::Mesh(Mesh &&other)
-{
-    vao       = other.vao;
-    vbo       = other.vbo;
-    ibo       = other.ibo;
-    other.vao = other.vbo = other.ibo = 0; // Clear other
-
-    vertices = std::move(other.vertices);
-    indices  = std::move(other.indices);
 }
 
 GLuint Mesh::GetVAO() const { return this->vao; }

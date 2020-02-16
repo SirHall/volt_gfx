@@ -21,15 +21,15 @@ namespace volt::gfx
 
     public:
         Mesh();
-        Mesh(const Mesh &other) = delete; // Allow copying
-        Mesh &operator=(const Mesh &other) = delete;
+        Mesh(const Mesh &other); // Allow copying
+        Mesh &operator=(const Mesh &other);
         Mesh(Mesh &&other); // Allow moving
-        Mesh &operator=(Mesh &&other) = default;
+        Mesh &operator=(Mesh &&other);
 
         ~Mesh();
 
-        void CreateMesh(std::vector<Vertex> &&       vertices,
-                        std::vector<std::uint32_t> &&indices);
+        void CreateMesh(std::vector<Vertex> const &       vertices,
+                        std::vector<std::uint32_t> const &indices);
         void RenderMesh();
         void ClearMesh();
 
