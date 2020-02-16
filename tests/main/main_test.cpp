@@ -75,37 +75,13 @@ int main(int argc, char *argv[])
 
     Transform transform = Transform(glm::mat4(1.0f));
 
-    Mesh mesh = Mesh();
-    // mesh.CreateMesh({Vertex(1.f, 1.f, 1.f, 0.0f, 0.0f),    // 0
-    //                  Vertex(-1.f, 1.f, 1.f, 0.0f, 1.0f),   // 1
-    //                  Vertex(-1.f, 1.f, -1.f, 1.0f, 0.0f),  // 2
-    //                  Vertex(1.f, 1.f, -1.f, 1.0f, 1.0f),   // 3
-    //                  Vertex(1.f, -1.f, 1.f, 0.0f, 0.0f),   // 4
-    //                  Vertex(-1.f, -1.f, 1.f, 0.0f, 1.0f),  // 5
-    //                  Vertex(-1.f, -1.f, -1.f, 1.0f, 0.0f), // 6
-    //                  Vertex(1.f, -1.f, -1.f, 1.0f, 1.0f)}, // 7
-    //                 {0, 1, 3, 3, 1, 2, 2, 6, 7, 7, 3, 2, 7, 6, 5, 5, 4, 7,
-    //                  5, 1, 4, 4, 1, 0, 4, 3, 7, 3, 4, 0, 5, 6, 2, 5, 1, 2});
+    Sprite spr1 =
+        Sprite(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(5.0f, 5.0f));
+    Sprite spr2 =
+        Sprite(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(5.0f, 5.0f));
 
-    float f = 2.5f;
-    mesh.CreateMesh(
-        {
-            Vertex(-f, f, 0.0f, 0.0f, 0.0f),  // 0 - Top Left
-            Vertex(-f, -f, 0.0f, 0.0f, 1.0f), // 1 - Bottom Left
-            Vertex(f, -f, 0.0f, 1.0f, 1.0f),  // 2 - Bottom Right
-            Vertex(f, f, 0.0f, 1.0f, 0.0f),   // 3 - Top Right
-        },
-        {0, 1, 3, 1, 2, 3});
-
-    Mesh mesh2 = Mesh();
-    mesh2.CreateMesh(
-        {
-            Vertex(-f, f, 0.0f, 0.0f, 0.0f),  // 0 - Top Left
-            Vertex(-f, -f, 0.0f, 0.0f, 1.0f), // 1 - Bottom Left
-            Vertex(f, -f, 0.0f, 1.0f, 1.0f),  // 2 - Bottom Right
-            Vertex(f, f, 0.0f, 1.0f, 0.0f),   // 3 - Top Right
-        },
-        {0, 1, 3, 1, 2, 3});
+    auto w4 = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+    std::cout << w4.x << " " << w4.y << " " << w4.z << " " << w4.w << std::endl;
 
     // Load uv sprite
     Texture tex = Texture::LoadFromFile("res/tree.png");
@@ -156,12 +132,12 @@ int main(int argc, char *argv[])
         if (shader.GetUniformLocation("tex", uniformLoc))
             shader.SetUniform(uniformLoc, 0);
 
-        renderer.DirectRender(transform, mesh, shaders->at(0));
+        renderer.DirectRender(transform, spr1.GetMesh(), shaders->at(0));
 
         if (shader.GetUniformLocation("model", uniformLoc))
             shader.SetUniform(uniformLoc, model2);
 
-        renderer.DirectRender(transform, mesh, shaders->at(0));
+        renderer.DirectRender(transform, spr2.GetMesh(), shaders->at(0));
 
         renderer.DisplayFrame();
         renderer.SleepForFrame();
