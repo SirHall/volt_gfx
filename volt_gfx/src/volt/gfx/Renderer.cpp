@@ -176,7 +176,7 @@ void Renderer::SetupCallbacks()
     });
 }
 
-bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
+bool Renderer::Initialize(GFXSettings settings)
 {
 
     // Initialize GLFW
@@ -200,10 +200,11 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-    glfwWindowHint(GLFW_SAMPLES, 4); // Multi-sampling
+    if (settings.multiSampling)
+        glfwWindowHint(GLFW_SAMPLES, 4); // Multi-sampling
     // Create a windowed mode window and its OpenGL context
-    window = glfwCreateWindow(windowSettings.width, windowSettings.height,
-                              windowSettings.title.c_str(), NULL, NULL);
+    window = glfwCreateWindow(settings.width, settings.height,
+                              settings.title.c_str(), NULL, NULL);
     // Add this renderer to the static windowToRenderers unordered map
     windowToRenderers.insert_or_assign(window, this);
 
@@ -236,10 +237,20 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
     glfwSwapInterval(1);
 
     // Enable multi-sampling
-    GLCall(gl::Enable(gl::MULTISAMPLE));
+    if (settings.multiSampling)
+        GLCall(gl::Enable(gl::MULTISAMPLE));
 
-    // Depth buffer
-    GLCall(gl::Enable(gl::DEPTH_TEST));
+    // Enable Depth buffer
+    if (settings.depthTest)
+        GLCall(gl::Enable(gl::DEPTH_TEST));
+
+    // Enable blending
+    if (settings.blending)
+    {
+        gl::Enable(gl::BLEND);
+        gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
+        gl::ClearColor(0, 0, 0, 0);
+    }
 
     auto [bufferWidth, bufferHeight] = this->GetFrameBufferSize();
     // Setup viewport
@@ -264,8 +275,8 @@ bool Renderer::Initialize(WindowCreationDataSettings windowSettings)
 //     this->renderMode = renderMode;
 // }
 
-void Renderer::DirectRender(const Transform &transform, const Mesh &mesh,
-                            const Shader &shader)
+void Renderer::DirectRender(Transform const &transform, Mesh const &mesh,
+                            Material &mat)
 {
     GLuint vao = mesh.GetVAO(), vbo = mesh.GetVBO(), ibo = mesh.GetIBO();
     if (vao == 0 || vbo == 0 || ibo == 0)
@@ -275,8 +286,7 @@ void Renderer::DirectRender(const Transform &transform, const Mesh &mesh,
                   << vao << ", vbo: " << vbo << ", ibo: " << ibo << std::endl;
         return;
     }
-
-    shader.SetInUse();
+    mat.SetInUse();
 
     GLCall(gl::BindVertexArray(vao));
     GLCall(gl::BindBuffer(gl::ARRAY_BUFFER, vbo)); // Probably not needed

@@ -2,8 +2,8 @@
 #ifndef VOLT_GFX_RENDERER_HPP
 #define VOLT_GFX_RENDERER_HPP
 
+#include "volt/gfx/Material.hpp"
 #include "volt/gfx/Mesh.hpp"
-#include "volt/gfx/Shader.hpp"
 #include "volt/gfx/Transform.hpp"
 
 #include <chrono>
@@ -22,10 +22,13 @@ namespace volt::gfx
     //     Instanced
     // };
 
-    struct WindowCreationDataSettings
+    struct GFXSettings
     {
         int         width = 640, height = 640;
-        std::string title = "";
+        std::string title         = "";
+        bool        multiSampling = false;
+        bool        depthTest     = true;
+        bool        blending      = true;
     };
 
     class Renderer
@@ -50,12 +53,12 @@ namespace volt::gfx
         Renderer &operator                         =(Renderer &&other);
         ~Renderer();
 
-        bool Initialize(WindowCreationDataSettings windowSettings);
+        bool Initialize(GFXSettings settings);
 
         // void SetRenderMode(RenderMode renderMode);
 
-        void DirectRender(const Transform &transform, const Mesh &mesh,
-                          const Shader &shader);
+        void DirectRender(Transform const &transform, Mesh const &mesh,
+                          Material &mat);
 
         // void InstancedRender(const std::vector<Transform> &transforms,
         //                      const Mesh &                  mesh);
