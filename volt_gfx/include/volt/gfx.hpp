@@ -4,6 +4,7 @@
 
 #include "volt/gfx/GLImport.hpp"
 #include "volt/gfx/GLUtilities.hpp"
+#include "volt/gfx/Image.hpp"
 #include "volt/gfx/Material.hpp"
 #include "volt/gfx/Mesh.hpp"
 #include "volt/gfx/Renderer.hpp"
