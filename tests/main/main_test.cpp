@@ -13,11 +13,15 @@ int main(int argc, char *argv[])
 
     auto renderer = Renderer();
 
-    auto windowSettings   = WindowCreationDataSettings();
-    windowSettings.height = 640;
-    windowSettings.width  = 640;
-    windowSettings.title  = "VoltGFX";
-    if (!renderer.Initialize(windowSettings))
+    auto settings          = GFXSettings();
+    settings.height        = 640;
+    settings.width         = 640;
+    settings.title         = "VoltGFX";
+    settings.blending      = true;
+    settings.depthTest     = true;
+    settings.multiSampling = true;
+
+    if (!renderer.Initialize(settings))
     {
         std::cout << "Failed to initialize window" << std::endl;
         std::exit(1);
@@ -50,18 +54,28 @@ int main(int argc, char *argv[])
     // Get executable file path
     auto execPath = boost::filesystem::system_complete(argv[0]).parent_path();
 
-    // std::cout << "Reading resources from: "
-    //           << execPath.generic_string() + "/res" << std::endl;
+    auto           shaderSource = ShaderSource("default");
+    ShadeletSource shadeletVert =
+        ShadeletSource("res/shader_vert.glsl", ShadeletType::Vertex);
+    ShadeletSource shadeletFrag =
+        ShadeletSource("res/shader_frag.glsl", ShadeletType::Fragment);
+    shaderSource.AddShadelet(shadeletVert);
+    shaderSource.AddShadelet(shadeletFrag);
 
-    auto shaderSources =
-        ShaderSource::ReadShaderSources(execPath.generic_string() + "/res");
-    auto shaderCompileErrors = std::make_unique<std::vector<std::string>>();
-    auto shaders = Shader::CompileShaders(shaderSources, shaderCompileErrors);
+    auto shaderCompileErrors = std::vector<std::string>();
+    auto shader = Shader::CompileShader(shaderSource, shaderCompileErrors);
 
-    if (shaderCompileErrors->size() > 0)
+    std::cout << shader.GetProgram() << std::endl;
+
+    if (shaderCompileErrors.size() > 0)
     {
-        for (auto error : *shaderCompileErrors)
-            std::cout << error << std::endl;
+        for (auto error : shaderCompileErrors)
+            std::cerr << error << std::endl;
+        exit(1);
+    }
+    else if (!shader.IsValid())
+    {
+        std::cerr << "Shader is invalid" << std::endl;
         exit(1);
     }
     else
@@ -69,25 +83,20 @@ int main(int argc, char *argv[])
         std::cout << "All shaders compiled successfully" << std::endl;
     }
 
-    std::cout << "Compiled " << shaders->size() << " shader(s)" << std::endl;
+    Material mat = Material(shader);
 
 #pragma endregion
-
-    Transform transform = Transform(glm::mat4(1.0f));
 
     Sprite spr1 =
         Sprite(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(5.0f, 5.0f));
     Sprite spr2 =
         Sprite(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(5.0f, 5.0f));
 
-    auto w4 = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
-    std::cout << w4.x << " " << w4.y << " " << w4.z << " " << w4.w << std::endl;
-
     // Load uv sprite
-    Texture tex = Texture::LoadFromFile("res/tree.png");
-    tex.LoadIntoVRAM();
+    Image   img = Image("res/tree.png");
+    Texture tex = Texture(img);
 
-    glm::mat4 model =
+    glm::mat4 model1 =
         glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
     glm::mat4 model2 =
@@ -100,11 +109,8 @@ int main(int argc, char *argv[])
     while (renderer.WindowOpen())
     {
         // Rotate model a bit
-        model = glm::rotate(model, 0.01f, glm::vec3(1.0f, 1.0f, 1.0f));
+        model1 = glm::rotate(model1, 0.01f, glm::vec3(1.0f, 1.0f, 1.0f));
 
-        // Projection matrix
-        // glm::mat4 projection =
-        //     glm::ortho(0.0f, (GLfloat)1, (GLfloat)1, 0.0f, 0.1f, 100.0f);
         auto [frameBufferWidth, frameBufferHeight] =
             renderer.GetFrameBufferSize();
 
@@ -115,29 +121,14 @@ int main(int argc, char *argv[])
 
         renderer.PollEvents();
 
+        mat.SetInUse();
         tex.Use(0);
-        Shader &shader = shaders->at(0);
-        shader.SetInUse();
+        mat.SetUniformPVM(projection, view, model1);
 
-        GLint uniformLoc = -1;
-        if (shader.GetUniformLocation("projection", uniformLoc))
-            shader.SetUniform(uniformLoc, projection);
+        renderer.DirectRender(Transform(model1), spr1.GetMesh(), mat);
 
-        if (shader.GetUniformLocation("view", uniformLoc))
-            shader.SetUniform(uniformLoc, view);
-
-        if (shader.GetUniformLocation("model", uniformLoc))
-            shader.SetUniform(uniformLoc, model);
-
-        if (shader.GetUniformLocation("tex", uniformLoc))
-            shader.SetUniform(uniformLoc, 0);
-
-        renderer.DirectRender(transform, spr1.GetMesh(), shaders->at(0));
-
-        if (shader.GetUniformLocation("model", uniformLoc))
-            shader.SetUniform(uniformLoc, model2);
-
-        renderer.DirectRender(transform, spr2.GetMesh(), shaders->at(0));
+        mat.SetUniformPVM(projection, view, model2);
+        renderer.DirectRender(Transform(model2), spr2.GetMesh(), mat);
 
         renderer.DisplayFrame();
         renderer.SleepForFrame();
