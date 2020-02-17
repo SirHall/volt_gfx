@@ -8,42 +8,31 @@
 #include <string>
 #include <vector>
 
-#include "volt/gfx/extern/stb_image.h"
-
 #include "volt/gfx/GLImport.hpp"
+#include "volt/gfx/Image.hpp"
+
+#include <memory>
 
 namespace volt::gfx
 {
     class Texture
     {
     private:
-        std::vector<std::uint8_t> imageData;
-        std::uint_fast32_t        height;
-        // We could calculate this from imageData.size() and height, but I'm
-        // trying to avoid divisions
-        std::uint_fast32_t width;
-        std::uint32_t      spriteID;
+        std::shared_ptr<GLuint> texID;
 
-        bool   loaded = false;
-        GLuint texGlId;
+        void LoadIntoVRAM();
 
     public:
-        Texture();
-        Texture(const std::vector<std::uint8_t> &data);
-        Texture(std::vector<std::uint8_t> &&data);
+        Texture(Image const &image);
         Texture(const Texture &other);
         Texture(Texture &&other);
         Texture &operator=(const Texture &other);
         Texture &operator=(Texture &&other);
         ~Texture();
 
-        static Texture LoadFromFile(std::string path);
-
-        inline bool IsLoadedIntoVRAM() { return this->loaded; }
-
-        void LoadIntoVRAM();
-
         void Use(unsigned int unitIndex);
+
+        inline GLuint GetTexID() { return *this->texID; }
     };
 } // namespace volt::gfx
 
