@@ -108,11 +108,11 @@ void Mesh::RenderMesh()
 
 void Mesh::ClearMesh()
 {
-    gl::DeleteBuffers(1, &ibo);
+    GLCall(gl::DeleteBuffers(1, &ibo));
     ibo = 0;
-    gl::DeleteBuffers(1, &vbo);
+    GLCall(gl::DeleteBuffers(1, &vbo));
     vbo = 0;
-    gl::DeleteVertexArrays(1, &vao);
+    GLCall(gl::DeleteVertexArrays(1, &vao));
     vao = 0;
     indices.clear();
     vertices.clear();
