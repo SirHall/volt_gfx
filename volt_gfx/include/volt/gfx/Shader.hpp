@@ -5,6 +5,8 @@
 #include "volt/gfx/GLImport.hpp"
 #include "volt/gfx/ShaderSource.hpp"
 
+#include <array>
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -118,19 +120,22 @@ namespace volt::gfx
     class Shader
     {
     private:
-        GLuint program;
+        std::shared_ptr<GLuint> program;
 
-        static std::unique_ptr<std::string>
-            CompileShadelet(const ShadeletSource &shadeletSource, GLuint &id);
-
+        static bool CompileShadelet(ShadeletSource const &    shadeletSource,
+                                    GLuint &                  id,
+                                    std::vector<std::string> &errors);
         Shader(GLuint programID);
 
     public:
+        Shader(const Shader &other);
+        Shader &operator=(const Shader &other);
+        Shader(Shader &&other);
+        Shader &operator=(Shader &&other);
         ~Shader();
 
-        static std::unique_ptr<std::vector<Shader>>
-            CompileShaders(const std::vector<ShaderSource> &          sources,
-                           std::unique_ptr<std::vector<std::string>> &errors);
+        static Shader CompileShader(ShaderSource const &      source,
+                                    std::vector<std::string> &errors);
 
         GLuint GetProgram() const;
 
@@ -147,6 +152,8 @@ namespace volt::gfx
         {
             AssignUniform<T>(uniformLoc, value);
         }
+
+        inline bool IsValid() { return *this->program > 0; }
     };
 } // namespace volt::gfx
 #endif
