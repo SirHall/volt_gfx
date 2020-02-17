@@ -4,19 +4,31 @@
 
 #include <string>
 
-#include "GLImport.hpp"
+#include "volt/gfx/GLImport.hpp"
 
 namespace volt::gfx
 {
+    struct ShadeletType
+    {
+        static constexpr GLenum Vertex   = gl::VERTEX_SHADER;
+        static constexpr GLenum Fragment = gl::FRAGMENT_SHADER;
+        static constexpr GLenum Geometry = gl::GEOMETRY_SHADER;
+    };
+
     class ShadeletSource
     {
     private:
-        std::string source;
-        GLenum      type;
-        std::string fullPath;
+        std::string src;
+        GLenum      tp;
+        std::string path;
 
     public:
-        ShadeletSource(std::string source, GLenum type, std::string fullPath);
+        ShadeletSource(std::string path, GLenum tp);
+        ShadeletSource(const ShadeletSource &other);
+        ShadeletSource &operator=(const ShadeletSource &other);
+        ShadeletSource(ShadeletSource &&other);
+        ShadeletSource &operator=(ShadeletSource &&other);
+
         ~ShadeletSource();
 
         const std::string &GetFullPath() const;
