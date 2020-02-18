@@ -39,6 +39,11 @@ namespace volt::gfx
 
         const std::vector<Vertex> &       GetVertices() const;
         const std::vector<std::uint32_t> &GetIndices() const;
+
+        bool IsValid() const;
+
+        void Bind() const;
+        void Unbind() const;
     };
 } // namespace volt::gfx
 

@@ -130,3 +130,22 @@ const std::vector<std::uint32_t> &Mesh::GetIndices() const
 {
     return this->indices;
 }
+
+bool Mesh::IsValid() const
+{
+    return this->vao > 0 && this->vbo > 0 && this->ibo > 0;
+}
+
+void Mesh::Bind() const
+{
+    GLCall(gl::BindVertexArray(vao));
+    GLCall(gl::BindBuffer(gl::ARRAY_BUFFER, vbo)); // Probably not needed
+    GLCall(gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ibo));
+}
+
+void Mesh::Unbind() const
+{
+    GLCall(gl::BindVertexArray(0));
+    GLCall(gl::BindBuffer(gl::ARRAY_BUFFER, 0)); // Probably not needed
+    GLCall(gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, 0));
+}
