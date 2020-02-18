@@ -286,19 +286,15 @@ void Renderer::DirectRender(Transform const &transform, Mesh const &mesh,
                   << vao << ", vbo: " << vbo << ", ibo: " << ibo << std::endl;
         return;
     }
-    mat.SetInUse();
 
-    GLCall(gl::BindVertexArray(vao));
-    GLCall(gl::BindBuffer(gl::ARRAY_BUFFER, vbo)); // Probably not needed
-    GLCall(gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ibo));
+    mesh.Bind();
+    mat.SetInUse();
 
     // The draw call
     GLCall(gl::DrawElements(gl::TRIANGLES, mesh.GetIndices().size(),
                             gl::UNSIGNED_INT, 0));
 
-    GLCall(gl::BindVertexArray(0));
-    GLCall(gl::BindBuffer(gl::ARRAY_BUFFER, 0)); // Probably not needed
-    GLCall(gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, 0));
+    mesh.Unbind();
 }
 
 // void Renderer::InstancedRender(const std::vector<Transform> &transforms,
