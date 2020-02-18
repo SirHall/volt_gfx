@@ -6,7 +6,7 @@
 
 void GLClearError()
 {
-    // while (glGetError() != GL_NO_ERROR) {}
+    // while (gl::GetError() != gl::NO_ERROR_) {}
 }
 
 void GLCheckError(const char *func, const char *file, int line)
@@ -14,7 +14,7 @@ void GLCheckError(const char *func, const char *file, int line)
     bool hadError = false;
     while (GLenum err = gl::GetError())
     {
-        std::cout << "[OpenGL Error] > 0x" << std::hex << err << std::dec
+        std::cerr << "[OpenGL Error] > 0x" << std::hex << err << std::dec
                   << "\n\tIn: " << file << ":" << line << "\n\t" << func
                   << std::endl;
         PrintGLError(err);
