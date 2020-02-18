@@ -20,10 +20,12 @@ namespace volt::gfx
     private:
         std::shared_ptr<GLuint> texID;
 
-        void LoadIntoVRAM();
+        void CreateTexture(GLsizei width, GLsizei height, void const *data);
 
     public:
         Texture(Image const &image);
+        Texture(GLsizei width, GLsizei height);
+
         Texture(const Texture &other);
         Texture(Texture &&other);
         Texture &operator=(const Texture &other);
@@ -32,7 +34,12 @@ namespace volt::gfx
 
         void Use(unsigned int unitIndex);
 
+        void Bind();
+        void Unbind();
+
         inline GLuint GetTexID() { return *this->texID; }
+
+        void GenerateMipmap();
     };
 } // namespace volt::gfx
 
