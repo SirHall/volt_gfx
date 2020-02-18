@@ -2,6 +2,7 @@
 #ifndef VOLT_GFX_HPP
 #define VOLT_GFX_HPP
 
+#include "volt/gfx/Framebuffer.hpp"
 #include "volt/gfx/GLImport.hpp"
 #include "volt/gfx/GLUtilities.hpp"
 #include "volt/gfx/Image.hpp"
