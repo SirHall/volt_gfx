@@ -34,7 +34,10 @@ namespace volt::gfx
 
         void Translate(glm::vec3 translation);
 
-        const glm::f32 *GetValuePtr();
+        const glm::f32 *GetValuePtr() const;
+
+        glm::mat4 const &GetMatrix() const;
+        void             SetMatrix(glm::mat4 m);
 
     }; // namespace volt::gfxclassTransform
 } // namespace volt::gfx

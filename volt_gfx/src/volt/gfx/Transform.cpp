@@ -74,4 +74,11 @@ void Transform::Translate(glm::vec3 translation)
     transform = glm::translate(transform, translation);
 }
 
-const glm::f32 *Transform::GetValuePtr() { return glm::value_ptr(transform); }
+const glm::f32 *Transform::GetValuePtr() const
+{
+    return glm::value_ptr(transform);
+}
+
+glm::mat4 const &Transform::GetMatrix() const { return this->transform; }
+
+void Transform::SetMatrix(glm::mat4 m) { this->transform = m; }
