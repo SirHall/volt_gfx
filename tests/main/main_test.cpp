@@ -87,48 +87,48 @@ int main(int argc, char *argv[])
 
 #pragma endregion
 
-    Sprite spr1 =
-        Sprite(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(5.0f, 5.0f));
-    Sprite spr2 =
-        Sprite(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(5.0f, 5.0f));
-
     // Load uv sprite
     Image   img = Image("res/tree.png");
     Texture tex = Texture(img);
 
-    glm::mat4 model1 =
-        glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    RenderObject obj1 =
+        RenderObject(mat,
+                     Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+                                        glm::vec2(5.0f, 5.0f)),
+                     Transform(glm::translate(glm::mat4(1.0f),
+                                              glm::vec3(0.0f, 0.0f, 0.0f))));
 
-    glm::mat4 model2 =
-        glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.0f));
+    RenderObject obj2 =
+        RenderObject(mat,
+                     Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+                                        glm::vec2(5.0f, 5.0f)),
+                     Transform(glm::translate(glm::mat4(1.0f),
+                                              glm::vec3(0.0f, 0.0f, -2.0f))));
 
-    glm::mat4 view =
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-                    glm::vec3(0.0f, 1.0f, 0.0f));
-    // Loop until the user closes the window
+    Camera cam = Camera();
+    cam.SetPerspectiveMode(true);
+    cam.SetPerspectiveFOV(45.0f);
+    cam.SetNearFarPlanes(0.1f, 100.0f);
+    cam.SetTransform(Transform(glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f),
+                                           glm::vec3(0.0f, 0.0f, 0.0f),
+                                           glm::vec3(0.0f, 1.0f, 0.0f))));
+
+    // Loop until the user closes
+    // the window
     while (renderer.WindowOpen())
     {
         // Rotate model a bit
-        model1 = glm::rotate(model1, 0.01f, glm::vec3(1.0f, 1.0f, 1.0f));
-
-        auto [frameBufferWidth, frameBufferHeight] =
-            renderer.GetFrameBufferSize();
-
-        // This is recalculated each frame because the window can be resized
-        glm::mat4 projection = glm::perspective(
-            45.0f, (GLfloat)frameBufferWidth / (GLfloat)frameBufferHeight, 0.1f,
-            100.0f);
+        obj1.GetTransform().RotateGlobal(
+            glm::rotate(glm::mat4(1.0f), 0.01f, glm::vec3(1.0f, 1.0f, 1.0f)));
 
         renderer.PollEvents();
+        cam.SetAspectRatio(renderer.GetFrameBufferSizeRatio());
 
-        mat.SetInUse();
         tex.Use(0);
-        mat.SetUniformPVM(projection, view, model1);
 
-        renderer.DirectRender(Transform(model1), spr1.GetMesh(), mat);
+        renderer.DirectRender(obj1, cam);
 
-        mat.SetUniformPVM(projection, view, model2);
-        renderer.DirectRender(Transform(model2), spr2.GetMesh(), mat);
+        renderer.DirectRender(obj2, cam);
 
         renderer.DisplayFrame();
         renderer.SleepForFrame();

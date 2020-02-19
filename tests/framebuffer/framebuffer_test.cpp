@@ -84,52 +84,43 @@ int main(int argc, char *argv[])
 
 #pragma endregion
 
-    Sprite spr =
-        Sprite(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f));
-
     Texture tex = Texture(640, 640);
 
     Framebuffer framebuffer = Framebuffer();
     framebuffer.AttachTexture(tex, FramebufferTarget::ReadWrite(), 0);
 
-    glm::mat4 model =
-        glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f));
+    RenderObject obj =
+        RenderObject(mat,
+                     Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+                                        glm::vec2(1.0f, 1.0f)),
+                     Transform(glm::translate(glm::mat4(1.0f),
+                                              glm::vec3(0.5f, 0.5f, 0.0f))));
 
-    glm::mat4 view =
-        glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-                    glm::vec3(0.0f, 1.0f, 0.0f));
+    Camera cam = Camera();
+    cam.SetTransform(Transform(glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f),
+                                           glm::vec3(0.0f, 0.0f, 0.0f),
+                                           glm::vec3(0.0f, 1.0f, 0.0f))));
+    cam.SetPerspectiveMode(false);
+    cam.SetOrthoSize(1.0f);
+    cam.SetNearFarPlanes(0.1f, 100.0f);
     // Loop until the user closes the window
     while (renderer.WindowOpen())
     {
-        auto [frameBufferWidth, frameBufferHeight] =
-            renderer.GetFrameBufferSize();
-
-        float ratio = (float)frameBufferWidth / (float)frameBufferHeight;
+        float ratio = renderer.GetFrameBufferSizeRatio();
 
         // This is recalculated each frame because the window can be resized
 
-        glm::mat4 projection =
-            glm::ortho(0.0f, (GLfloat)ratio, (GLfloat)1, 0.0f, 0.1f, 100.0f);
-
         renderer.PollEvents();
 
-        // Firstly render to the texture
-        // framebuffer.SetReadWriteTarget();
-        framebuffer.BindReadWriteTarget();
-        mat.SetInUse();
+        cam.SetAspectRatio(renderer.GetFrameBufferSizeRatio());
         tex.Use(0);
-        mat.SetUniformPVM(projection, view, model);
-        gl::ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
-        renderer.DirectRender(Transform(model), spr.GetMesh(), mat);
+
+        // Firstly render to the texture
+        framebuffer.BindReadWriteTarget();
+        renderer.DirectRender(obj, cam);
 
         Framebuffer::BindDefaultFramebuffer();
-        mat.SetInUse();
-        tex.Use(0);
-        mat.SetUniformPVM(projection, view, model);
-        gl::ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
-        renderer.DirectRender(Transform(model), spr.GetMesh(), mat);
+        renderer.DirectRender(obj, cam);
 
         renderer.DisplayFrame();
         renderer.SleepForFrame();
