@@ -36,6 +36,15 @@ namespace volt::gfx
         Framebuffer &operator=(Framebuffer &&other);
         ~Framebuffer();
 
+        inline bool operator==(const Framebuffer &rhs)
+        {
+            return fbo.get() == rhs.fbo.get();
+        }
+        inline bool operator!=(const Framebuffer &rhs)
+        {
+            return !(*this == rhs);
+        }
+
         static void BindDefaultFramebuffer();
 
         bool IsValid();
