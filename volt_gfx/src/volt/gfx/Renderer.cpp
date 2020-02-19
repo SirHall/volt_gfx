@@ -1,6 +1,8 @@
 #include "volt/gfx/Renderer.hpp"
+#include "volt/gfx/Camera.hpp"
 #include "volt/gfx/GLImport.hpp"
 #include "volt/gfx/GLUtilities.hpp"
+#include "volt/gfx/RenderObject.hpp"
 #include "volt/gfx/Shader.hpp"
 #include "volt/gfx/global_events/GFXEvents.hpp"
 
@@ -275,26 +277,25 @@ bool Renderer::Initialize(GFXSettings settings)
 //     this->renderMode = renderMode;
 // }
 
-void Renderer::DirectRender(Transform const &transform, Mesh const &mesh,
-                            Material &mat)
+void Renderer::DirectRender(RenderObject &obj, Camera const &cam)
 {
-    GLuint vao = mesh.GetVAO(), vbo = mesh.GetVBO(), ibo = mesh.GetIBO();
-    if (vao == 0 || vbo == 0 || ibo == 0)
+    if (!obj.GetMesh().IsValid())
     {
         std::cerr << "Attempted to perform a direct render with incomplete "
                      "data: vao: "
-                  << vao << ", vbo: " << vbo << ", ibo: " << ibo << std::endl;
+                  << obj.GetMesh().GetVAO()
+                  << ", vbo: " << obj.GetMesh().GetVBO()
+                  << ", ibo: " << obj.GetMesh().GetIBO() << std::endl;
         return;
     }
 
-    mesh.Bind();
-    mat.SetInUse();
-
+    obj.Bind();
+    obj.GetMaterial().SetUniformPVM(cam.GetProjection(),
+                                    cam.GetTransform().GetMatrix(),
+                                    obj.GetTransform().GetMatrix());
     // The draw call
-    GLCall(gl::DrawElements(gl::TRIANGLES, mesh.GetIndices().size(),
+    GLCall(gl::DrawElements(gl::TRIANGLES, obj.GetMesh().GetIndices().size(),
                             gl::UNSIGNED_INT, 0));
-
-    mesh.Unbind();
 }
 
 // void Renderer::InstancedRender(const std::vector<Transform> &transforms,
@@ -416,4 +417,10 @@ void Renderer::CorrectContextSize()
 {
     auto [width, height] = this->GetFrameBufferSize();
     gl::Viewport(0, 0, width, height);
+}
+
+float Renderer::GetFrameBufferSizeRatio()
+{
+    auto [width, height] = this->GetFrameBufferSize();
+    return (float)width / (float)height;
 }

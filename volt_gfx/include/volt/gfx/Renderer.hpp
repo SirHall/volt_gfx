@@ -2,8 +2,10 @@
 #ifndef VOLT_GFX_RENDERER_HPP
 #define VOLT_GFX_RENDERER_HPP
 
+#include "volt/gfx/Camera.hpp"
 #include "volt/gfx/Material.hpp"
 #include "volt/gfx/Mesh.hpp"
+#include "volt/gfx/RenderObject.hpp"
 #include "volt/gfx/Transform.hpp"
 
 #include <chrono>
@@ -57,8 +59,7 @@ namespace volt::gfx
 
         // void SetRenderMode(RenderMode renderMode);
 
-        void DirectRender(Transform const &transform, Mesh const &mesh,
-                          Material &mat);
+        void DirectRender(RenderObject &obj, Camera const &cam);
 
         // void InstancedRender(const std::vector<Transform> &transforms,
         //                      const Mesh &                  mesh);
@@ -86,6 +87,8 @@ namespace volt::gfx
         void SetContextSize(std::tuple<int, int> newSize);
 
         void CorrectContextSize();
+
+        float GetFrameBufferSizeRatio();
     };
 } // namespace volt::gfx
 
