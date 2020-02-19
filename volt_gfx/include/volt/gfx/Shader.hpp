@@ -139,7 +139,7 @@ namespace volt::gfx
 
         GLuint GetProgram() const;
 
-        void SetInUse() const;
+        void Bind() const;
 
         bool GetUniformLocation(const std::string &uniformName,
                                 GLint &            uniformLocOut) const;

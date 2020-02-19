@@ -7,19 +7,47 @@ Material::Material(Shader shader) : sh(shader)
     this->RetreiveDefaultUniforms();
 }
 
-Material::Material(const Material &other) : sh(other.sh) {}
+Material::Material(const Material &other)
+    : sh(other.sh), uniformTex(other.uniformTex)
+{
+    this->uniformProjection = other.uniformProjection;
+    this->uniformView       = other.uniformView;
+    this->uniformModel      = other.uniformModel;
+    this->uniformPVM        = other.uniformPVM;
+    this->uniformPV         = other.uniformPV;
+}
 
 Material &Material::operator=(const Material &other)
 {
-    this->sh = other.sh;
+    this->sh                = other.sh;
+    this->uniformProjection = other.uniformProjection;
+    this->uniformView       = other.uniformView;
+    this->uniformModel      = other.uniformModel;
+    this->uniformPVM        = other.uniformPVM;
+    this->uniformPV         = other.uniformPV;
+    this->uniformTex        = other.uniformTex;
     return *this;
 }
 
-Material::Material(Material &&other) : sh(std::move(other.sh)) {}
+Material::Material(Material &&other)
+    : sh(std::move(other.sh)), uniformTex(std::move(other.uniformTex))
+{
+    this->uniformProjection = other.uniformProjection;
+    this->uniformView       = other.uniformView;
+    this->uniformModel      = other.uniformModel;
+    this->uniformPVM        = other.uniformPVM;
+    this->uniformPV         = other.uniformPV;
+}
 
 Material &Material::operator=(Material &&other)
 {
-    this->sh = std::move(other.sh);
+    this->sh                = std::move(other.sh);
+    this->uniformProjection = other.uniformProjection;
+    this->uniformView       = other.uniformView;
+    this->uniformModel      = other.uniformModel;
+    this->uniformPVM        = other.uniformPVM;
+    this->uniformPV         = other.uniformPV;
+    this->uniformTex        = std::move(other.uniformTex);
     return *this;
 }
 
@@ -74,4 +102,4 @@ void Material::SetUniformTex(Texture &tex, std::uint8_t imageUnit)
 
 #pragma endregion
 
-void Material::SetInUse() const { this->sh.SetInUse(); }
+void Material::Bind() const { this->sh.Bind(); }

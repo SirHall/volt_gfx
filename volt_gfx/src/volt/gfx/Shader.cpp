@@ -84,7 +84,7 @@ Shader Shader::CompileShader(ShaderSource const &      source,
 
 GLuint Shader::GetProgram() const { return *this->program; }
 
-void Shader::SetInUse() const { GLCall(gl::UseProgram(*this->program)); }
+void Shader::Bind() const { GLCall(gl::UseProgram(*this->program)); }
 
 bool Shader::GetUniformLocation(const std::string &uniformName,
                                 GLint &            uniformLocOut) const

@@ -45,7 +45,7 @@ namespace volt::gfx
                            glm::mat4 model);
         void SetUniformTex(Texture &tex, std::uint8_t imageUnit = 0);
 
-        void SetInUse() const;
+        void Bind() const;
     };
 
 } // namespace volt::gfx
