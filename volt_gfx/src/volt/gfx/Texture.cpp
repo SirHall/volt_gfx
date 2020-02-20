@@ -47,7 +47,9 @@ void Texture::Unbind() { GLCall(gl::BindTexture(gl::TEXTURE_2D, 0)); }
 
 void Texture::CreateTexture(GLsizei width, GLsizei height, void const *data)
 {
-    GLuint id = 0;
+    this->width  = width;
+    this->height = height;
+    GLuint id    = 0;
 
     GLCall(gl::GenTextures(1, &id));
     this->texID =
