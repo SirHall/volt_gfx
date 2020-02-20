@@ -14,6 +14,6 @@ void main()
     vec4 col = texture(tex0, texCoord);
     if (col.a < 0.85)
         discard;
-    color = texture(tex0, texCoord);
+    color = col;
     // color = (vertPos * 0.5) + 0.5;
 }
