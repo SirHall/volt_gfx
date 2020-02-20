@@ -1,5 +1,7 @@
 #include "volt/gfx/RenderObject.hpp"
 
+#include <cassert>
+
 using namespace volt::gfx;
 
 RenderObject::RenderObject(Material mat, Mesh m, Transform t)
@@ -40,8 +42,34 @@ void RenderObject::Bind() const
 {
     this->material.Bind();
     this->mesh.Bind();
+    for (std::size_t i = 0; i < this->texUnits.size(); i++)
+    {
+        if (this->texUnits[i].has_value())
+        {
+            auto opt = this->texUnits[i];
+            opt->Use(i);
+        }
+    }
 }
 
 Material & RenderObject::GetMaterial() { return this->material; }
 Mesh &     RenderObject::GetMesh() { return this->mesh; }
 Transform &RenderObject::GetTransform() { return this->transform; }
+
+void RenderObject::SetTexture(Texture tex, std::uint8_t texUnit)
+{
+    assert(texUnit < 16);
+    this->texUnits[texUnit] = std::optional<Texture>(tex);
+}
+
+void RenderObject::ClearTexture(std::uint8_t texUnit)
+{
+    assert(texUnit < 16);
+    this->texUnits[texUnit] = std::optional<Texture>();
+}
+
+bool RenderObject::HasTexture(std::uint8_t texUnit)
+{
+    assert(texUnit < 16);
+    return this->texUnits[texUnit].has_value();
+}
