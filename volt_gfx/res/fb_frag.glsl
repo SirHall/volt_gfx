@@ -48,32 +48,47 @@ vec3 clamp3(vec3 v)
 
 float clamp1(float v) { return clamp(v, 0.0, 1.0); }
 
+float rand(vec2 co)
+{
+    return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
 void main()
 {
-    vec2 suv = vec2(((vertPos * 0.5) + 0.5).xy);
+    vec2 suv = texCoord;
 
     // Stage 1
     float baseMap  = snoise(suv * 100);
-    float midLevel = 0.0;
+    float midLevel = -0.4;
 
     float zoneMap      = snoise(suv * 30);
-    float zoneMidLevel = 0.0;
+    float zoneMidLevel = -0.4;
 
     float areaMap      = snoise(suv * 4);
-    float areaMidLevel = 0.0;
+    float areaMidLevel = 0.1;
 
     float chance = clamp1(baseMap + midLevel) * clamp1(zoneMap + zoneMidLevel) *
                    clamp1(areaMap + areaMidLevel);
 
     // Stage 2
     float contrastMap            = snoise(suv * 30);
+    float contrastMapMidLevel    = 0.0;
     float contrastCenterMap      = snoise(suv * 50);
-    float contrastCenterMidLevel = 0.8;
+    float contrastCenterMidLevel = 0.3;
     float contrastStrength       = 1.0;
 
     chance = clamp1(chance + (sign(chance - clamp1(contrastCenterMap +
                                                    contrastCenterMidLevel)) *
-                              contrastMap * contrastStrength * chance));
+                              clamp1(contrastMap + contrastMapMidLevel) *
+                              contrastStrength * chance));
+
+    // Now that we have the chance, actually place the tiles
+
+    chance = (rand(suv) < chance) ? 1.0 : 0.0;
+
+    // if (texCoord.x < 0.02 || texCoord.x > 0.98 || texCoord.y < 0.02 ||
+    //     texCoord.y > 0.98)
+    //     chance = 1.0;
 
     color = vec4(chance, chance, chance, 1.0);
 }
