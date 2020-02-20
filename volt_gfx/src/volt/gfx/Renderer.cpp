@@ -249,10 +249,11 @@ bool Renderer::Initialize(GFXSettings settings)
     // Enable blending
     if (settings.blending)
     {
-        gl::Enable(gl::BLEND);
-        gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
-        gl::ClearColor(0, 0, 0, 0);
+        GLCall(gl::Enable(gl::BLEND));
+        GLCall(gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA));
     }
+
+    GLCall(gl::ClearColor(0.0, 0.0, 0.0, 1.0));
 
     auto [bufferWidth, bufferHeight] = this->GetFrameBufferSize();
     // Setup viewport
