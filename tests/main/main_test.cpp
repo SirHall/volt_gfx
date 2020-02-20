@@ -97,6 +97,7 @@ int main(int argc, char *argv[])
                                         glm::vec2(5.0f, 5.0f)),
                      Transform(glm::translate(glm::mat4(1.0f),
                                               glm::vec3(0.0f, 0.0f, 0.0f))));
+    obj1.SetTexture(tex, 0);
 
     RenderObject obj2 =
         RenderObject(mat,
@@ -104,6 +105,7 @@ int main(int argc, char *argv[])
                                         glm::vec2(5.0f, 5.0f)),
                      Transform(glm::translate(glm::mat4(1.0f),
                                               glm::vec3(0.0f, 0.0f, -2.0f))));
+    obj2.SetTexture(tex, 0);
 
     Camera cam = Camera();
     cam.SetPerspectiveMode(true);
@@ -123,8 +125,6 @@ int main(int argc, char *argv[])
 
         renderer.PollEvents();
         cam.SetAspectRatio(renderer.GetFrameBufferSizeRatio());
-
-        tex.Use(0);
 
         renderer.DirectRender(obj1, cam);
 

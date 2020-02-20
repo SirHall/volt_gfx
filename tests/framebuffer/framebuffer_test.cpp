@@ -7,6 +7,11 @@
 
 using namespace volt::gfx;
 
+float  mouseXDiff = 0.0f, mouseYDiff = 0.0f;
+double lastMouseX = 0.0, lastMouseY = 0.0;
+float  scale = 1.0f, scaleDeltaSpeed = 0.01f;
+bool   firstUpdate = true;
+
 int main(int argc, char *argv[])
 {
 #pragma region Setup Renderer and Window
@@ -47,10 +52,20 @@ int main(int argc, char *argv[])
         volt::event::observer<GFXEventFramebufferSize>(
             [&](GFXEventFramebufferSize &e) { renderer.CorrectContextSize(); });
 
+    auto cursorPosObserver =
+        volt::event::observer<GFXEventCursorPos>([&](GFXEventCursorPos &e) {
+            mouseXDiff = lastMouseX - e.GetXPos();
+            mouseYDiff = lastMouseY - e.GetYPos();
+
+            lastMouseX = e.GetXPos();
+            lastMouseY = e.GetYPos();
+        });
+
 #pragma endregion
 
 #pragma region Compile Shaders
 
+    // Compile Shader 1
     auto           shaderSource = ShaderSource("fb");
     ShadeletSource shadeletVert =
         ShadeletSource("res/fb_vert.glsl", ShadeletType::Vertex);
@@ -80,11 +95,44 @@ int main(int argc, char *argv[])
         std::cout << "All shaders compiled successfully" << std::endl;
     }
 
-    Material mat = Material(shader);
+    // Compile shader 2
+    auto           shaderSource2 = ShaderSource("default");
+    ShadeletSource shadeletVert2 =
+        ShadeletSource("res/shader_vert.glsl", ShadeletType::Vertex);
+    ShadeletSource shadeletFrag2 =
+        ShadeletSource("res/shader_frag.glsl", ShadeletType::Fragment);
+    shaderSource2.AddShadelet(shadeletVert2);
+    shaderSource2.AddShadelet(shadeletFrag2);
+
+    auto shaderCompileErrors2 = std::vector<std::string>();
+    auto shader2 = Shader::CompileShader(shaderSource2, shaderCompileErrors2);
+
+    std::cout << shader2.GetProgram() << std::endl;
+
+    if (shaderCompileErrors2.size() > 0)
+    {
+        for (auto error : shaderCompileErrors2)
+            std::cerr << error << std::endl;
+        exit(1);
+    }
+    else if (!shader2.IsValid())
+    {
+        std::cerr << "Shader2 is invalid" << std::endl;
+        exit(1);
+    }
+    else
+    {
+        std::cout << "All shaders compiled successfully" << std::endl;
+    }
 
 #pragma endregion
 
+    Material mat  = Material(shader);
+    Material mat2 = Material(shader2);
+
     Texture tex = Texture(640, 640);
+
+    mat2.SetUniformTex(tex, 0);
 
     Framebuffer framebuffer = Framebuffer();
     framebuffer.AttachTexture(tex, FramebufferTarget::ReadWrite(), 0);
@@ -94,7 +142,14 @@ int main(int argc, char *argv[])
                      Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
                                         glm::vec2(1.0f, 1.0f)),
                      Transform(glm::translate(glm::mat4(1.0f),
-                                              glm::vec3(0.5f, 0.5f, 0.0f))));
+                                              glm::vec3(0.0f, 0.0f, 0.0f))));
+
+    RenderObject obj2 =
+        RenderObject(mat2,
+                     Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+                                        glm::vec2(1.0f, 1.0f)),
+                     Transform(glm::translate(glm::mat4(1.0f),
+                                              glm::vec3(0.0f, 0.0f, 0.0f))));
 
     Camera cam = Camera();
     cam.SetTransform(Transform(glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f),
@@ -112,15 +167,28 @@ int main(int argc, char *argv[])
 
         renderer.PollEvents();
 
-        cam.SetAspectRatio(renderer.GetFrameBufferSizeRatio());
-        tex.Use(0);
+        // Move cam around the location
+        obj.GetMesh() =
+            Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f * ratio, 1.0f),
+                               glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+        obj2.GetMesh() =
+            Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+                               glm::vec2(1.0f * ratio, 1.0f), true);
+
+        // obj.GetTransform() = Transform(glm::translate(
+        //     glm::mat4(1.0f), glm::vec3(0.5f * ratio, 0.5f, 0.0f)));
+        obj2.GetTransform() = Transform(glm::translate(
+            glm::mat4(1.0f), glm::vec3(0.5f * ratio, 0.5f, 0.0f)));
+
+        cam.SetAspectRatio(ratio);
 
         // Firstly render to the texture
         framebuffer.BindReadWriteTarget();
         renderer.DirectRender(obj, cam);
+        tex.GenerateMipmap();
 
         Framebuffer::BindDefaultFramebuffer();
-        renderer.DirectRender(obj, cam);
+        renderer.DirectRender(obj2, cam);
 
         renderer.DisplayFrame();
         renderer.SleepForFrame();
