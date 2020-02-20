@@ -28,7 +28,9 @@ namespace volt::gfx
         // Sprite &operator=(Sprite &&other);
         ~Sprite();
 
-        static Mesh CreateMesh(glm::vec4 srcRect, glm::vec2 destRect);
+        static Mesh CreateMesh(glm::vec4 srcRect, glm::vec2 destRect,
+                               bool center = true);
+        static Mesh CreateMesh(glm::vec4 srcRect, glm::vec4 destRect);
 
         inline glm::vec4   GetSrcRect() { return this->srcR; }
         inline glm::vec2   GetDestRect() { return this->destR; }

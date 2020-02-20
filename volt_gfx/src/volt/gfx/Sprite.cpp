@@ -32,19 +32,31 @@ Sprite &Sprite::operator=(const Sprite &other)
 
 Sprite::~Sprite() {}
 
-Mesh Sprite::CreateMesh(glm::vec4 srcRect, glm::vec2 destRect)
+Mesh Sprite::CreateMesh(glm::vec4 srcRect, glm::vec2 destRect, bool center)
 {
-    float xOff = destRect.x * 0.5f, yOff = destRect.y * 0.5f;
-    Mesh  mesh;
+    // This could probably be cleaned up
+    float xMin = center ? -destRect.x * 0.5f : 0.0f,
+          xMax = center ? destRect.x : destRect.x,
+          yMin = center ? -destRect.y * 0.5f : 0.0f,
+          yMax = center ? destRect.y : destRect.y;
+
+    return std::move(CreateMesh(srcRect, glm::vec4(xMin, yMin, xMax, yMax)));
+}
+
+Mesh Sprite::CreateMesh(glm::vec4 srcRect, glm::vec4 destRect)
+{
+    Mesh mesh;
     mesh.CreateMesh(
         {
-            Vertex(-xOff, yOff, 0.0f, srcRect.x, srcRect.y), // 0 - Top Left
-            Vertex(-xOff, -yOff, 0.0f, srcRect.x,
-                   srcRect.y + srcRect.w), // 1 - Bottom Left
-            Vertex(xOff, -yOff, 0.0f, srcRect.w + srcRect.y,
-                   srcRect.y + srcRect.w), // 2 - Bottom Right
-            Vertex(xOff, yOff, 0.0f, srcRect.x + srcRect.z,
-                   srcRect.y), // 3 - Top Right
+            Vertex(destRect.x, destRect.y + destRect.w, 0.0f, srcRect.x,
+                   srcRect.y), // 0 - Left Top
+            Vertex(destRect.x, destRect.y, 0.0f, srcRect.x,
+                   srcRect.y + srcRect.w), // 1 - Left Bottom
+            Vertex(destRect.x + destRect.z, destRect.y, 0.0f,
+                   srcRect.x + srcRect.z,
+                   srcRect.y + srcRect.w), // 2 - Right Bottom
+            Vertex(destRect.x + destRect.z, destRect.y + destRect.w, 0.0f,
+                   srcRect.x + srcRect.z, srcRect.y), // 3 - Right Top
         },
         {0, 1, 3, 1, 2, 3});
     return std::move(mesh);
