@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
     Material mat  = Material(shader);
     Material mat2 = Material(shader2);
 
-    Texture tex = Texture(640, 640);
+    Texture tex = Texture(2000, 2000);
 
     mat2.SetUniformTex(tex, 0);
 
@@ -184,10 +184,13 @@ int main(int argc, char *argv[])
 
         // Firstly render to the texture
         framebuffer.BindReadWriteTarget();
+        renderer.SetContextSize(
+            std::make_tuple(tex.GetWidth(), tex.GetHeight()));
         renderer.DirectRender(obj, cam);
         tex.GenerateMipmap();
 
         Framebuffer::BindDefaultFramebuffer();
+        renderer.SetContextSize(renderer.GetFrameBufferSize());
         renderer.DirectRender(obj2, cam);
 
         renderer.DisplayFrame();
