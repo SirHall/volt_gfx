@@ -61,19 +61,31 @@ bool Framebuffer::IsFrameBufferComplete()
     return complete;
 }
 
-void Framebuffer::BindReadTarget()
+void Framebuffer::BindReadTarget(std::uint8_t attachmentIndex)
 {
+    this->BindTex(attachmentIndex);
     GLCall(gl::BindFramebuffer(gl::READ_FRAMEBUFFER, *this->fbo));
 }
 
-void Framebuffer::BindWriteTarget()
+void Framebuffer::BindWriteTarget(std::uint8_t attachmentIndex)
 {
+    this->BindTex(attachmentIndex);
     GLCall(gl::BindFramebuffer(gl::DRAW_FRAMEBUFFER, *this->fbo));
 }
 
-void Framebuffer::BindReadWriteTarget()
+void Framebuffer::BindReadWriteTarget(std::uint8_t attachmentIndex)
 {
+    this->BindTex(attachmentIndex);
     GLCall(gl::BindFramebuffer(gl::FRAMEBUFFER, *this->fbo));
+}
+
+void Framebuffer::BindTex(std::uint8_t attachmentIndex)
+{
+    assert(attachmentIndex < 32);
+    if (!this->textures[attachmentIndex].has_value())
+        return;
+    auto &tex = this->textures[attachmentIndex].value();
+    tex.Bind();
 }
 
 void Framebuffer::AttachTexture(Texture tex, FramebufferTarget target,
@@ -85,4 +97,10 @@ void Framebuffer::AttachTexture(Texture tex, FramebufferTarget target,
     GLCall(gl::FramebufferTexture2D(target.Get(),
                                     gl::COLOR_ATTACHMENT0 + attachmentIndex,
                                     gl::TEXTURE_2D, tex.GetTexID(), 0));
+    this->textures[attachmentIndex] = tex;
+}
+
+std::optional<Texture> Framebuffer::GetTexture(std::uint8_t attachmentIndex)
+{
+    return this->textures[attachmentIndex];
 }

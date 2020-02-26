@@ -5,6 +5,7 @@
 #include "volt/gfx/GLImport.hpp"
 #include "volt/gfx/Texture.hpp"
 
+#include <array>
 #include <memory>
 
 namespace volt::gfx
@@ -26,7 +27,8 @@ namespace volt::gfx
     class Framebuffer
     {
     private:
-        std::shared_ptr<GLuint> fbo;
+        std::shared_ptr<GLuint>                fbo;
+        std::array<std::optional<Texture>, 32> textures;
 
     public:
         Framebuffer();
@@ -50,12 +52,16 @@ namespace volt::gfx
         bool IsValid();
         bool IsFrameBufferComplete();
 
-        void BindReadTarget();
-        void BindWriteTarget();
-        void BindReadWriteTarget();
+        void BindReadTarget(std::uint8_t attachmentIndex = 0);
+        void BindWriteTarget(std::uint8_t attachmentIndex = 0);
+        void BindReadWriteTarget(std::uint8_t attachmentIndex = 0);
+
+        void BindTex(std::uint8_t attachmentIndex = 0);
 
         void AttachTexture(Texture tex, FramebufferTarget target,
                            std::uint8_t attachmentIndex = 0);
+
+        std::optional<Texture> GetTexture(std::uint8_t attachmentIndex = 0);
     };
 
 } // namespace volt::gfx
