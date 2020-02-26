@@ -19,7 +19,6 @@ namespace volt::gfx
     {
     private:
         std::shared_ptr<GLuint> texID;
-        GLsizei                 width, height;
 
         void CreateTexture(GLsizei width, GLsizei height, void const *data);
 
@@ -42,8 +41,8 @@ namespace volt::gfx
 
         void GenerateMipmap();
 
-        inline GLsizei GetWidth() { return this->width; }
-        inline GLsizei GetHeight() { return this->height; }
+        GLsizei GetWidth();
+        GLsizei GetHeight();
     };
 } // namespace volt::gfx
 

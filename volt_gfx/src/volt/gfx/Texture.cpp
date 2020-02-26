@@ -47,9 +47,7 @@ void Texture::Unbind() { GLCall(gl::BindTexture(gl::TEXTURE_2D, 0)); }
 
 void Texture::CreateTexture(GLsizei width, GLsizei height, void const *data)
 {
-    this->width  = width;
-    this->height = height;
-    GLuint id    = 0;
+    GLuint id = 0;
 
     GLCall(gl::GenTextures(1, &id));
     this->texID =
@@ -59,7 +57,7 @@ void Texture::CreateTexture(GLsizei width, GLsizei height, void const *data)
         }));
 
     this->Bind();
-    GLCall(gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA, width, height, 0,
+    GLCall(gl::TexImage2D(gl::TEXTURE_2D, 0, gl::RGBA16F, width, height, 0,
                           gl::RGBA, gl::UNSIGNED_BYTE, data));
     this->GenerateMipmap();
 
@@ -78,4 +76,18 @@ void Texture::GenerateMipmap()
 {
     this->Bind();
     GLCall(gl::GenerateMipmap(gl::TEXTURE_2D));
+}
+
+GLsizei Texture::GetWidth()
+{
+    GLsizei width = 0;
+    gl::GetTexLevelParameteriv(gl::TEXTURE_2D, 0, gl::TEXTURE_WIDTH, &width);
+    return width;
+}
+
+GLsizei Texture::GetHeight()
+{
+    GLsizei height = 0;
+    gl::GetTexLevelParameteriv(gl::TEXTURE_2D, 0, gl::TEXTURE_HEIGHT, &height);
+    return height;
 }
