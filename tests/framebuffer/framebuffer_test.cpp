@@ -137,13 +137,6 @@ int main(int argc, char *argv[])
     Framebuffer framebuffer = Framebuffer();
     framebuffer.AttachTexture(tex, FramebufferTarget::ReadWrite(), 0);
 
-    RenderObject obj =
-        RenderObject(mat,
-                     Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
-                                        glm::vec2(1.0f, 1.0f)),
-                     Transform(glm::translate(glm::mat4(1.0f),
-                                              glm::vec3(0.0f, 0.0f, 0.0f))));
-
     RenderObject obj2 =
         RenderObject(mat2,
                      Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
@@ -168,29 +161,21 @@ int main(int argc, char *argv[])
         renderer.PollEvents();
 
         // Move cam around the location
-        obj.GetMesh() =
-            Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f * ratio, 1.0f),
-                               glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+
         obj2.GetMesh() =
             Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
                                glm::vec2(1.0f * ratio, 1.0f), true);
 
-        // obj.GetTransform() = Transform(glm::translate(
-        //     glm::mat4(1.0f), glm::vec3(0.5f * ratio, 0.5f, 0.0f)));
         obj2.GetTransform() = Transform(glm::translate(
             glm::mat4(1.0f), glm::vec3(0.5f * ratio, 0.5f, 0.0f)));
 
         cam.SetAspectRatio(ratio);
 
         // Firstly render to the texture
-        framebuffer.BindReadWriteTarget();
-        renderer.SetContextSize(
-            std::make_tuple(tex.GetWidth(), tex.GetHeight()));
-        renderer.DirectRender(obj, cam);
+        renderer.RenderFramebuffer(framebuffer, mat);
         tex.GenerateMipmap();
 
         Framebuffer::BindDefaultFramebuffer();
-        renderer.SetContextSize(renderer.GetFrameBufferSize());
         renderer.DirectRender(obj2, cam);
 
         renderer.DisplayFrame();
