@@ -1,9 +1,11 @@
 #include "volt/gfx/Renderer.hpp"
 #include "volt/gfx/Camera.hpp"
+#include "volt/gfx/Framebuffer.hpp"
 #include "volt/gfx/GLImport.hpp"
 #include "volt/gfx/GLUtilities.hpp"
 #include "volt/gfx/RenderObject.hpp"
 #include "volt/gfx/Shader.hpp"
+#include "volt/gfx/Sprite.hpp"
 #include "volt/gfx/global_events/GFXEvents.hpp"
 
 #include "volt/event.hpp"
@@ -297,6 +299,35 @@ void Renderer::DirectRender(RenderObject &obj, Camera const &cam)
     // The draw call
     GLCall(gl::DrawElements(gl::TRIANGLES, obj.GetMesh().GetIndices().size(),
                             gl::UNSIGNED_INT, 0));
+}
+
+void Renderer::RenderFramebuffer(Framebuffer &fb, Material &mat,
+                                 std::uint8_t attachmentIndex)
+{
+    glm::mat4 proj = glm::ortho(0.0f, this->GetFrameBufferSizeRatio() * 1.0f,
+                                1.0f, 0.0f, 0.0f, 1.0f);
+
+    mat.Bind();
+    mat.SetUniformPVM(proj, glm::mat4(1.0f), glm::mat4(1.0f));
+
+    Mesh mesh = Sprite::CreateMesh(
+        glm::vec4(0.0f, 0.0f, 1.0f * this->GetFrameBufferSizeRatio(), 1.0f),
+        glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+    mesh.Bind();
+
+    fb.BindReadWriteTarget(attachmentIndex);
+    auto tex = fb.GetTexture(attachmentIndex);
+    if (tex)
+        this->SetContextSize(
+            std::make_tuple(tex->GetWidth(), tex->GetHeight()));
+
+    // The draw call
+    GLCall(gl::DrawElements(gl::TRIANGLES, mesh.GetIndices().size(),
+                            gl::UNSIGNED_INT, 0));
+
+    mesh.Unbind();
+    Framebuffer::BindDefaultFramebuffer();
+    this->SetContextSize(this->GetFrameBufferSize());
 }
 
 // void Renderer::InstancedRender(const std::vector<Transform> &transforms,

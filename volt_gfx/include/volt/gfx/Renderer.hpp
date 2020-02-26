@@ -3,6 +3,7 @@
 #define VOLT_GFX_RENDERER_HPP
 
 #include "volt/gfx/Camera.hpp"
+#include "volt/gfx/Framebuffer.hpp"
 #include "volt/gfx/Material.hpp"
 #include "volt/gfx/Mesh.hpp"
 #include "volt/gfx/RenderObject.hpp"
@@ -60,6 +61,9 @@ namespace volt::gfx
         // void SetRenderMode(RenderMode renderMode);
 
         void DirectRender(RenderObject &obj, Camera const &cam);
+
+        void RenderFramebuffer(Framebuffer &fb, Material &mat,
+                               std::uint8_t attachmentIndex = 0);
 
         // void InstancedRender(const std::vector<Transform> &transforms,
         //                      const Mesh &                  mesh);
