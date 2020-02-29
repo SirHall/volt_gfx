@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
     ShadeletSource shadeletVert2 =
         ShadeletSource("res/shader_vert.glsl", ShadeletType::Vertex);
     ShadeletSource shadeletFrag2 =
-        ShadeletSource("res/shader_frag.glsl", ShadeletType::Fragment);
+        ShadeletSource("res/fb_mandelbrot_frag.glsl", ShadeletType::Fragment);
     shaderSource2.AddShadelet(shadeletVert2);
     shaderSource2.AddShadelet(shadeletFrag2);
 
