@@ -43,8 +43,8 @@ namespace volt::gfx
         GLFWwindow *             window    = nullptr;
         float                    targetFPS = 60.0f;
         float                    deltaTime = 0.0f;
-        steady_clock::time_point endOfLastFrameTimePoint,
-            startOfThisFrameTimePoint;
+        steady_clock::time_point frameTimePoint, lastFrameTimePoint;
+        //, startOfThisFrameTimePoint;
 
         void SetupCallbacks();
 

@@ -202,7 +202,7 @@ bool Renderer::Initialize(GFXSettings settings)
     glfwWindowHint(GLFW_RED_BITS, mode->redBits);
     glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+    // glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
     if (settings.multiSampling)
         glfwWindowHint(GLFW_SAMPLES, 4); // Multi-sampling
@@ -238,7 +238,7 @@ bool Renderer::Initialize(GFXSettings settings)
     // glewExperimental = GL_TRUE;
 
     // Turn VSync on
-    glfwSwapInterval(1);
+    // glfwSwapInterval(1);
 
     // Enable multi-sampling
     if (settings.multiSampling)
@@ -270,8 +270,8 @@ bool Renderer::Initialize(GFXSettings settings)
 
     initialized = true;
 
-    startOfThisFrameTimePoint = steady_clock::now();
-    endOfLastFrameTimePoint   = steady_clock::now();
+    // startOfThisFrameTimePoint = steady_clock::now();
+    this->lastFrameTimePoint = this->frameTimePoint = steady_clock::now();
     return true;
 }
 
@@ -373,9 +373,8 @@ bool Renderer::WindowOpen() { return !glfwWindowShouldClose(window); }
 // GetTime implemented just to make time handling here easier
 float GetTime(steady_clock::time_point start, steady_clock::time_point now)
 {
-    steady_clock::duration duration = now - start;
-    return float(duration.count()) * steady_clock::period::num /
-           steady_clock::period::den;
+    using ms = std::chrono::duration<float, std::milli>;
+    return std::chrono::duration_cast<ms>(now - start).count() / 1000.0f;
 }
 
 float GetTime(steady_clock::time_point start)
@@ -385,22 +384,27 @@ float GetTime(steady_clock::time_point start)
 
 void Renderer::SetTargetFPS(float fps) { targetFPS = fps; }
 
-float Renderer::GetDeltaTime() { return GetTime(endOfLastFrameTimePoint); }
+float Renderer::GetDeltaTime()
+{
+    return GetTime(this->lastFrameTimePoint, this->frameTimePoint);
+}
 
 void Renderer::SleepForFrame()
 {
-    endOfLastFrameTimePoint = steady_clock::now();
 
     // The amount of time left for this frame in seconds
-    float timeLeft = (1.0f / targetFPS) - (GetTime(startOfThisFrameTimePoint,
-                                                   endOfLastFrameTimePoint));
+
+    this->lastFrameTimePoint = this->frameTimePoint;
+    this->frameTimePoint     = steady_clock::now();
+
+    float timeLeft = (1.0f / targetFPS) -
+                     (GetTime(this->frameTimePoint, this->lastFrameTimePoint));
 
     // Only sleep if we are running ahead of schedule
-    if (timeLeft > 0.0f)
-        std::this_thread::sleep_for(
-            std::chrono::milliseconds((int)(1000 * timeLeft)));
-
-    startOfThisFrameTimePoint = steady_clock::now();
+    // if (timeLeft > 0.0f)
+    //     std::this_thread::sleep_for(
+    //         std::chrono::milliseconds((int)(1000.0f * timeLeft)));
+    // this->frameTimePoint = steady_clock::now();
 }
 
 void Renderer::PollEvents()
