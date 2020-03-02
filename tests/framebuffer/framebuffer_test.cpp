@@ -180,6 +180,8 @@ int main(int argc, char *argv[])
 
         renderer.DisplayFrame();
         renderer.SleepForFrame();
+
+        std::cout << 1.0f / renderer.GetDeltaTime() << std::endl;
     }
 
     return 0;
