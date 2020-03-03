@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
         std::cout << "Failed to initialize window" << std::endl;
         std::exit(1);
     }
-    renderer.SetTargetFPS(60.0f);
+    renderer.SetTargetFPS(30.0f);
 
     auto keyStrikeObserver =
         volt::event::observer<GFXEventKey>([&](GFXEventKey const &e) {

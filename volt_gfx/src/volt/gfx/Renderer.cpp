@@ -398,13 +398,13 @@ void Renderer::SleepForFrame()
     this->frameTimePoint     = steady_clock::now();
 
     float timeLeft = (1.0f / targetFPS) -
-                     (GetTime(this->frameTimePoint, this->lastFrameTimePoint));
+                     (GetTime(this->lastFrameTimePoint, this->frameTimePoint));
 
     // Only sleep if we are running ahead of schedule
-    // if (timeLeft > 0.0f)
-    //     std::this_thread::sleep_for(
-    //         std::chrono::milliseconds((int)(1000.0f * timeLeft)));
-    // this->frameTimePoint = steady_clock::now();
+    if (timeLeft > 0.0f)
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds((int)(1000.0f * timeLeft)));
+    this->frameTimePoint = steady_clock::now();
 }
 
 void Renderer::PollEvents()
