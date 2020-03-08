@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
         std::cout << "Failed to initialize window" << std::endl;
         std::exit(1);
     }
-    renderer.SetTargetFPS(30.0f);
+    renderer.SetTargetFPS(60.0f);
 
     auto keyStrikeObserver =
         volt::event::observer<GFXEventKey>([&](GFXEventKey const &e) {
@@ -163,13 +163,23 @@ int main(int argc, char *argv[])
         // Move cam around the location
 
         obj2.GetMesh() =
-            Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+            Sprite::CreateMesh(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f),
                                glm::vec2(1.0f * ratio, 1.0f), true);
 
         obj2.GetTransform() = Transform(glm::translate(
             glm::mat4(1.0f), glm::vec3(0.5f * ratio, 0.5f, 0.0f)));
 
         cam.SetAspectRatio(ratio);
+
+        GLint uniformLoc = -1;
+        mat2.Bind();
+        // Set time uniforms
+        if (mat2.GetShader().GetUniformLocation("dt", uniformLoc))
+            mat2.GetShader().SetUniform(uniformLoc, renderer.GetDeltaTime());
+        if (mat2.GetShader().GetUniformLocation("t", uniformLoc))
+            mat2.GetShader().SetUniform(uniformLoc, renderer.GetUpTime());
+        if (mat2.GetShader().GetUniformLocation("ratio", uniformLoc))
+            mat2.GetShader().SetUniform(uniformLoc, ratio);
 
         // Firstly render to the texture
         renderer.RenderFramebuffer(framebuffer, mat);
