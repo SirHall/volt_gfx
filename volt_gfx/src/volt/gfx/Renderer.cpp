@@ -271,7 +271,8 @@ bool Renderer::Initialize(GFXSettings settings)
     initialized = true;
 
     // startOfThisFrameTimePoint = steady_clock::now();
-    this->lastFrameTimePoint = this->frameTimePoint = steady_clock::now();
+    this->startTimePoint = this->lastFrameTimePoint = this->frameTimePoint =
+        steady_clock::now();
     return true;
 }
 
@@ -388,6 +389,8 @@ float Renderer::GetDeltaTime()
 {
     return GetTime(this->lastFrameTimePoint, this->frameTimePoint);
 }
+
+float Renderer::GetUpTime() { return GetTime(this->startTimePoint); }
 
 void Renderer::SleepForFrame()
 {
