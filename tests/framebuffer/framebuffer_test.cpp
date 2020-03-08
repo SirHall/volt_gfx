@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
     ShadeletSource shadeletVert2 =
         ShadeletSource("res/shader_vert.glsl", ShadeletType::Vertex);
     ShadeletSource shadeletFrag2 =
-        ShadeletSource("res/fb_mandelbrot_frag.glsl", ShadeletType::Fragment);
+        ShadeletSource("res/fb_raymarch_frag.glsl", ShadeletType::Fragment);
     shaderSource2.AddShadelet(shadeletVert2);
     shaderSource2.AddShadelet(shadeletFrag2);
 
@@ -132,7 +132,13 @@ int main(int argc, char *argv[])
 
     Texture tex = Texture(2000, 2000);
 
+    Texture infernoTex = Texture(Image("./res/inferno.png"));
+
     mat2.SetUniformTex(tex, 0);
+    infernoTex.Bind();
+    infernoTex.Use(1);
+    mat.SetUniformTex(infernoTex, 1);
+    mat2.SetUniformTex(infernoTex, 1);
 
     Framebuffer framebuffer = Framebuffer();
     framebuffer.AttachTexture(tex, FramebufferTarget::ReadWrite(), 0);
@@ -180,6 +186,9 @@ int main(int argc, char *argv[])
             mat2.GetShader().SetUniform(uniformLoc, renderer.GetUpTime());
         if (mat2.GetShader().GetUniformLocation("ratio", uniformLoc))
             mat2.GetShader().SetUniform(uniformLoc, ratio);
+        if (mat2.GetShader().GetUniformLocation("camPos", uniformLoc))
+            mat2.GetShader().SetUniform(uniformLoc,
+                                        cam.GetTransform().GetPosition());
 
         // Firstly render to the texture
         renderer.RenderFramebuffer(framebuffer, mat);
