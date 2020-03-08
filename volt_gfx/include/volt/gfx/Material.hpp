@@ -46,6 +46,8 @@ namespace volt::gfx
         void SetUniformTex(Texture &tex, std::uint8_t imageUnit = 0);
 
         void Bind() const;
+
+        Shader &GetShader() { return this->sh; }
     };
 
 } // namespace volt::gfx
