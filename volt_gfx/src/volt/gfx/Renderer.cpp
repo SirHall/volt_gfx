@@ -305,15 +305,13 @@ void Renderer::DirectRender(RenderObject &obj, Camera const &cam)
 void Renderer::RenderFramebuffer(Framebuffer &fb, Material &mat,
                                  std::uint8_t attachmentIndex)
 {
-    glm::mat4 proj = glm::ortho(0.0f, this->GetFrameBufferSizeRatio() * 1.0f,
-                                1.0f, 0.0f, 0.0f, 1.0f);
+    glm::mat4 proj = glm::ortho(0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f);
 
     mat.Bind();
     mat.SetUniformPVM(proj, glm::mat4(1.0f), glm::mat4(1.0f));
 
-    Mesh mesh = Sprite::CreateMesh(
-        glm::vec4(0.0f, 0.0f, 1.0f * this->GetFrameBufferSizeRatio(), 1.0f),
-        glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f));
+    Mesh mesh = Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+                                   glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
     mesh.Bind();
 
     fb.BindReadWriteTarget(attachmentIndex);
