@@ -150,6 +150,7 @@ namespace volt::gfx
         template <typename T>
         void SetUniform(GLint uniformLoc, const T &value)
         {
+            this->Bind();
             AssignUniform<T>(uniformLoc, value);
         }
 
