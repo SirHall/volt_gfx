@@ -5,7 +5,7 @@ in vec3 vertPos;
 in vec2 texCoord;
 
 uniform vec4      u_Color;
-uniform sampler2D tex0;
+uniform sampler2D gfxTex0;
 uniform float     t;
 uniform float     dt;
 uniform float     ratio;
@@ -31,11 +31,9 @@ void main()
 
     vec2 z = vec2(0.0);
 
-    vec2 c = (texCoord * vec2(ratio, 1.0));
-    // vec2(0.2665859, -0.003356588)
-    // vec2 c =
-    //     ((texCoord * vec2(ratio, 1.0)) / (pow((t + 1), (t + 1) / 10) / 100))
-    //     + vec2(-0.746, 0.1481643);
+    vec2 uv = texCoord - 0.5;
+    vec2 c  = ((uv * vec2(ratio, 1.0)) / (pow((t + 1), (t + 1) / 10) / 100)) +
+             vec2(-0.746, 0.1481643);
 
     int i;
 

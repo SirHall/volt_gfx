@@ -8,8 +8,8 @@ in vec3 vertPos;
 in vec2 texCoord;
 
 uniform vec4      u_Color;
-uniform sampler2D tex0;
-uniform sampler2D tex1;
+uniform sampler2D gfxTex0;
+uniform sampler2D gfxTex1;
 uniform float     t;
 uniform float     dt;
 uniform float     ratio;
@@ -77,7 +77,7 @@ vec3 GetNormal(vec3 pos)
 vec3 GetColor(vec3 pos)
 {
     // return hsv2rgb(vec3(length(pos) * 3, 1.0, 1.0));
-    return texture(tex1, vec2((1.0 - (length(pos) * 0.90)) * 3.0, 1.0)).xyz;
+    return texture(gfxTex1, vec2((1.0 - (length(pos) * 0.90)) * 3.0, 1.0)).xyz;
 }
 
 // Raymarch from position
@@ -147,7 +147,7 @@ vec3 GetReflections(vec3 pos, int subdivisions, vec3 lightPos, vec3 skyCol)
 
 void main()
 {
-    vec2 uv  = texCoord;
+    vec2 uv  = texCoord * 2 - 1.0;
     vec3 dir = normalize(vec3(uv.x * ratio, uv.y, 1.0));
 
     vec3 lightPos = vec3(0.0, 5.0, -2.0);

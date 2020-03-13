@@ -7,7 +7,7 @@ in vec2 texCoord;
 
 uniform vec4 u_Color;
 
-uniform sampler2D tex0;
+uniform sampler2D gfxTex0;
 
 // Simplex 2D noise
 //
