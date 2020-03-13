@@ -68,9 +68,9 @@ int main(int argc, char *argv[])
     // Compile Shader 1
     auto           shaderSource = ShaderSource("fb");
     ShadeletSource shadeletVert =
-        ShadeletSource("res/fb_vert.glsl", ShadeletType::Vertex);
+        ShadeletSource("res/shader_vert.glsl", ShadeletType::Vertex);
     ShadeletSource shadeletFrag =
-        ShadeletSource("res/fb_frag.glsl", ShadeletType::Fragment);
+        ShadeletSource("res/fb_mandelbrot_frag.glsl", ShadeletType::Fragment);
     shaderSource.AddShadelet(shadeletVert);
     shaderSource.AddShadelet(shadeletFrag);
 
@@ -99,8 +99,10 @@ int main(int argc, char *argv[])
     auto           shaderSource2 = ShaderSource("default");
     ShadeletSource shadeletVert2 =
         ShadeletSource("res/shader_vert.glsl", ShadeletType::Vertex);
+
     ShadeletSource shadeletFrag2 =
-        ShadeletSource("res/fb_raymarch_frag.glsl", ShadeletType::Fragment);
+        ShadeletSource("res/shader_frag.glsl", ShadeletType::Fragment);
+
     shaderSource2.AddShadelet(shadeletVert2);
     shaderSource2.AddShadelet(shadeletFrag2);
 
@@ -130,15 +132,15 @@ int main(int argc, char *argv[])
     Material mat  = Material(shader);
     Material mat2 = Material(shader2);
 
-    Texture tex = Texture(2000, 2000);
+    Texture tex = Texture(1920, 1080, false);
 
     Texture infernoTex = Texture(Image("./res/inferno.png"));
 
-    mat2.SetUniformTex(tex, 0);
-    infernoTex.Bind();
     infernoTex.Use(1);
-    mat.SetUniformTex(infernoTex, 1);
-    mat2.SetUniformTex(infernoTex, 1);
+    mat.SetUniformTex(1);
+
+    tex.Use(0);
+    mat2.SetUniformTex(0);
 
     Framebuffer framebuffer = Framebuffer();
     framebuffer.AttachTexture(tex, FramebufferTarget::ReadWrite(), 0);
@@ -169,26 +171,26 @@ int main(int argc, char *argv[])
         // Move cam around the location
 
         obj2.GetMesh() =
-            Sprite::CreateMesh(glm::vec4(-1.0f, -1.0f, 2.0f, 2.0f),
-                               glm::vec2(1.0f * ratio, 1.0f), true);
+            Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+                               glm::vec2(1.0f * ratio, 1.0f), false);
 
-        obj2.GetTransform() = Transform(glm::translate(
-            glm::mat4(1.0f), glm::vec3(0.5f * ratio, 0.5f, 0.0f)));
+        // obj2.GetTransform() = Transform(
+        //     glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 
         cam.SetAspectRatio(ratio);
 
         GLint uniformLoc = -1;
-        mat2.Bind();
+        mat.Bind();
         // Set time uniforms
-        if (mat2.GetShader().GetUniformLocation("dt", uniformLoc))
-            mat2.GetShader().SetUniform(uniformLoc, renderer.GetDeltaTime());
-        if (mat2.GetShader().GetUniformLocation("t", uniformLoc))
-            mat2.GetShader().SetUniform(uniformLoc, renderer.GetUpTime());
-        if (mat2.GetShader().GetUniformLocation("ratio", uniformLoc))
-            mat2.GetShader().SetUniform(uniformLoc, ratio);
-        if (mat2.GetShader().GetUniformLocation("camPos", uniformLoc))
-            mat2.GetShader().SetUniform(uniformLoc,
-                                        cam.GetTransform().GetPosition());
+        if (mat.GetShader().GetUniformLocation("dt", uniformLoc))
+            mat.GetShader().SetUniform(uniformLoc, renderer.GetDeltaTime());
+        if (mat.GetShader().GetUniformLocation("t", uniformLoc))
+            mat.GetShader().SetUniform(uniformLoc, renderer.GetUpTime());
+        if (mat.GetShader().GetUniformLocation("ratio", uniformLoc))
+            mat.GetShader().SetUniform(uniformLoc, ratio);
+        if (mat.GetShader().GetUniformLocation("camPos", uniformLoc))
+            mat.GetShader().SetUniform(uniformLoc,
+                                       cam.GetTransform().GetPosition());
 
         // Firstly render to the texture
         renderer.RenderFramebuffer(framebuffer, mat);
