@@ -1,5 +1,7 @@
 #include "volt/gfx/Material.hpp"
 
+#include <iostream>
+
 using namespace volt::gfx;
 
 Material::Material(Shader shader) : sh(shader)
@@ -94,10 +96,10 @@ void Material::SetUniformPVM(glm::mat4 projection, glm::mat4 view,
         this->sh.SetUniform(this->uniformPV, projection * view);
 }
 
-void Material::SetUniformTex(Texture &tex, std::uint8_t imageUnit)
+void Material::SetUniformTex(std::uint8_t imageUnit)
 {
     if (HasUniformTex(imageUnit))
-        this->sh.SetUniform(this->uniformTex[imageUnit], tex.GetTexID());
+        this->sh.SetUniform(this->uniformTex[imageUnit], (GLint)imageUnit);
 }
 
 #pragma endregion

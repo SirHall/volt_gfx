@@ -43,7 +43,7 @@ namespace volt::gfx
 
         void SetUniformPVM(glm::mat4 projection, glm::mat4 view,
                            glm::mat4 model);
-        void SetUniformTex(Texture &tex, std::uint8_t imageUnit = 0);
+        void SetUniformTex(std::uint8_t imageUnit = 0);
 
         void Bind() const;
 
