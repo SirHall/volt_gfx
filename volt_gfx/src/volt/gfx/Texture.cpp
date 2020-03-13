@@ -4,31 +4,37 @@
 #include <cassert>
 
 using namespace volt::gfx;
+using namespace volt::gfx::internal;
 
-Texture::Texture(Image const &image)
+TexData::TexData(GLuint textureID, bool enableMipmaps)
+    : texID(textureID), mipmaps(enableMipmaps)
 {
-    this->CreateTexture(image.GetWidth(), image.GetHeight(),
+}
+
+Texture::Texture(Image const &image, bool enableMipmaps)
+{
+    this->CreateTexture(image.GetWidth(), image.GetHeight(), enableMipmaps,
                         static_cast<void const *>(image.GetImageData().data()));
 }
 
-Texture::Texture(GLsizei width, GLsizei height)
+Texture::Texture(GLsizei width, GLsizei height, bool enableMipmaps)
 {
-    this->CreateTexture(width, height, nullptr);
+    this->CreateTexture(width, height, enableMipmaps, nullptr);
 }
 
-Texture::Texture(const Texture &other) : texID(other.texID) {}
+Texture::Texture(const Texture &other) : texData(other.texData) {}
 
 Texture &Texture::operator=(const Texture &other)
 {
-    this->texID = other.texID;
+    this->texData = other.texData;
     return *this;
 }
 
-Texture::Texture(Texture &&other) : texID(std::move(other.texID)) {}
+Texture::Texture(Texture &&other) : texData(std::move(other.texData)) {}
 
 Texture &Texture::operator=(Texture &&other)
 {
-    this->texID = std::move(other.texID);
+    this->texData = std::move(other.texData);
     return *this;
 }
 
@@ -37,22 +43,26 @@ volt::gfx::Texture::~Texture() {}
 void Texture::Use(unsigned int unitIndex)
 {
     assert(unitIndex < 16);
-    this->Bind();
     GLCall(gl::ActiveTexture(gl::TEXTURE0 + unitIndex));
+    this->Bind();
 }
 
-void Texture::Bind() { GLCall(gl::BindTexture(gl::TEXTURE_2D, *this->texID)); }
+void Texture::Bind()
+{
+    GLCall(gl::BindTexture(gl::TEXTURE_2D, this->texData->texID));
+}
 
 void Texture::Unbind() { GLCall(gl::BindTexture(gl::TEXTURE_2D, 0)); }
 
-void Texture::CreateTexture(GLsizei width, GLsizei height, void const *data)
+void Texture::CreateTexture(GLsizei width, GLsizei height, bool enableMipmaps,
+                            void const *data)
 {
     GLuint id = 0;
 
     GLCall(gl::GenTextures(1, &id));
-    this->texID =
-        std::move(std::shared_ptr<GLuint>(new GLuint(id), [=](GLuint *ptr) {
-            GLCall(gl::DeleteTextures(1, ptr));
+    this->texData = std::move(std::shared_ptr<TexData>(
+        new TexData(id, enableMipmaps), [=](TexData *ptr) {
+            GLCall(gl::DeleteTextures(1, &ptr->texID));
             delete ptr;
         }));
 
@@ -67,15 +77,19 @@ void Texture::CreateTexture(GLsizei width, GLsizei height, void const *data)
                              gl::CLAMP_TO_EDGE));
 
     GLCall(gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER,
-                             gl::NEAREST_MIPMAP_LINEAR));
+                             this->texData->mipmaps ? gl::NEAREST_MIPMAP_LINEAR
+                                                    : gl::NEAREST));
     GLCall(
         gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST));
 }
 
+GLuint Texture::GetTexID() { return this->texData->texID; }
+
 void Texture::GenerateMipmap()
 {
     this->Bind();
-    GLCall(gl::GenerateMipmap(gl::TEXTURE_2D));
+    if (this->texData->mipmaps)
+        GLCall(gl::GenerateMipmap(gl::TEXTURE_2D));
 }
 
 GLsizei Texture::GetWidth()

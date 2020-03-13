@@ -13,18 +13,31 @@
 
 #include <memory>
 
+namespace volt::gfx::internal
+{
+    struct TexData
+    {
+    public:
+        GLuint const texID;
+        bool const   mipmaps;
+        TexData(GLuint textureID, bool enableMipmaps);
+    };
+} // namespace volt::gfx::internal
+
 namespace volt::gfx
 {
+    using namespace volt::gfx::internal;
     class Texture
     {
     private:
-        std::shared_ptr<GLuint> texID;
+        std::shared_ptr<TexData> texData;
 
-        void CreateTexture(GLsizei width, GLsizei height, void const *data);
+        void CreateTexture(GLsizei width, GLsizei height, bool enableMipmaps,
+                           void const *data);
 
     public:
-        Texture(Image const &image);
-        Texture(GLsizei width, GLsizei height);
+        Texture(Image const &image, bool enableMipmaps = true);
+        Texture(GLsizei width, GLsizei height, bool enableMipmaps = true);
 
         Texture(const Texture &other);
         Texture(Texture &&other);
@@ -37,7 +50,7 @@ namespace volt::gfx
         void Bind();
         void Unbind();
 
-        inline GLuint GetTexID() { return *this->texID; }
+        GLuint GetTexID();
 
         void GenerateMipmap();
 
