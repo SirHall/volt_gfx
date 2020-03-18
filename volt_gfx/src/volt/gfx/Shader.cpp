@@ -12,20 +12,20 @@ using namespace volt::gfx;
 bool Shader::CompileShadelet(ShadeletSource const &shadeletSource, GLuint &id,
                              std::vector<std::string> &errors)
 {
-    GLCall(id = gl::CreateShader(shadeletSource.GetType()));
+    GLCall(id = glCreateShader(shadeletSource.GetType()));
     const char *src = shadeletSource.GetSource().c_str();
-    GLCall(gl::ShaderSource(id, 1, &src, nullptr));
-    GLCall(gl::CompileShader(id));
+    GLCall(glShaderSource(id, 1, &src, nullptr));
+    GLCall(glCompileShader(id));
 
     GLint result = 0;
-    GLCall(gl::GetShaderiv(id, gl::COMPILE_STATUS, &result));
-    if (result == gl::FALSE_)
+    GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
+    if (result == GL_FALSE)
     {
         GLint len = 0;
-        GLCall(gl::GetShaderiv(id, gl::INFO_LOG_LENGTH, &len));
+        GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &len));
 
         GLchar *msg = (GLchar *)malloc(len);
-        GLCall(gl::GetShaderInfoLog(id, len, &len, msg));
+        GLCall(glGetShaderInfoLog(id, len, &len, msg));
 
         errors.push_back(std::string("Error in shader '" +
                                      shadeletSource.GetFullPath() + "':\n" +
@@ -36,10 +36,11 @@ bool Shader::CompileShadelet(ShadeletSource const &shadeletSource, GLuint &id,
 
     return true;
 }
+
 Shader Shader::CompileShader(ShaderSource const &      source,
                              std::vector<std::string> &errors)
 {
-    GLCall(GLuint programID = gl::CreateProgram());
+    GLCall(GLuint programID = glCreateProgram());
     GLuint shadeletID = 0;
 
     // Compile and add each individual shadelet
@@ -47,28 +48,28 @@ Shader Shader::CompileShader(ShaderSource const &      source,
     {
         if (CompileShadelet(shadelet, shadeletID, errors)) // No error occurred
         {
-            GLCall(gl::AttachShader(programID, shadeletID));
-            GLCall(gl::DeleteShader(shadeletID));
+            GLCall(glAttachShader(programID, shadeletID));
+            GLCall(glDeleteShader(shadeletID));
         }
         else
         {
-            GLCall(gl::DeleteProgram(programID));
+            GLCall(glDeleteProgram(programID));
             return Shader(0);
         }
     }
-    GLCall(gl::LinkProgram(programID));
+    GLCall(glLinkProgram(programID));
 
     // Check for link-time errors
     GLint linkStatus = 0;
-    GLCall(gl::GetProgramiv(programID, gl::LINK_STATUS, &linkStatus));
-    if (linkStatus == gl::FALSE_)
+    GLCall(glGetProgramiv(programID, GL_LINK_STATUS, &linkStatus));
+    if (linkStatus == GL_FALSE)
     {
         // Linking failed
         GLint len = 0;
-        GLCall(gl::GetProgramiv(programID, gl::INFO_LOG_LENGTH, &len));
+        GLCall(glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &len));
         GLchar *msg = (GLchar *)malloc(len);
 
-        GLCall(gl::GetProgramInfoLog(programID, len, &len, msg));
+        GLCall(glGetProgramInfoLog(programID, len, &len, msg));
 
         std::string err = "Linker error in shader '" + source.GetName() +
                           "':\n" + std::string((char *)msg);
@@ -77,20 +78,19 @@ Shader Shader::CompileShader(ShaderSource const &      source,
         delete msg;
         return Shader(0);
     }
-
     // Linking succeeded
     return std::move(Shader(programID));
 }
 
 GLuint Shader::GetProgram() const { return *this->program; }
 
-void Shader::Bind() const { GLCall(gl::UseProgram(*this->program)); }
+void Shader::Bind() const { GLCall(glUseProgram(*this->program)); }
 
 bool Shader::GetUniformLocation(const std::string &uniformName,
                                 GLint &            uniformLocOut) const
 {
     GLCall(uniformLocOut =
-               gl::GetUniformLocation(*this->program, uniformName.c_str()));
+               glGetUniformLocation(*this->program, uniformName.c_str()));
     return uniformLocOut >= 0;
 }
 
@@ -98,7 +98,7 @@ Shader::Shader(GLuint programID)
     : program(std::move(
           std::shared_ptr<GLuint>(new GLuint(programID), [=](GLuint *ptr) {
               if (*ptr > 0)
-                  GLCall(gl::DeleteProgram(*ptr));
+                  GLCall(glDeleteProgram(*ptr));
               delete ptr;
           })))
 {
@@ -142,202 +142,202 @@ namespace volt::gfx
     template <>
     void AssignUniform(GLint uniformLoc, const GLuint &value)
     {
-        GLCall(gl::Uniform1ui(uniformLoc, value));
+        GLCall(glUniform1ui(uniformLoc, value));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const GLint &value)
     {
-        GLCall(gl::Uniform1i(uniformLoc, value));
+        GLCall(glUniform1i(uniformLoc, value));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const GLfloat &value)
     {
-        GLCall(gl::Uniform1f(uniformLoc, value));
+        GLCall(glUniform1f(uniformLoc, value));
     }
 
     // template <>
     // void AssignUniform(GLint uniformLoc, const glm::vec1 &value)
     // {
-    //     gl::Uniform1fv(uniformLoc, 1, glm::value_ptr(value));
+    //     glUniform1fv(uniformLoc, 1, glm::value_ptr(value));
     // }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::vec2 &value)
     {
-        GLCall(gl::Uniform2fv(uniformLoc, 1, glm::value_ptr(value)));
+        GLCall(glUniform2fv(uniformLoc, 1, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::vec3 &value)
     {
-        GLCall(gl::Uniform3fv(uniformLoc, 1, glm::value_ptr(value)));
+        GLCall(glUniform3fv(uniformLoc, 1, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::vec4 &value)
     {
-        GLCall(gl::Uniform4fv(uniformLoc, 1, glm::value_ptr(value)));
+        GLCall(glUniform4fv(uniformLoc, 1, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::vec1> &value)
     {
-        GLCall(gl::Uniform1fv(uniformLoc, value.size(),
+        GLCall(glUniform1fv(uniformLoc, value.size(),
                               (const float *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::vec2> &value)
     {
-        GLCall(gl::Uniform2fv(uniformLoc, value.size(),
+        GLCall(glUniform2fv(uniformLoc, value.size(),
                               (const float *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::vec3> &value)
     {
-        GLCall(gl::Uniform3fv(uniformLoc, value.size(),
+        GLCall(glUniform3fv(uniformLoc, value.size(),
                               (const float *)value.size()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::vec4> &value)
     {
-        GLCall(gl::Uniform4fv(uniformLoc, value.size(),
+        GLCall(glUniform4fv(uniformLoc, value.size(),
                               (const float *)value.size()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::quat &value)
     {
-        GLCall(gl::Uniform4fv(uniformLoc, 1, glm::value_ptr(value)));
+        GLCall(glUniform4fv(uniformLoc, 1, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat2 &value)
     {
         GLCall(
-            gl::UniformMatrix2fv(uniformLoc, 1, false, glm::value_ptr(value)));
+            glUniformMatrix2fv(uniformLoc, 1, false, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat3 &value)
     {
         GLCall(
-            gl::UniformMatrix3fv(uniformLoc, 1, false, glm::value_ptr(value)));
+            glUniformMatrix3fv(uniformLoc, 1, false, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat4 &value)
     {
         GLCall(
-            gl::UniformMatrix4fv(uniformLoc, 1, false, glm::value_ptr(value)));
+            glUniformMatrix4fv(uniformLoc, 1, false, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat2x3 &value)
     {
-        GLCall(gl::UniformMatrix2x3fv(uniformLoc, 1, false,
+        GLCall(glUniformMatrix2x3fv(uniformLoc, 1, false,
                                       glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat3x2 &value)
     {
-        GLCall(gl::UniformMatrix3x2fv(uniformLoc, 1, false,
+        GLCall(glUniformMatrix3x2fv(uniformLoc, 1, false,
                                       glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat2x4 &value)
     {
-        GLCall(gl::UniformMatrix2x4fv(uniformLoc, 1, false,
+        GLCall(glUniformMatrix2x4fv(uniformLoc, 1, false,
                                       glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat4x2 &value)
     {
-        GLCall(gl::UniformMatrix4x2fv(uniformLoc, 1, false,
+        GLCall(glUniformMatrix4x2fv(uniformLoc, 1, false,
                                       glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat3x4 &value)
     {
-        GLCall(gl::UniformMatrix3x4fv(uniformLoc, 1, false,
+        GLCall(glUniformMatrix3x4fv(uniformLoc, 1, false,
                                       glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat4x3 &value)
     {
-        GLCall(gl::UniformMatrix4x3fv(uniformLoc, 1, false,
+        GLCall(glUniformMatrix4x3fv(uniformLoc, 1, false,
                                       glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat2> &value)
     {
-        GLCall(gl::UniformMatrix2fv(uniformLoc, value.size(), false,
+        GLCall(glUniformMatrix2fv(uniformLoc, value.size(), false,
                                     (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat3> &value)
     {
-        GLCall(gl::UniformMatrix3fv(uniformLoc, value.size(), false,
+        GLCall(glUniformMatrix3fv(uniformLoc, value.size(), false,
                                     (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat4> &value)
     {
-        GLCall(gl::UniformMatrix4fv(uniformLoc, value.size(), false,
+        GLCall(glUniformMatrix4fv(uniformLoc, value.size(), false,
                                     (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat2x3> &value)
     {
-        GLCall(gl::UniformMatrix2x3fv(uniformLoc, value.size(), false,
+        GLCall(glUniformMatrix2x3fv(uniformLoc, value.size(), false,
                                       (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat3x2> &value)
     {
-        GLCall(gl::UniformMatrix3x2fv(uniformLoc, value.size(), false,
+        GLCall(glUniformMatrix3x2fv(uniformLoc, value.size(), false,
                                       (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat2x4> &value)
     {
-        GLCall(gl::UniformMatrix2x4fv(uniformLoc, value.size(), false,
+        GLCall(glUniformMatrix2x4fv(uniformLoc, value.size(), false,
                                       (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat4x2> &value)
     {
-        GLCall(gl::UniformMatrix4x2fv(uniformLoc, value.size(), false,
+        GLCall(glUniformMatrix4x2fv(uniformLoc, value.size(), false,
                                       (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat3x4> &value)
     {
-        GLCall(gl::UniformMatrix3x4fv(uniformLoc, value.size(), false,
+        GLCall(glUniformMatrix3x4fv(uniformLoc, value.size(), false,
                                       (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat4x3> &value)
     {
-        GLCall(gl::UniformMatrix4x3fv(uniformLoc, value.size(), false,
+        GLCall(glUniformMatrix4x3fv(uniformLoc, value.size(), false,
                                       (const GLfloat *)value.data()));
     }
 } // namespace volt::gfx

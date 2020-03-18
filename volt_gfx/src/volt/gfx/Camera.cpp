@@ -64,7 +64,7 @@ void Camera::SetPerspectiveFOV(float fov)
 
 void Camera::SetNearFarPlanes(float near, float far)
 {
-    this->nearPlane       = near;
-    this->farPlane        = far;
+    // this->nearPlane       = near;
+    // this->farPlane        = far;
     this->projectionDirty = true;
 }

@@ -7,6 +7,7 @@
 
 #include <array>
 #include <memory>
+#include <optional>
 
 namespace volt::gfx
 {

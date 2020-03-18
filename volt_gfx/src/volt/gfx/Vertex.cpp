@@ -1,6 +1,8 @@
 #include "volt/gfx/Vertex.hpp"
 #include "volt/gfx/GLUtilities.hpp"
 
+#include <iostream>
+
 volt::gfx::Vertex::Vertex() {}
 
 volt::gfx::Vertex::Vertex(GLfloat pos_x, GLfloat pos_y, GLfloat pos_z,
@@ -39,34 +41,33 @@ volt::gfx::Vertex &volt::gfx::Vertex::operator=(const volt::gfx::Vertex &other)
 volt::gfx::Vertex::~Vertex() {}
 
 // #define GenAttrib(attr, attrType)                                              \
-//     GLCall(gl::VertexAttribPointer(                                            \
+//     GLCall(glVertexAttribPointer(                                            \
 //         currentIndex++, sizeof(attr) / sizeof(attrType),                       \
-//         GetGlType<attrType>(), gl::FALSE_, sizeof(Vertex),                     \
+//         GetGlType<attrType>(), GL_FALSE, sizeof(Vertex),                     \
 //         reinterpret_cast<void *>(offsetof(Vertex, attr))))
 
 GLuint volt::gfx::Vertex::GenerateVAO()
 {
     GLuint vao = 0;
-    GLCall(gl::GenVertexArrays(2, &vao));
-    GLCall(gl::BindVertexArray(vao));
+    GLCall(glGenVertexArrays(1, &vao));
+    GLCall(glBindVertexArray(vao));
     // Vertex attributes
-    GLCall(gl::EnableVertexAttribArray(0));
-    GLCall(gl::EnableVertexAttribArray(1));
-
+    GLCall(glEnableVertexAttribArray(0));
+    GLCall(glEnableVertexAttribArray(1));
     GLuint currentIndex = 0;
 
     // Model position attribute
     // GenAttrib(position, GLfloat);
-    GLCall(gl::VertexAttribPointer(
-        currentIndex, 3, gl::FLOAT, gl::FALSE_, sizeof(Vertex),
+    GLCall(glVertexAttribPointer(
+        currentIndex, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
         reinterpret_cast<void *>(offsetof(Vertex, position))));
 
     currentIndex++;
 
     // UV Coordinate Attribute
     // GenAttrib(uv, GLfloat);
-    GLCall(gl::VertexAttribPointer(
-        currentIndex, 2, gl::FLOAT, gl::FALSE_, sizeof(Vertex),
+    GLCall(glVertexAttribPointer(
+        currentIndex, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
         reinterpret_cast<void *>(offsetof(Vertex, uv))));
 
     currentIndex++;

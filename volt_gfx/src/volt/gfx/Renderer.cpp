@@ -219,17 +219,27 @@ bool Renderer::Initialize(GFXSettings settings)
         return false;
     }
 
-    gl::exts::LoadTest loaded = gl::sys::LoadFunctions();
-    if (!loaded)
-    {
-        // The context does not work with the generated headers
-        std::cerr << "Failed to load gl" << std::endl;
-        glfwTerminate();
-        return false;
-    }
+    // glexts::LoadTest loaded = glsys::LoadFunctions();
+    // if (!loaded)
+    // {
+    //     // The context does not work with the generated headers
+    //     std::cerr << "Failed to load gl" << std::endl;
+    //     glfwTerminate();
+    //     return false;
+    // }
 
     // Make the window's context current
     glfwMakeContextCurrent(window);
+
+    //Initialize glew
+    GLenum err = glewInit();
+    if (err != GLEW_OK)
+    {
+        fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        return false;
+    }
 
     // Only after the contect has been made current can we use glGetError()
     // calls on Windows
@@ -242,30 +252,30 @@ bool Renderer::Initialize(GFXSettings settings)
 
     // Enable multi-sampling
     if (settings.multiSampling)
-        GLCall(gl::Enable(gl::MULTISAMPLE));
+        GLCall(glEnable(GL_MULTISAMPLE));
 
     // Enable Depth buffer
     if (settings.depthTest)
-        GLCall(gl::Enable(gl::DEPTH_TEST));
+        GLCall(glEnable(GL_DEPTH_TEST));
 
     // Enable blending
     if (settings.blending)
     {
-        GLCall(gl::Enable(gl::BLEND));
-        GLCall(gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA));
+        GLCall(glEnable(GL_BLEND));
+        GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     }
 
-    GLCall(gl::ClearColor(0.0, 0.0, 0.0, 1.0));
+    GLCall(glClearColor(0.0, 0.0, 0.0, 1.0));
 
     auto [bufferWidth, bufferHeight] = this->GetFrameBufferSize();
     // Setup viewport
-    GLCall(gl::Viewport(0, 0, bufferWidth, bufferHeight));
+    GLCall(glViewport(0, 0, bufferWidth, bufferHeight));
 
     this->SetupCallbacks();
 
     //--- OpenGL Code starts here ---//
 
-    GLCall(std::cout << "OpenGL Driver: " << gl::GetString(gl::VERSION)
+    GLCall(std::cout << "OpenGL Driver: " << glGetString(GL_VERSION)
                      << std::endl);
 
     initialized = true;
@@ -298,8 +308,8 @@ void Renderer::DirectRender(RenderObject &obj, Camera const &cam)
                                     cam.GetTransform().GetMatrix(),
                                     obj.GetTransform().GetMatrix());
     // The draw call
-    GLCall(gl::DrawElements(gl::TRIANGLES, obj.GetMesh().GetIndices().size(),
-                            gl::UNSIGNED_INT, 0));
+    GLCall(glDrawElements(GL_TRIANGLES, obj.GetMesh().GetIndices().size(),
+                            GL_UNSIGNED_INT, 0));
 }
 
 void Renderer::RenderFramebuffer(Framebuffer &fb, Material &mat,
@@ -321,8 +331,8 @@ void Renderer::RenderFramebuffer(Framebuffer &fb, Material &mat,
             std::make_tuple(tex->GetWidth(), tex->GetHeight()));
 
     // The draw call
-    GLCall(gl::DrawElements(gl::TRIANGLES, mesh.GetIndices().size(),
-                            gl::UNSIGNED_INT, 0));
+    GLCall(glDrawElements(GL_TRIANGLES, mesh.GetIndices().size(),
+                            GL_UNSIGNED_INT, 0));
 
     mesh.Unbind();
     Framebuffer::BindDefaultFramebuffer();
@@ -364,7 +374,7 @@ void Renderer::RenderFramebuffer(Framebuffer &fb, Material &mat,
 void Renderer::DisplayFrame()
 {
     glfwSwapBuffers(window);
-    GLCall(gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT));
+    GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
 bool Renderer::WindowOpen() { return !glfwWindowShouldClose(window); }
@@ -402,10 +412,10 @@ void Renderer::SleepForFrame()
                      (GetTime(this->lastFrameTimePoint, this->frameTimePoint));
 
     // Only sleep if we are running ahead of schedule
-    if (timeLeft > 0.0f)
-        std::this_thread::sleep_for(
-            std::chrono::milliseconds((int)(1000.0f * timeLeft)));
-    this->frameTimePoint = steady_clock::now();
+    // if (timeLeft > 0.0f)
+    //     std::this_thread::sleep_for(
+    //         std::chrono::milliseconds((int)(1000.0f * timeLeft)));
+    // this->frameTimePoint = steady_clock::now();
 }
 
 void Renderer::PollEvents()
@@ -447,13 +457,13 @@ std::tuple<int, int> Renderer::GetFrameBufferSize()
 void Renderer::SetContextSize(std::tuple<int, int> newSize)
 {
     auto [width, height] = newSize;
-    gl::Viewport(0, 0, width, height);
+    glViewport(0, 0, width, height);
 }
 
 void Renderer::CorrectContextSize()
 {
     auto [width, height] = this->GetFrameBufferSize();
-    gl::Viewport(0, 0, width, height);
+    glViewport(0, 0, width, height);
 }
 
 float Renderer::GetFrameBufferSizeRatio()

@@ -64,24 +64,24 @@ void Mesh::CreateMesh(std::vector<Vertex> const &       vertices,
     this->vertices = vertices;
     this->indices  = indices;
     // Vertex buffer
-    GLCall(gl::GenBuffers(1, &this->vbo));
-    GLCall(gl::BindBuffer(gl::ARRAY_BUFFER, this->vbo));
-    GLCall(gl::BufferData(gl::ARRAY_BUFFER, VecTotalSize(this->vertices),
-                          this->vertices.data(), gl::STATIC_DRAW));
+    GLCall(glGenBuffers(1, &this->vbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, this->vbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, VecTotalSize(this->vertices),
+                          this->vertices.data(), GL_STATIC_DRAW));
 
     // Setup vertex array object
     this->vao = Vertex::GenerateVAO();
 
     // Index buffer
-    GLCall(gl::GenBuffers(1, &this->ibo));
-    GLCall(gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, this->ibo));
-    GLCall(gl::BufferData(gl::ELEMENT_ARRAY_BUFFER, VecTotalSize(this->indices),
-                          this->indices.data(), gl::STATIC_DRAW));
+    GLCall(glGenBuffers(1, &this->ibo));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, VecTotalSize(this->indices),
+                          this->indices.data(), GL_STATIC_DRAW));
 
     // Unbind all buffers
-    GLCall(gl::BindVertexArray(0));
-    GLCall(gl::BindBuffer(gl::ARRAY_BUFFER, 0));
-    GLCall(gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, 0));
+    GLCall(glBindVertexArray(0));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }
 
 void Mesh::RenderMesh()
@@ -93,26 +93,26 @@ void Mesh::RenderMesh()
     if (this->ibo == 0)
         std::cout << "ibo == 0" << std::endl;
 
-    GLCall(gl::BindVertexArray(vao));
-    GLCall(gl::BindBuffer(gl::ARRAY_BUFFER, vbo)); // Probably not needed
-    GLCall(gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ibo));
+    GLCall(glBindVertexArray(vao));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo)); // Probably not needed
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
 
     // The draw call
     GLCall(
-        gl::DrawElements(gl::TRIANGLES, indices.size(), gl::UNSIGNED_INT, 0));
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0));
 
-    GLCall(gl::BindVertexArray(0));
-    GLCall(gl::BindBuffer(gl::ARRAY_BUFFER, 0)); // Probably not needed
-    GLCall(gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, 0));
+    GLCall(glBindVertexArray(0));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0)); // Probably not needed
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }
 
 void Mesh::ClearMesh()
 {
-    GLCall(gl::DeleteBuffers(1, &ibo));
+    GLCall(glDeleteBuffers(1, &ibo));
     ibo = 0;
-    GLCall(gl::DeleteBuffers(1, &vbo));
+    GLCall(glDeleteBuffers(1, &vbo));
     vbo = 0;
-    GLCall(gl::DeleteVertexArrays(1, &vao));
+    GLCall(glDeleteVertexArrays(1, &vao));
     vao = 0;
     indices.clear();
     vertices.clear();
@@ -138,14 +138,14 @@ bool Mesh::IsValid() const
 
 void Mesh::Bind() const
 {
-    GLCall(gl::BindVertexArray(vao));
-    GLCall(gl::BindBuffer(gl::ARRAY_BUFFER, vbo)); // Probably not needed
-    GLCall(gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ibo));
+    GLCall(glBindVertexArray(vao));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo)); // Probably not needed
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
 }
 
 void Mesh::Unbind() const
 {
-    GLCall(gl::BindVertexArray(0));
-    GLCall(gl::BindBuffer(gl::ARRAY_BUFFER, 0)); // Probably not needed
-    GLCall(gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, 0));
+    GLCall(glBindVertexArray(0));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0)); // Probably not needed
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }

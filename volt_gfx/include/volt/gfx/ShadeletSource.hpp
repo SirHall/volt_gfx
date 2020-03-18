@@ -10,9 +10,9 @@ namespace volt::gfx
 {
     struct ShadeletType
     {
-        static constexpr GLenum Vertex   = gl::VERTEX_SHADER;
-        static constexpr GLenum Fragment = gl::FRAGMENT_SHADER;
-        static constexpr GLenum Geometry = gl::GEOMETRY_SHADER;
+        static constexpr GLenum Vertex   = GL_VERTEX_SHADER;
+        static constexpr GLenum Fragment = GL_FRAGMENT_SHADER;
+        static constexpr GLenum Geometry = GL_GEOMETRY_SHADER;
     };
 
     class ShadeletSource
