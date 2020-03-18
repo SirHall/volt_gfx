@@ -2,4 +2,4 @@ cmake_minimum_required(VERSION 3.7)
 
 add_executable(ts_volt_gfx_test_framebuffer ${CMAKE_CURRENT_SOURCE_DIR}/framebuffer_test.cpp)
 target_link_libraries(ts_volt_gfx_test_framebuffer volt_gfx)
-set_property(TARGET ts_volt_gfx_test_framebuffer PROPERTY CXX_STANDARD 20)
+set_property(TARGET ts_volt_gfx_test_framebuffer PROPERTY CXX_STANDARD 17)
