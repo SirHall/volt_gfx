@@ -3,7 +3,7 @@
 #define VOLT_GFX_GLIMPORT_HPP
 
 // OpenGL Start
-#include <volt/gl.hpp>
+#include <GL/glew.h>
 // glew must be imported before glfw3
 #include <GLFW/glfw3.h>
 // OpenGL End
