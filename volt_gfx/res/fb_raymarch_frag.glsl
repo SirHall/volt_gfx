@@ -76,25 +76,28 @@ vec3 GetNormal(vec3 pos)
 
 vec3 GetColor(vec3 pos)
 {
-    // return hsv2rgb(vec3(length(pos) * 3, 1.0, 1.0));
-    return texture(gfxTex1, vec2((1.0 - (length(pos) * 0.90)) * 3.0, 1.0)).xyz;
+    return hsv2rgb(vec3(length(pos) * 3, 1.0, 1.0));
+    // return texture(gfxTex1, vec2((1.0 - (length(pos) * 0.90)) * 3.0, 1.0)).xyz;
 }
 
 // Raymarch from position
-vec2 Raymarch(vec3 origin, vec3 dir)
+vec3 Raymarch(vec3 origin, vec3 dir)
 {
     float totalDist = 0.0;
+    float minDist = MAX_DIST;
     vec3  pos       = origin;
     int   i         = 0;
     for (i = 0; i < MAX_STEPS; i++)
     {
         float dist = GetDist(pos);
+        if(dist < minDist)
+            minDist = dist;
         totalDist += dist;
         pos += dist * dir;
         if (dist < MIN_DIST || totalDist >= MAX_DIST)
             break;
     }
-    return vec2(totalDist, i);
+    return vec3(totalDist, i, minDist);
 }
 
 float GetLight(vec3 pos, vec3 lightPos)
@@ -102,7 +105,7 @@ float GetLight(vec3 pos, vec3 lightPos)
     vec3  lightDir      = normalize(lightPos - pos);
     vec3  normal        = GetNormal(pos);
     float diffuse       = dot(normal, lightDir) * 0.5 + 1.0;
-    vec2  lightRayMarch = Raymarch(pos + (normal * MIN_DIST * 2.0), lightDir);
+    vec3  lightRayMarch = Raymarch(pos + (normal * MIN_DIST * 2.0), lightDir);
     if (lightRayMarch.x < length(lightDir - pos))
         diffuse *= (0.25);
     return diffuse;
@@ -125,7 +128,7 @@ vec3 GetReflections(vec3 pos, int subdivisions, vec3 lightPos, vec3 skyCol)
                 vec3  dir =
                     normalize(vec3(i * increment + 0.5, j * increment + 0.5,
                                    k + increment + 0.5));
-                vec2 reflectionMarch = Raymarch(pos, dir);
+                vec3 reflectionMarch = Raymarch(pos, dir);
                 if (reflection.x + 1 >= MAX_DIST)
                 {
                     // This is the background
@@ -151,11 +154,12 @@ void main()
     vec3 dir = normalize(vec3(uv.x * ratio, uv.y, 1.0));
 
     vec3 lightPos = vec3(0.0, 5.0, -2.0);
-    vec3 skyCol   = vec3(135, 206, 235) / 255.0;
+    // vec3 skyCol   = vec3(135, 206, 235) / 255.0;
+    vec3 skyCol = vec3(0.0);
 
     vec3 pos = vec3(0.0, 0.0, -2.0);
 
-    vec2  march = Raymarch(pos, dir);
+    vec3  march = Raymarch(pos, dir);
     float dist  = march.x;
     //  GetLight(uv + dir * dist, lightPos);
     vec3 col;
@@ -165,13 +169,15 @@ void main()
               GetColor(pos + dir * dist);
 
         // Apply reflections
-        float reflectionAlpha = 0.95;
-        col = col + (GetReflections(pos + dir * dist, 4, lightPos, skyCol) *
-                     (1 - reflectionAlpha));
+        // float reflectionAlpha = 0.95;
+        // col = col + (GetReflections(pos + dir * dist, 4, lightPos, skyCol) *
+        //              (1 - reflectionAlpha));
     }
     else
     {
         col = skyCol;
+        if(march.z < 0.025)
+            col = vec3(1.0 - (march.z / 0.025));
     }
     gl_FragColor = vec4(col, 1.0);
 }

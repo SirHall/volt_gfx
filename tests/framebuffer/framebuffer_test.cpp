@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     ShadeletSource shadeletVert =
         ShadeletSource("res/shader_vert.glsl", ShadeletType::Vertex);
     ShadeletSource shadeletFrag =
-        ShadeletSource("res/fb_mandelbrot_frag.glsl", ShadeletType::Fragment);
+        ShadeletSource("res/fb_raymarch_frag.glsl", ShadeletType::Fragment);
     shaderSource.AddShadelet(shadeletVert);
     shaderSource.AddShadelet(shadeletFrag);
 
