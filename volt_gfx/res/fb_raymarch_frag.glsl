@@ -16,6 +16,8 @@ uniform float     ratio;
 uniform vec3      camPos;
 uniform mat4      gfxPV;
 
+out vec4 color;
+
 // Magnitude
 float Mag(vec3 v) { return sqrt(v.x * v.x + v.y * v.y + v.z * v.z); }
 
@@ -76,8 +78,8 @@ vec3 GetNormal(vec3 pos)
 
 vec3 GetColor(vec3 pos)
 {
-    return hsv2rgb(vec3(length(pos) * 3, 1.0, 1.0));
-    // return texture(gfxTex1, vec2((1.0 - (length(pos) * 0.90)) * 3.0, 1.0)).xyz;
+    // return hsv2rgb(vec3(length(pos) * 3, 1.0, 1.0));
+    return texture(gfxTex1, vec2((1.0 - (length(pos) * 0.90)) * 3.0, 1.0)).xyz * 2;
 }
 
 // Raymarch from position
@@ -165,7 +167,8 @@ void main()
     vec3 col;
     if (dist + 1 < MAX_DIST)
     {
-        col = vec3(GetLight(pos + dir * dist, lightPos)) *
+        col = 
+        vec3(GetLight(pos + dir * dist, lightPos)) *
               GetColor(pos + dir * dist);
 
         // Apply reflections
@@ -179,5 +182,5 @@ void main()
         if(march.z < 0.025)
             col = vec3(1.0 - (march.z / 0.025));
     }
-    gl_FragColor = vec4(col, 1.0);
+    color = vec4(col, 1.0);
 }
