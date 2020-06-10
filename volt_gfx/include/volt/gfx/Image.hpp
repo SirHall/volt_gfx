@@ -20,8 +20,8 @@ namespace volt::gfx
 
     public:
         Image(std::string const &path);
-        Image(const std::vector<std::uint8_t> &data);
-        Image(std::vector<std::uint8_t> &&data);
+        Image(const std::vector<std::uint8_t> &data, GLsizei w, GLsizei h);
+        Image(std::vector<std::uint8_t> &&data, GLsizei w, GLsizei h);
         Image(const Image &other);
         Image &operator=(const Image &other);
         Image(Image &&other);
@@ -35,6 +35,8 @@ namespace volt::gfx
         {
             return this->imageData;
         }
+
+        void Save(std::string const &filePath);
     };
 
 } // namespace volt::gfx
