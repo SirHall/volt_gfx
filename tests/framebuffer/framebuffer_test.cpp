@@ -1,9 +1,10 @@
-#include "volt/event.hpp"
+﻿#include "volt/event.hpp"
 #include "volt/gfx.hpp"
 
 #include <iostream>
 
 #include <boost/filesystem.hpp>
+#include <filesystem>
 
 using namespace volt::gfx;
 
@@ -14,6 +15,8 @@ bool   firstUpdate = true;
 
 int main(int argc, char *argv[])
 {
+    std::cout << "WD: " << std::filesystem::current_path() << std::endl;
+
 #pragma region Setup Renderer and Window
 
     auto renderer = Renderer();
@@ -33,6 +36,8 @@ int main(int argc, char *argv[])
     }
     renderer.SetTargetFPS(60.0f);
 
+    std::function<void(void)> screenshotFunc;
+
     auto keyStrikeObserver =
         volt::event::observer<GFXEventKey>([&](GFXEventKey const &e) {
             if (e.GetAction().Get() == KeyAction::Press().Get())
@@ -45,6 +50,8 @@ int main(int argc, char *argv[])
 
             if (e.GetKey() == GLFW_KEY_ESCAPE)
                 renderer.Close();
+            if (e.GetKey() == GLFW_KEY_F)
+                screenshotFunc();
         });
 
     // Resize the context when the frame buffer gets resized
@@ -71,6 +78,7 @@ int main(int argc, char *argv[])
         ShadeletSource("res/shader_vert.glsl", ShadeletType::Vertex);
     ShadeletSource shadeletFrag =
         ShadeletSource("res/fb_raymarch_frag.glsl", ShadeletType::Fragment);
+    // ShadeletSource("res/fb_mandelbrot_frag.glsl", ShadeletType::Fragment);
     shaderSource.AddShadelet(shadeletVert);
     shaderSource.AddShadelet(shadeletFrag);
 
@@ -134,7 +142,7 @@ int main(int argc, char *argv[])
 
     Texture tex = Texture(1920, 1080, false);
 
-    Texture infernoTex = Texture(Image("./res/inferno.png"));
+    Texture infernoTex = Texture(Image("./res/inferno.png"), false);
 
     infernoTex.Use(1);
     mat.SetUniformTex(1);
@@ -159,6 +167,13 @@ int main(int argc, char *argv[])
     cam.SetPerspectiveMode(false);
     cam.SetOrthoSize(1.0f);
     cam.SetNearFarPlanes(0.1f, 100.0f);
+
+    screenshotFunc = [&]() {
+        auto img = framebuffer.RetreiveImage();
+        if (img)
+            img->Save("img.png");
+    };
+
     // Loop until the user closes the window
     while (renderer.WindowOpen())
     {
