@@ -63,6 +63,8 @@ namespace volt::gfx
                            std::uint8_t attachmentIndex = 0);
 
         std::optional<Texture> GetTexture(std::uint8_t attachmentIndex = 0);
+
+        std::optional<Image> RetreiveImage(std::uint8_t attachmentIndex = 0);
     };
 
 } // namespace volt::gfx

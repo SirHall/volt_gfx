@@ -1,4 +1,4 @@
-#include "volt/gfx/Framebuffer.hpp"
+﻿#include "volt/gfx/Framebuffer.hpp"
 #include "volt/gfx/GLUtilities.hpp"
 
 #include <cassert>
@@ -95,12 +95,27 @@ void Framebuffer::AttachTexture(Texture tex, FramebufferTarget target,
     tex.Bind();
     this->BindReadWriteTarget();
     GLCall(glFramebufferTexture2D(target.Get(),
-                                    GL_COLOR_ATTACHMENT0 + attachmentIndex,
-                                    GL_TEXTURE_2D, tex.GetTexID(), 0));
+                                  GL_COLOR_ATTACHMENT0 + attachmentIndex,
+                                  GL_TEXTURE_2D, tex.GetTexID(), 0));
     this->textures[attachmentIndex] = tex;
 }
 
 std::optional<Texture> Framebuffer::GetTexture(std::uint8_t attachmentIndex)
 {
     return this->textures[attachmentIndex];
+}
+
+std::optional<Image> Framebuffer::RetreiveImage(std::uint8_t attachmentIndex)
+{
+    auto tex = this->GetTexture(attachmentIndex);
+    if (tex)
+    {
+        this->BindReadWriteTarget(attachmentIndex);
+        GLsizei                   w = tex->GetWidth(), h = tex->GetHeight();
+        std::vector<std::uint8_t> imgData;
+        imgData.resize(w * h * 4);
+        glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, imgData.data());
+        return std::move(Image(std::move(imgData), w, h));
+    }
+    return std::nullopt;
 }
