@@ -2,6 +2,8 @@
 #include "volt/gfx.hpp"
 
 #include <iostream>
+#include <sstream>
+#include <string>
 
 #include <boost/filesystem.hpp>
 #include <filesystem>
@@ -13,9 +15,14 @@ double lastMouseX = 0.0, lastMouseY = 0.0;
 float  scale = 1.0f, scaleDeltaSpeed = 0.01f;
 bool   firstUpdate = true;
 
+bool liveMode = true;
+
 int main(int argc, char *argv[])
 {
     std::cout << "WD: " << std::filesystem::current_path() << std::endl;
+
+    // The current frame number
+    std::size_t frame = 0;
 
 #pragma region Setup Renderer and Window
 
@@ -35,6 +42,8 @@ int main(int argc, char *argv[])
         std::exit(1);
     }
     renderer.SetTargetFPS(60.0f);
+
+    renderer.Fullscreen();
 
     std::function<void(void)> screenshotFunc;
 
@@ -61,8 +70,8 @@ int main(int argc, char *argv[])
 
     auto cursorPosObserver =
         volt::event::observer<GFXEventCursorPos>([&](GFXEventCursorPos &e) {
-            mouseXDiff = lastMouseX - e.GetXPos();
-            mouseYDiff = lastMouseY - e.GetYPos();
+            mouseXDiff = (float)lastMouseX - (float)e.GetXPos();
+            mouseYDiff = (float)lastMouseY - (float)e.GetYPos();
 
             lastMouseX = e.GetXPos();
             lastMouseY = e.GetYPos();
@@ -194,13 +203,16 @@ int main(int argc, char *argv[])
 
         cam.SetAspectRatio(ratio);
 
+        float dt = liveMode ? renderer.GetDeltaTime() : 1.0f / 30.0f;
+        float t  = liveMode ? renderer.GetUpTime() : dt * frame;
+
         GLint uniformLoc = -1;
         mat.Bind();
         // Set time uniforms
         if (mat.GetShader().GetUniformLocation("dt", uniformLoc))
-            mat.GetShader().SetUniform(uniformLoc, renderer.GetDeltaTime());
+            mat.GetShader().SetUniform(uniformLoc, dt);
         if (mat.GetShader().GetUniformLocation("t", uniformLoc))
-            mat.GetShader().SetUniform(uniformLoc, renderer.GetUpTime());
+            mat.GetShader().SetUniform(uniformLoc, t);
         if (mat.GetShader().GetUniformLocation("ratio", uniformLoc))
             mat.GetShader().SetUniform(uniformLoc, ratio);
         if (mat.GetShader().GetUniformLocation("camPos", uniformLoc))
@@ -215,10 +227,22 @@ int main(int argc, char *argv[])
         renderer.DirectRender(obj2, cam);
 
         renderer.DisplayFrame();
-        renderer.SleepForFrame();
 
-        std::cout << 1.0f / renderer.GetDeltaTime() << std::endl;
+        // If live, render in realtime, otherwise render to a file
+        if (liveMode)
+        {
+            renderer.SleepForFrame();
+            std::cout << 1.0f / renderer.GetDeltaTime() << std::endl;
+        }
+        else
+        {
+            auto fileName = std::stringstream();
+            fileName << "frame_" << frame << ".png";
+            auto img = framebuffer.RetreiveImage();
+            if (img)
+                img->Save(fileName.str());
+        }
+        frame++;
     }
-
     return 0;
 }
