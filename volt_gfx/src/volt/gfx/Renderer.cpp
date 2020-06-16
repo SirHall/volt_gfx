@@ -14,6 +14,9 @@
 #include <thread>
 #include <unordered_map>
 
+#include "volt/gfx/extern/stb_image.h"
+#include "volt/gfx/extern/stb_image_write.h"
+
 using namespace volt::gfx;
 
 // I doubt shared_ptr's are necessary, the raw pointers to Renderer
@@ -228,10 +231,16 @@ bool Renderer::Initialize(GFXSettings settings)
     //     return false;
     // }
 
+    // Ensure that stb_image uses images using OpenGL's coordinate system
+    // TODO: Look into stbi_set_flip_vertically_on_load_thread()
+    // Should this be moved to the image class?
+    stbi_set_flip_vertically_on_load(true);
+    stbi_flip_vertically_on_write(true);
+
     // Make the window's context current
     glfwMakeContextCurrent(window);
 
-    //Initialize glew
+    // Initialize glew
     GLenum err = glewInit();
     if (err != GLEW_OK)
     {
@@ -308,8 +317,9 @@ void Renderer::DirectRender(RenderObject &obj, Camera const &cam)
                                     cam.GetTransform().GetMatrix(),
                                     obj.GetTransform().GetMatrix());
     // The draw call
-    GLCall(glDrawElements(GL_TRIANGLES, obj.GetMesh().GetIndices().size(),
-                            GL_UNSIGNED_INT, 0));
+    GLCall(glDrawElements(GL_TRIANGLES,
+                          (GLsizei)obj.GetMesh().GetIndices().size(),
+                          GL_UNSIGNED_INT, 0));
 }
 
 void Renderer::RenderFramebuffer(Framebuffer &fb, Material &mat,
@@ -331,8 +341,8 @@ void Renderer::RenderFramebuffer(Framebuffer &fb, Material &mat,
             std::make_tuple(tex->GetWidth(), tex->GetHeight()));
 
     // The draw call
-    GLCall(glDrawElements(GL_TRIANGLES, mesh.GetIndices().size(),
-                            GL_UNSIGNED_INT, 0));
+    GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)mesh.GetIndices().size(),
+                          GL_UNSIGNED_INT, 0));
 
     mesh.Unbind();
     Framebuffer::BindDefaultFramebuffer();
@@ -470,4 +480,24 @@ float Renderer::GetFrameBufferSizeRatio()
 {
     auto [width, height] = this->GetFrameBufferSize();
     return (float)width / (float)height;
+}
+
+bool Renderer::IsFullscreen()
+{
+    return glfwGetWindowMonitor(this->window) != nullptr;
+}
+
+void Renderer::Fullscreen()
+{
+    if (IsFullscreen())
+        return;
+
+    GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+
+    // get resolution of monitor
+    GLFWvidmode const *mode = glfwGetVideoMode(monitor);
+
+    // switch to full screen
+    glfwSetWindowMonitor(this->window, monitor, 0, 0, mode->width, mode->height,
+                         (GLint)this->targetFPS);
 }

@@ -95,6 +95,10 @@ namespace volt::gfx
         void CorrectContextSize();
 
         float GetFrameBufferSizeRatio();
+
+        bool IsFullscreen();
+
+        void Fullscreen();
     };
 } // namespace volt::gfx
 
