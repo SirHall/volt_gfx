@@ -69,7 +69,7 @@ void Material::RetreiveDefaultUniforms()
                                     this->uniformTex[i]);
 }
 
-#pragma Default Uniforms
+#pragma region Default Uniforms
 
 bool Material::HasUniformModel() { return this->uniformModel >= 0; }
 bool Material::HasUniformView() { return this->uniformView >= 0; }
