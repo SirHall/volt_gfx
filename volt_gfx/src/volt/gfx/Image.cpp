@@ -8,6 +8,11 @@ using namespace volt::gfx;
 
 Image::Image(std::string const &path)
 {
+    // Ensure that stb_image uses images using OpenGL's coordinate system
+    // TODO: Look into stbi_set_flip_vertically_on_load_thread()
+    stbi_set_flip_vertically_on_load(true);
+    stbi_flip_vertically_on_write(true);
+
     // Ensure that the resulting image always has four color channels (RGBA)
     int      colorChannelsCount = 0;
     stbi_uc *imageData = stbi_load(path.c_str(), &this->width, &this->height,
@@ -23,7 +28,7 @@ Image::Image(std::string const &path)
         // bytes for any color channel that the source image does not support
         for (std::size_t j = 0; j < 4; j++)
         {
-            int fillIndex = (4 * i) + j;
+            std::size_t fillIndex = (4 * i) + j;
             if (j < colorChannelsCount) // Source image has this color channel
                 this->imageData[fillIndex] =
                     imageData[(colorChannelsCount * i) + j];
