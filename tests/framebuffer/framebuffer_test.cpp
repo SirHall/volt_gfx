@@ -27,6 +27,8 @@ int main(int argc, char *argv[])
 #pragma region Setup Renderer and Window
 
     auto renderer = Renderer();
+    // Ensure that framebuffers are autoresized
+    renderer.SetAutoResizeFrameBufs(true);
 
     auto settings          = GFXSettings();
     settings.height        = 640;
@@ -43,7 +45,7 @@ int main(int argc, char *argv[])
     }
     renderer.SetTargetFPS(60.0f);
 
-    renderer.Fullscreen(true);
+    // renderer.Fullscreen(true);
 
     std::function<void(void)> screenshotFunc;
 
