@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     }
     renderer.SetTargetFPS(60.0f);
 
-    renderer.Fullscreen();
+    renderer.Fullscreen(true);
 
     std::function<void(void)> screenshotFunc;
 
