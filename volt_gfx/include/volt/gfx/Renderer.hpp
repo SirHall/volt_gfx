@@ -52,6 +52,8 @@ namespace volt::gfx
         // that most of the window's area is on
         GLFWmonitor *FindBestMonitor();
 
+        bool autoResizeFrameBufs = false;
+
     public:
         Renderer();
         Renderer(const Renderer &other) = delete;
@@ -103,6 +105,14 @@ namespace volt::gfx
         bool IsFullscreen();
 
         void Fullscreen(bool goFullscreen);
+
+        // If this is set to true, this renderer will automatically resize any
+        // framebuffer being rendered to to match the size of the window.
+        // This allows framebuffers to be automatically resized any time the
+        // window is too.
+        void SetAutoResizeFrameBufs(bool autoResize);
+
+        bool GetAutoResizeFrameBufs();
     };
 } // namespace volt::gfx
 

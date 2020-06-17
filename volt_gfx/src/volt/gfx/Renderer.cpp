@@ -368,7 +368,12 @@ void Renderer::RenderFramebuffer(Framebuffer &fb, Material &mat,
     mesh.Bind();
 
     fb.BindReadWriteTarget(attachmentIndex);
-    auto tex = fb.GetTexture(attachmentIndex);
+    auto tex                   = fb.GetTexture(attachmentIndex);
+    auto [winWidth, winHeight] = this->GetFrameBufferSize();
+    // Resize the texture if necessary
+    if (this->autoResizeFrameBufs &&
+        (tex->GetWidth() != winWidth || tex->GetHeight() != winHeight))
+        tex->Resize(winWidth, winHeight);
     if (tex)
         this->SetContextSize(
             std::make_tuple(tex->GetWidth(), tex->GetHeight()));
@@ -535,3 +540,10 @@ void Renderer::Fullscreen(bool goFullscreen)
         glfwSetWindowMonitor(this->window, nullptr, 0, 0, mode->width,
                              mode->height, 0);
 }
+
+void Renderer::SetAutoResizeFrameBufs(bool autoResize)
+{
+    this->autoResizeFrameBufs = autoResize;
+}
+
+bool Renderer::GetAutoResizeFrameBufs() { return this->autoResizeFrameBufs; }
