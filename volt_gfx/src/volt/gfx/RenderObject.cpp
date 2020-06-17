@@ -47,7 +47,7 @@ void RenderObject::Bind() const
         if (this->texUnits[i].has_value())
         {
             auto opt = this->texUnits[i];
-            opt->Use(i);
+            opt->Use((unsigned int)i);
         }
     }
 }
