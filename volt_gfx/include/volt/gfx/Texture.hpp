@@ -56,6 +56,10 @@ namespace volt::gfx
 
         GLsizei GetWidth();
         GLsizei GetHeight();
+
+        // Wil resize a texture on th GPU, useful for framebuffers when the
+        // window is resized
+        void Resize(GLsizei newWidth, GLsizei newHeight);
     };
 } // namespace volt::gfx
 

@@ -67,20 +67,17 @@ void Texture::CreateTexture(GLsizei width, GLsizei height, bool enableMipmaps,
         }));
 
     this->Bind();
-    GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0,
-                          GL_RGBA, GL_UNSIGNED_BYTE, data));
+    GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA,
+                        GL_UNSIGNED_BYTE, data));
     this->GenerateMipmap();
 
-    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-                             GL_CLAMP_TO_EDGE));
-    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-                             GL_CLAMP_TO_EDGE));
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                             this->texData->mipmaps ? GL_NEAREST_MIPMAP_LINEAR
-                                                    : GL_NEAREST));
-    GLCall(
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+                           this->texData->mipmaps ? GL_NEAREST_MIPMAP_LINEAR
+                                                  : GL_NEAREST));
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
 }
 
 GLuint Texture::GetTexID() { return this->texData->texID; }
@@ -95,13 +92,22 @@ void Texture::GenerateMipmap()
 GLsizei Texture::GetWidth()
 {
     GLsizei width = 0;
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+    GLCall(
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width));
     return width;
 }
 
 GLsizei Texture::GetHeight()
 {
     GLsizei height = 0;
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+    GLCall(
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height));
     return height;
+}
+
+void Texture::Resize(GLsizei newWidth, GLsizei newHeight)
+{
+    this->Bind();
+    GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, newWidth, newHeight, 0,
+                        GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
 }
