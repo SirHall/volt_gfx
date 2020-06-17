@@ -184,29 +184,29 @@ namespace volt::gfx
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::vec1> &value)
     {
-        GLCall(glUniform1fv(uniformLoc, value.size(),
-                              (const float *)value.data()));
+        GLCall(glUniform1fv(uniformLoc, (GLsizei)value.size(),
+                            (const float *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::vec2> &value)
     {
-        GLCall(glUniform2fv(uniformLoc, value.size(),
-                              (const float *)value.data()));
+        GLCall(glUniform2fv(uniformLoc, (GLsizei)value.size(),
+                            (const float *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::vec3> &value)
     {
-        GLCall(glUniform3fv(uniformLoc, value.size(),
-                              (const float *)value.size()));
+        GLCall(glUniform3fv(uniformLoc, (GLsizei)value.size(),
+                            (const float *)value.size()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::vec4> &value)
     {
-        GLCall(glUniform4fv(uniformLoc, value.size(),
-                              (const float *)value.size()));
+        GLCall(glUniform4fv(uniformLoc, (GLsizei)value.size(),
+                            (const float *)value.size()));
     }
 
     template <>
@@ -218,127 +218,124 @@ namespace volt::gfx
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat2 &value)
     {
-        GLCall(
-            glUniformMatrix2fv(uniformLoc, 1, false, glm::value_ptr(value)));
+        GLCall(glUniformMatrix2fv(uniformLoc, 1, false, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat3 &value)
     {
-        GLCall(
-            glUniformMatrix3fv(uniformLoc, 1, false, glm::value_ptr(value)));
+        GLCall(glUniformMatrix3fv(uniformLoc, 1, false, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat4 &value)
     {
-        GLCall(
-            glUniformMatrix4fv(uniformLoc, 1, false, glm::value_ptr(value)));
+        GLCall(glUniformMatrix4fv(uniformLoc, 1, false, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat2x3 &value)
     {
-        GLCall(glUniformMatrix2x3fv(uniformLoc, 1, false,
-                                      glm::value_ptr(value)));
+        GLCall(
+            glUniformMatrix2x3fv(uniformLoc, 1, false, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat3x2 &value)
     {
-        GLCall(glUniformMatrix3x2fv(uniformLoc, 1, false,
-                                      glm::value_ptr(value)));
+        GLCall(
+            glUniformMatrix3x2fv(uniformLoc, 1, false, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat2x4 &value)
     {
-        GLCall(glUniformMatrix2x4fv(uniformLoc, 1, false,
-                                      glm::value_ptr(value)));
+        GLCall(
+            glUniformMatrix2x4fv(uniformLoc, 1, false, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat4x2 &value)
     {
-        GLCall(glUniformMatrix4x2fv(uniformLoc, 1, false,
-                                      glm::value_ptr(value)));
+        GLCall(
+            glUniformMatrix4x2fv(uniformLoc, 1, false, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat3x4 &value)
     {
-        GLCall(glUniformMatrix3x4fv(uniformLoc, 1, false,
-                                      glm::value_ptr(value)));
+        GLCall(
+            glUniformMatrix3x4fv(uniformLoc, 1, false, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const glm::mat4x3 &value)
     {
-        GLCall(glUniformMatrix4x3fv(uniformLoc, 1, false,
-                                      glm::value_ptr(value)));
+        GLCall(
+            glUniformMatrix4x3fv(uniformLoc, 1, false, glm::value_ptr(value)));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat2> &value)
     {
-        GLCall(glUniformMatrix2fv(uniformLoc, value.size(), false,
-                                    (const GLfloat *)value.data()));
+        GLCall(glUniformMatrix2fv(uniformLoc, (GLsizei)value.size(), false,
+                                  (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat3> &value)
     {
-        GLCall(glUniformMatrix3fv(uniformLoc, value.size(), false,
-                                    (const GLfloat *)value.data()));
+        GLCall(glUniformMatrix3fv(uniformLoc, (GLsizei)value.size(), false,
+                                  (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat4> &value)
     {
-        GLCall(glUniformMatrix4fv(uniformLoc, value.size(), false,
-                                    (const GLfloat *)value.data()));
+        GLCall(glUniformMatrix4fv(uniformLoc, (GLsizei)value.size(), false,
+                                  (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat2x3> &value)
     {
-        GLCall(glUniformMatrix2x3fv(uniformLoc, value.size(), false,
-                                      (const GLfloat *)value.data()));
+        GLCall(glUniformMatrix2x3fv(uniformLoc, (GLsizei)value.size(), false,
+                                    (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat3x2> &value)
     {
-        GLCall(glUniformMatrix3x2fv(uniformLoc, value.size(), false,
-                                      (const GLfloat *)value.data()));
+        GLCall(glUniformMatrix3x2fv(uniformLoc, (GLsizei)value.size(), false,
+                                    (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat2x4> &value)
     {
-        GLCall(glUniformMatrix2x4fv(uniformLoc, value.size(), false,
-                                      (const GLfloat *)value.data()));
+        GLCall(glUniformMatrix2x4fv(uniformLoc, (GLsizei)value.size(), false,
+                                    (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat4x2> &value)
     {
-        GLCall(glUniformMatrix4x2fv(uniformLoc, value.size(), false,
-                                      (const GLfloat *)value.data()));
+        GLCall(glUniformMatrix4x2fv(uniformLoc, (GLsizei)value.size(), false,
+                                    (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat3x4> &value)
     {
-        GLCall(glUniformMatrix3x4fv(uniformLoc, value.size(), false,
-                                      (const GLfloat *)value.data()));
+        GLCall(glUniformMatrix3x4fv(uniformLoc, (GLsizei)value.size(), false,
+                                    (const GLfloat *)value.data()));
     }
 
     template <>
     void AssignUniform(GLint uniformLoc, const std::vector<glm::mat4x3> &value)
     {
-        GLCall(glUniformMatrix4x3fv(uniformLoc, value.size(), false,
-                                      (const GLfloat *)value.data()));
+        GLCall(glUniformMatrix4x3fv(uniformLoc, (GLsizei)value.size(), false,
+                                    (const GLfloat *)value.data()));
     }
 } // namespace volt::gfx
 

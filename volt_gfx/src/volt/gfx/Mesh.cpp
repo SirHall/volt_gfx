@@ -67,7 +67,7 @@ void Mesh::CreateMesh(std::vector<Vertex> const &       vertices,
     GLCall(glGenBuffers(1, &this->vbo));
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, this->vbo));
     GLCall(glBufferData(GL_ARRAY_BUFFER, VecTotalSize(this->vertices),
-                          this->vertices.data(), GL_STATIC_DRAW));
+                        this->vertices.data(), GL_STATIC_DRAW));
 
     // Setup vertex array object
     this->vao = Vertex::GenerateVAO();
@@ -76,7 +76,7 @@ void Mesh::CreateMesh(std::vector<Vertex> const &       vertices,
     GLCall(glGenBuffers(1, &this->ibo));
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo));
     GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, VecTotalSize(this->indices),
-                          this->indices.data(), GL_STATIC_DRAW));
+                        this->indices.data(), GL_STATIC_DRAW));
 
     // Unbind all buffers
     GLCall(glBindVertexArray(0));
@@ -98,8 +98,8 @@ void Mesh::RenderMesh()
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
 
     // The draw call
-    GLCall(
-        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0));
+    GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(),
+                          GL_UNSIGNED_INT, 0));
 
     GLCall(glBindVertexArray(0));
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0)); // Probably not needed
