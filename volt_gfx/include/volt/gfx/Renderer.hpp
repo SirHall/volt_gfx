@@ -48,6 +48,10 @@ namespace volt::gfx
 
         void SetupCallbacks();
 
+        // Finds the monitor that this window is 'mainly' on, or the monitor
+        // that most of the window's area is on
+        GLFWmonitor *FindBestMonitor();
+
     public:
         Renderer();
         Renderer(const Renderer &other) = delete;
@@ -98,7 +102,7 @@ namespace volt::gfx
 
         bool IsFullscreen();
 
-        void Fullscreen();
+        void Fullscreen(bool goFullscreen);
     };
 } // namespace volt::gfx
 

@@ -183,6 +183,45 @@ void Renderer::SetupCallbacks()
     });
 }
 
+// Modified version of: https://stackoverflow.com/a/31526753/13165325
+GLFWmonitor *Renderer::FindBestMonitor()
+{
+    // If this is fullscreen, just return the monitor this is fullscreen on
+    if (IsFullscreen())
+        return glfwGetWindowMonitor(this->window);
+
+    GLFWmonitor *primaryMon = nullptr;
+
+    int bestoverlap = 0;
+
+    int wx = 0, wy = 0, ww = 0, wh = 0;
+    glfwGetWindowPos(this->window, &wx, &wy);
+    glfwGetWindowSize(this->window, &ww, &wh);
+    int           nmonitors = 0;
+    GLFWmonitor **monitors  = glfwGetMonitors(&nmonitors);
+
+    for (int i = 0; i < nmonitors; i++)
+    {
+        const GLFWvidmode *mode = glfwGetVideoMode(monitors[i]);
+        int                mx = 0, my = 0;
+        glfwGetMonitorPos(monitors[i], &mx, &my);
+        int mw = mode->width;
+        int mh = mode->height;
+
+        int overlap =
+            std::max(0, std::min(wx + ww, mx + mw) - std::max(wx, mx)) *
+            std::max(0, std::min(wy + wh, my + mh) - std::max(wy, my));
+
+        if (bestoverlap < overlap)
+        {
+            bestoverlap = overlap;
+            primaryMon  = monitors[i];
+        }
+    }
+
+    return primaryMon;
+}
+
 bool Renderer::Initialize(GFXSettings settings)
 {
 
@@ -230,12 +269,6 @@ bool Renderer::Initialize(GFXSettings settings)
     //     glfwTerminate();
     //     return false;
     // }
-
-    // Ensure that stb_image uses images using OpenGL's coordinate system
-    // TODO: Look into stbi_set_flip_vertically_on_load_thread()
-    // Should this be moved to the image class?
-    stbi_set_flip_vertically_on_load(true);
-    stbi_flip_vertically_on_write(true);
 
     // Make the window's context current
     glfwMakeContextCurrent(window);
@@ -487,17 +520,18 @@ bool Renderer::IsFullscreen()
     return glfwGetWindowMonitor(this->window) != nullptr;
 }
 
-void Renderer::Fullscreen()
+void Renderer::Fullscreen(bool goFullscreen)
 {
-    if (IsFullscreen())
+    if (IsFullscreen() == goFullscreen)
         return;
 
-    GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+    GLFWmonitor *      monitor = FindBestMonitor();
+    GLFWvidmode const *mode    = glfwGetVideoMode(monitor);
 
-    // get resolution of monitor
-    GLFWvidmode const *mode = glfwGetVideoMode(monitor);
-
-    // switch to full screen
-    glfwSetWindowMonitor(this->window, monitor, 0, 0, mode->width, mode->height,
-                         (GLint)this->targetFPS);
+    if (goFullscreen)
+        glfwSetWindowMonitor(this->window, monitor, 0, 0, mode->width,
+                             mode->height, 0);
+    else
+        glfwSetWindowMonitor(this->window, nullptr, 0, 0, mode->width,
+                             mode->height, 0);
 }
