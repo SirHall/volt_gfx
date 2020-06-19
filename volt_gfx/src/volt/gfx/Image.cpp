@@ -1,6 +1,6 @@
 ﻿#include "volt/gfx/Image.hpp"
-#include "volt/gfx/extern/stb_image.h"
-#include "volt/gfx/extern/stb_image_write.h"
+#include "volt/gfx/extern/stb/stb_image.h"
+#include "volt/gfx/extern/stb/stb_image_write.h"
 
 #include <stdexcept>
 

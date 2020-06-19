@@ -14,8 +14,8 @@
 #include <thread>
 #include <unordered_map>
 
-#include "volt/gfx/extern/stb_image.h"
-#include "volt/gfx/extern/stb_image_write.h"
+#include "volt/gfx/extern/stb/stb_image.h"
+#include "volt/gfx/extern/stb/stb_image_write.h"
 
 using namespace volt::gfx;
 
