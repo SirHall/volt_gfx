@@ -71,8 +71,8 @@ namespace volt::gfx
         void RenderFramebuffer(Framebuffer &fb, Material &mat,
                                std::uint8_t attachmentIndex = 0);
 
-        // void InstancedRender(const std::vector<Transform> &transforms,
-        //                      const Mesh &                  mesh);
+        void InstancedRender(const std::vector<Transform> &transforms,
+                             const Mesh &                  mesh);
 
         void DisplayFrame();
 
