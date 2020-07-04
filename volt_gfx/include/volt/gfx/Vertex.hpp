@@ -4,6 +4,8 @@
 
 #include "volt/gfx/GLImport.hpp"
 
+#include <glm/glm.hpp>
+
 namespace volt::gfx
 {
     struct Vertex
@@ -16,13 +18,10 @@ namespace volt::gfx
                GLfloat uv_y = 0.0f);
         Vertex(const Vertex &other);
         Vertex &operator=(const Vertex &other);
-        // Vertex &operator=(Vertex &&other);
         ~Vertex();
 
-        static GLuint GenerateVAO();
-
-        GLfloat position[3] = {0.0f, 0.0f, 0.0f};
-        GLfloat uv[2]       = {0.0f, 0.0f};
+        glm::vec2 position;
+        glm::vec2 uv;
     };
 } // namespace volt::gfx
 

@@ -1,5 +1,6 @@
-#include "volt/gfx/Vertex.hpp"
 #include "volt/gfx/GLUtilities.hpp"
+#include "volt/gfx/Vertex.hpp"
+
 
 #include <iostream>
 
@@ -51,26 +52,32 @@ GLuint volt::gfx::Vertex::GenerateVAO()
     GLuint vao = 0;
     GLCall(glGenVertexArrays(1, &vao));
     GLCall(glBindVertexArray(vao));
+
     // Vertex attributes
     GLCall(glEnableVertexAttribArray(0));
     GLCall(glEnableVertexAttribArray(1));
+    GLCall(glEnableVertexAttribArray(2)); // Instanced position
+    GLCall(glEnableVertexAttribArray(3));
+    GLCall(glEnableVertexAttribArray(4));
+    GLCall(glEnableVertexAttribArray(5));
     GLuint currentIndex = 0;
 
     // Model position attribute
     // GenAttrib(position, GLfloat);
     GLCall(glVertexAttribPointer(
-        currentIndex, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+        currentIndex++, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
         reinterpret_cast<void *>(offsetof(Vertex, position))));
-
-    currentIndex++;
 
     // UV Coordinate Attribute
     // GenAttrib(uv, GLfloat);
     GLCall(glVertexAttribPointer(
-        currentIndex, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-        reinterpret_cast<void *>(offsetof(Vertex, uv))));
+               currentIndex++, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+               reinterpret_cast<void *>(offsetof(Vertex, uv))););
 
-    currentIndex++;
+    // Instancted model matrix
+    GLCall(glVertexAttribPointer(
+        currentIndex++, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+        reinterpret_cast<void *>(offsetof(Vertex, uv))));
 
     return vao;
 }
