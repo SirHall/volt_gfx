@@ -2,56 +2,94 @@
 #ifndef VOLT_GFX_VAO_HPP
 #define VOLT_GFX_VAO_HPP
 
+#include "volt/gfx/Buffer.hpp"
 #include "volt/gfx/GLImport.hpp"
+#include "volt/gfx/IBO.hpp"
 #include "volt/gfx/VAOGen.hpp"
 #include "volt/gfx/VBO.hpp"
 
 namespace volt::gfx
 {
-    template <template <class> class VertVBO, typename VertT,
-              template <class> class InstVBO, typename InstT>
+    template <class VertT, class InstT>
     class VAO
     {
     private:
-        GLuint  vao = 0;
-        VertVBO vertVBO;
-        InstVBO instVBO;
+        GLuint                      vao = 0;
+        VBO<VertT, GL_STATIC_DRAW>  vertVBO;
+        VBO<InstT, GL_DYNAMIC_DRAW> instVBO;
+        IBO                         ibo;
 
     public:
-        VAO()
+        VAO() : vao(VAOGen::GenerateVAO()), vertVBO(vao), instVBO(vao), ibo(vao)
         {
-            GLCall(glGenVertexArrays(1, &vao));
-            this->Bind();
-            this->vertVBO = VertVBO();
-            this->instVBO = InstVBO();
         }
 
         VAO(const VAO &other)
+            : vao(VAOGen::GenerateVAO()), vertVBO(other.vertVBO),
+              instVBO(other.instVBO), ibo(other.ibo)
         {
-            GLCall(glGenVertexArrays(1, &vao));
-            other.Bind();
         }
 
-        VAO &operator=(const VAO &other) { return *this; }
-
-        VAO(VAO &&other) : vao(other.vao) {}
-        VAO &operator=(VAO &&other)
+        VAO &operator=(const VAO &other)
         {
-            this->vao = other.vao;
+            this->vao     = VAOGen::GenerateVAO();
+            this->vertVBO = other.vertVBO;
+            this->instVBO = other.instVBO;
             return *this;
         }
+
+        VAO(VAO &&other)
+            : vao(std::move(other.vao)), vertVBO(std::move(other.vertVBO)),
+              instVBO(std::move(other.instVBO)), ibo(std::move(other.ibo))
+        {
+            other.vao = 0;
+        }
+
+        VAO &operator=(VAO &&other)
+        {
+            this->vao     = other.vao;
+            this->vertVBO = std::move(other.vertVBO);
+            this->instVBO = std::move(other.instVBO);
+            this->ibo     = std::move(other.ibo);
+            other.vao     = 0;
+            return *this;
+        }
+
         ~VAO()
         {
-            glDeleteVertexArrays(1, &this->vao);
+            GLCall(glDeleteVertexArrays(1, &this->vao));
             this->vao = 0; // Just incase
         }
 
-        void Bind() const { GLCall(glBindVertexArray(this->vao)); }
+        void Bind() const
+        {
+            GLCall(glBindVertexArray(this->vao));
+            this->ibo.Bind();
+        }
 
-        VertVBO &      GetVertVBO() { return this->vertVBO; }
-        VertVBO const &GetVertVBO() { return this->vertVBO; }
-        InstVBO &      GetInstVBO() { return this->instVBO; }
-        InstVBO const &GetInstVBO() { return this->instVBO; }
+        VBO<VertT, GL_STATIC_DRAW> &      GetVertVBO() { return this->vertVBO; }
+        VBO<VertT, GL_STATIC_DRAW> const &GetVertVBO() const
+        {
+            return this->vertVBO;
+        }
+        VBO<InstT, GL_DYNAMIC_DRAW> &GetInstVBO() { return this->instVBO; }
+        VBO<InstT, GL_DYNAMIC_DRAW> const &GetInstVBO() const
+        {
+            return this->instVBO;
+        }
+        IBO &      GetIBO() { return this->ibo; }
+        IBO const &GetIBO() const { return this->ibo; }
+
+        void SetIndexBufferData(std::vector<std::size_t> const &indices)
+        {
+            this->Bind();
+            GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo));
+            GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                                indices * sizeof(std::size_t), indices.data(),
+                                GL_DYNAMIC_DRAW));
+        }
+
+        bool IsValid() const { return this->vao != 0; }
     };
 } // namespace volt::gfx
 #endif
