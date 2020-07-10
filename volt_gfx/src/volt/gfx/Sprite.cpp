@@ -1,5 +1,5 @@
 #include "volt/gfx/Sprite.hpp"
-#include "volt/gfx/Vertex.hpp"
+#include "volt/gfx/MeshVertex.hpp"
 
 using namespace volt::gfx;
 
@@ -48,15 +48,15 @@ Mesh Sprite::CreateMesh(glm::vec4 srcRect, glm::vec4 destRect)
     Mesh mesh;
     mesh.CreateMesh(
         {
-            Vertex(destRect.x, destRect.y + destRect.w, 0.0f, srcRect.x,
-                   srcRect.y), // 0 - Left Top
-            Vertex(destRect.x, destRect.y, 0.0f, srcRect.x,
-                   srcRect.y + srcRect.w), // 1 - Left Bottom
-            Vertex(destRect.x + destRect.z, destRect.y, 0.0f,
-                   srcRect.x + srcRect.z,
-                   srcRect.y + srcRect.w), // 2 - Right Bottom
-            Vertex(destRect.x + destRect.z, destRect.y + destRect.w, 0.0f,
-                   srcRect.x + srcRect.z, srcRect.y), // 3 - Right Top
+            MeshVertex(destRect.x, destRect.y + destRect.w, 0.0f, srcRect.x,
+                       srcRect.y), // 0 - Left Top
+            MeshVertex(destRect.x, destRect.y, 0.0f, srcRect.x,
+                       srcRect.y + srcRect.w), // 1 - Left Bottom
+            MeshVertex(destRect.x + destRect.z, destRect.y, 0.0f,
+                       srcRect.x + srcRect.z,
+                       srcRect.y + srcRect.w), // 2 - Right Bottom
+            MeshVertex(destRect.x + destRect.z, destRect.y + destRect.w, 0.0f,
+                       srcRect.x + srcRect.z, srcRect.y), // 3 - Right Top
         },
         {0, 1, 3, 1, 2, 3});
     return std::move(mesh);
