@@ -23,6 +23,7 @@ namespace volt::gfx
         Image(const std::vector<std::uint8_t> &data, GLsizei w, GLsizei h);
         Image(std::vector<std::uint8_t> &&data, GLsizei w, GLsizei h);
         Image(const Image &other);
+        Image(const std::vector<Image> &other); // Pack images
         Image &operator=(const Image &other);
         Image(Image &&other);
         Image &operator=(Image &&other);
