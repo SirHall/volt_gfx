@@ -337,11 +337,8 @@ void Renderer::DirectRender(RenderObject &obj, Camera const &cam)
 {
     if (!obj.GetMesh().IsValid())
     {
-        std::cerr << "Attempted to perform a direct render with incomplete "
-                     "data: vao: "
-                  << obj.GetMesh().GetVAO()
-                  << ", vbo: " << obj.GetMesh().GetVBO()
-                  << ", ibo: " << obj.GetMesh().GetIBO() << std::endl;
+        std::cerr << "Attempted to perform a direct render with invalid VAO"
+                  << std::endl;
         return;
     }
 
@@ -382,7 +379,6 @@ void Renderer::RenderFramebuffer(Framebuffer &fb, Material &mat,
     GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)mesh.GetIndices().size(),
                           GL_UNSIGNED_INT, 0));
 
-    mesh.Unbind();
     Framebuffer::BindDefaultFramebuffer();
     this->SetContextSize(this->GetFrameBufferSize());
 }
@@ -390,32 +386,17 @@ void Renderer::RenderFramebuffer(Framebuffer &fb, Material &mat,
 void Renderer::InstancedRender(const std::vector<Transform> &transforms,
                                const Mesh &                  mesh)
 {
-    GLuint vao = mesh.GetVAO(), vbo = mesh.GetVBO(), ibo = mesh.GetIBO();
-    if (vao == 0 || vbo == 0 || ibo == 0)
+    if (mesh.GetVAO().IsValid())
     {
-        std::cerr << "Attempted to direct render with incomplete data: vao: "
-                  << vao << ", vbo: " << vbo << ", ibo: " << ibo << std::endl;
+        std::cerr << "Attempted to instance render with invalid VAO"
+                  << std::endl;
         return;
     }
 
-    GLCall(glBindVertexArray(vao));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo)); // Probably not needed
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+    mesh.GetVAO().Bind();
 
-    glBindVertexArray(mesh.GetVAO());
-
-    glDrawElementsInstanced(GL_TRIANGLES, mesh.GetIndices().size(),
-                            GL_UNSIGNED_INT, 0, transforms.size());
-
-    glBindVertexArray(0);
-
-    // The draw call
-    GLCall(glDrawElements(GL_TRIANGLES, mesh.GetIndices().size(),
-                          GL_UNSIGNED_INT, 0));
-
-    GLCall(glBindVertexArray(0));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0)); // Probably not needed
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+    glDrawElementsInstanced(GL_TRIANGLES, (GLsizei)mesh.GetIndices().size(),
+                            GL_UNSIGNED_INT, 0, (GLsizei)transforms.size());
 }
 
 void Renderer::DisplayFrame()
