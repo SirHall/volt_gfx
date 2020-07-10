@@ -3,7 +3,10 @@
 #define Mesh_hpp
 
 #include "volt/gfx/GLImport.hpp"
-#include "volt/gfx/Vertex.hpp"
+#include "volt/gfx/MeshInstanceData.hpp"
+#include "volt/gfx/MeshVertex.hpp"
+#include "volt/gfx/VAO.hpp"
+#include "volt/gfx/VBO.hpp"
 
 #include <cstdint>
 #include <vector>
@@ -13,10 +16,9 @@ namespace volt::gfx
     class Mesh
     {
     private:
-        GLuint vao, // Vertex Array Object
-            vbo,    // Vertex Buffer Object
-            ibo;    // Index Buffer Object
-        std::vector<Vertex>        vertices;
+        VAO<MeshVertex, MeshInstanceData> vao;
+
+        std::vector<MeshVertex>    vertices;
         std::vector<std::uint32_t> indices;
 
     public:
@@ -28,22 +30,19 @@ namespace volt::gfx
 
         ~Mesh();
 
-        void CreateMesh(std::vector<Vertex> const &       vertices,
+        void CreateMesh(std::vector<MeshVertex> const &   vertices,
                         std::vector<std::uint32_t> const &indices);
         void RenderMesh();
-        void ClearMesh();
 
-        GLuint GetVAO() const;
-        GLuint GetVBO() const;
-        GLuint GetIBO() const;
-
-        const std::vector<Vertex> &       GetVertices() const;
+        const std::vector<MeshVertex> &   GetVertices() const;
         const std::vector<std::uint32_t> &GetIndices() const;
 
         bool IsValid() const;
 
         void Bind() const;
-        void Unbind() const;
+
+        VAO<MeshVertex, MeshInstanceData> &      GetVAO();
+        VAO<MeshVertex, MeshInstanceData> const &GetVAO() const;
     };
 } // namespace volt::gfx
 
