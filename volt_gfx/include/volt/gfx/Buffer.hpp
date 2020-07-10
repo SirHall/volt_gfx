@@ -3,20 +3,22 @@
 #define BUFFER_HPP
 
 #include "volt/gfx/GLImport.hpp"
+#include "volt/gfx/GLUtilities.hpp"
 
 #include <cstdlib>
+#include <vector>
 
 template <typename T, GLenum BuffTarget, GLenum BuffUsage>
 class Buffer
 {
-private:
+protected:
     GLuint vbo = 0;
     GLuint vao = 0; // Store parent vao
 
     std::size_t allocated = 0, used = 0;
 
 public:
-    Buffer()
+    Buffer(GLuint vaoID) : vao(vaoID)
     {
         GLCall(glGenBuffers(1, &this->vbo));
         this->Bind();
@@ -24,7 +26,7 @@ public:
 
     Buffer(const Buffer &other) : allocated(other.used), used(other.used)
     { // Setup initial buffers
-        glGenBuffers(1, this->vbo);
+        glGenBuffers(1, &this->vbo);
         glBindVertexArray(this->vao);
         glBindBuffer(BuffTarget, this->vbo);
         glBufferData(BuffTarget, this->allocated, nullptr, BuffUsage);
@@ -41,7 +43,7 @@ public:
         this->allocated = other.used;
         this->used      = other.used;
         // Setup initial buffers
-        glGenBuffers(1, this->vbo);
+        glGenBuffers(1, &this->vbo);
         glBindVertexArray(this->vao);
         glBindBuffer(BuffTarget, this->vbo);
         glBufferData(BuffTarget, this->allocated, nullptr, BuffUsage);
@@ -76,7 +78,7 @@ public:
         this->vbo = 0; // Just incase
     }
 
-    void Bind()
+    void Bind() const
     {
         glBindVertexArray(this->vao);
         glBindBuffer(BuffTarget, this->vbo);
