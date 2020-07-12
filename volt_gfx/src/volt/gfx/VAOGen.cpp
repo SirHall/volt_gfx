@@ -1,8 +1,10 @@
 #include "volt/gfx/VAOGen.hpp"
+#include "volt/gfx/GLUtilities.hpp"
 
 using namespace volt::gfx::VAOGen;
+using namespace volt::gfx;
 
-GLuint GenerateVAO()
+GLuint volt::gfx::VAOGen::GenerateVAO()
 {
     GLuint vao = 0;
     GLCall(glGenVertexArrays(1, &vao));
@@ -18,7 +20,7 @@ GLuint GenNVecVertAttrib(std::string const &name, GLuint startIndex,
     GLCall(glVertexAttribPointer(startIndex, size, GetGlType<float>(), GL_FALSE,
                                  stride, reinterpret_cast<void *>(offset)));
     if (instanced)
-        glVertexAttribDivisor(startIndex, 1);
+        GLCall(glVertexAttribDivisor(startIndex, 1));
     return startIndex + 1;
 }
 
