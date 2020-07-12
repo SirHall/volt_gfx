@@ -16,11 +16,10 @@ MeshInstanceData &MeshInstanceData::operator=(const MeshInstanceData &other)
 MeshInstanceData::~MeshInstanceData() {}
 
 template <>
-void volt::gfx::GenVBO<MeshInstanceData>(GLuint vbo)
+GLuint volt::gfx::GenVBO<MeshInstanceData>(GLuint vbo, GLuint attribIndex)
 {
-    GLuint vertIndex = 0;
-
-    vertIndex = VAOGen::GenVertAttrib<glm::mat4>(
-        "gfxTransform", vertIndex, sizeof(MeshInstanceData),
+    attribIndex = VAOGen::GenVertAttrib<glm::mat4>(
+        "gfxTransform", attribIndex, sizeof(MeshInstanceData),
         offsetof(MeshInstanceData, transform));
+    return attribIndex;
 }
