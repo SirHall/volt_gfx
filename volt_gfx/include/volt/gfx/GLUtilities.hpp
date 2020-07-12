@@ -21,24 +21,25 @@ void PrintGLError(GLenum errorCode);
 // Release mode
 #define GLCall(x) x
 #endif
+namespace volt::gfx
+{
+    // Get OpenGL types intelligently and at compile time
+    template <typename T>
+    GLenum GetGlType();
 
-// Get OpenGL types intelligently and at compile time
-template <typename T>
-constexpr GLenum GetGlType();
+    template <>
+    GLenum GetGlType<float>();
 
-template <>
-constexpr GLenum GetGlType<float>();
+    template <>
+    GLenum GetGlType<int>();
 
-template <>
-constexpr GLenum GetGlType<int>();
+    template <>
+    GLenum GetGlType<unsigned int>();
 
-template <>
-constexpr GLenum GetGlType<unsigned int>();
+    template <>
+    GLenum GetGlType<char>();
 
-template <>
-constexpr GLenum GetGlType<char>();
-
-template <>
-constexpr GLenum GetGlType<unsigned char>();
-
+    template <>
+    GLenum GetGlType<unsigned char>();
+} // namespace volt::gfx
 #endif

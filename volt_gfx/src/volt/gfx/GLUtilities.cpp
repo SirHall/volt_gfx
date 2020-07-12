@@ -1,4 +1,4 @@
-#include "volt/gfx/GLUtilities.hpp"
+﻿#include "volt/gfx/GLUtilities.hpp"
 #include "volt/gfx/GLImport.hpp"
 
 #include <cassert>
@@ -22,6 +22,7 @@ void GLCheckError(const char *func, const char *file, int line)
     }
     if (hadError)
     {
+        assert(!hadError);
         std::exit(1);
     }
 }
@@ -96,32 +97,34 @@ void PrintGLError(GLenum errorCode)
 // template <typename T>
 // constexpr GLenum GetGlType();
 
+using namespace volt::gfx;
+
 template <>
-constexpr GLenum GetGlType<float>()
+GLenum volt::gfx::GetGlType<float>()
 {
     return GL_FLOAT;
 }
 
 template <>
-constexpr GLenum GetGlType<int>()
+GLenum volt::gfx::GetGlType<int>()
 {
     return GL_INT;
 }
 
 template <>
-constexpr GLenum GetGlType<unsigned int>()
+GLenum volt::gfx::GetGlType<unsigned int>()
 {
     return GL_UNSIGNED_INT;
 }
 
 template <>
-constexpr GLenum GetGlType<char>()
+GLenum volt::gfx::GetGlType<char>()
 {
     return GL_BYTE;
 }
 
 template <>
-constexpr GLenum GetGlType<unsigned char>()
+GLenum volt::gfx::GetGlType<unsigned char>()
 {
     return GL_UNSIGNED_BYTE;
 }
