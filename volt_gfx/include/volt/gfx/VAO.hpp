@@ -14,13 +14,16 @@ namespace volt::gfx
     class VAO
     {
     private:
-        GLuint                      vao = 0;
+        GLuint                      attribIndex = 0;
+        GLuint                      vao         = 0;
         VBO<VertT, GL_STATIC_DRAW>  vertVBO;
         VBO<InstT, GL_DYNAMIC_DRAW> instVBO;
         IBO                         ibo;
 
     public:
-        VAO() : vao(VAOGen::GenerateVAO()), vertVBO(vao), instVBO(vao), ibo(vao)
+        VAO()
+            : attribIndex(0), vao(VAOGen::GenerateVAO()),
+              vertVBO(vao, attribIndex), instVBO(vao, attribIndex), ibo(vao)
         {
         }
 
