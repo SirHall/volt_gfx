@@ -199,8 +199,8 @@ int main(int argc, char *argv[])
 
         cam.SetAspectRatio(ratio);
 
-        float dt = liveMode ? renderer.GetDeltaTime() : 1.0f / 30.0f;
-        float t  = liveMode ? renderer.GetUpTime() : dt * frame;
+        float dt = renderer.GetDeltaTime();
+        float t  = renderer.GetUpTime();
 
         GLint uniformLoc = -1;
         mat.Bind();
@@ -225,20 +225,8 @@ int main(int argc, char *argv[])
         renderer.DisplayFrame();
 
         // If live, render in realtime, otherwise render to a file
-        if (liveMode)
-        {
-            renderer.SleepForFrame();
-            std::cout << 1.0f / renderer.GetDeltaTime() << std::endl;
-        }
-        else
-        {
-            auto fileName = std::stringstream();
-            fileName << "frame_" << frame << ".png";
-            auto img = framebuffer.RetreiveImage();
-            if (img)
-                img->Save(fileName.str());
-        }
-        frame++;
+        renderer.SleepForFrame();
+        std::cout << 1.0f / renderer.GetDeltaTime() << std::endl;
     }
     return 0;
 }
