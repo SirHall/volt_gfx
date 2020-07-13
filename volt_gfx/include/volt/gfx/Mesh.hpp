@@ -23,7 +23,7 @@ namespace volt::gfx
 
     public:
         Mesh();
-        Mesh(const Mesh &other); // Allow copying
+        Mesh(const Mesh &other);
         Mesh &operator=(const Mesh &other);
         Mesh(Mesh &&other); // Allow moving
         Mesh &operator=(Mesh &&other);

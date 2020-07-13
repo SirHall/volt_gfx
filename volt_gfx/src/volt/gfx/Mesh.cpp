@@ -21,11 +21,18 @@ std::size_t VecTotalSize(const std::vector<T> &vec)
 
 Mesh::Mesh() : vao() {}
 
-Mesh::Mesh(const Mesh &other) : vao(other.vao) {}
+Mesh::Mesh(const Mesh &other) : vao()
+{
+    other.GetVAO().GetIBO().CopyTo(this->vao.GetIBO());
+    other.GetVAO().GetVertVBO().CopyTo(this->vao.GetVertVBO());
+    other.GetVAO().GetInstVBO().CopyTo(this->vao.GetInstVBO());
+}
 
 Mesh &Mesh::operator=(const Mesh &other)
 {
-    vao = other.vao;
+    other.GetVAO().GetIBO().CopyTo(this->vao.GetIBO());
+    other.GetVAO().GetVertVBO().CopyTo(this->vao.GetVertVBO());
+    other.GetVAO().GetInstVBO().CopyTo(this->vao.GetInstVBO());
     return *this;
 }
 
