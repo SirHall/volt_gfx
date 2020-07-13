@@ -14,8 +14,8 @@ namespace volt::gfx
     private:
     public:
         IBO(GLuint vaoID);
-        IBO(const IBO &other);
-        IBO &operator=(const IBO &other);
+        IBO(const IBO &other) = delete;
+        IBO &operator=(const IBO &other) = delete;
         IBO(IBO &&other);
         IBO &operator=(IBO &&other);
         ~IBO();

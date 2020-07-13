@@ -15,7 +15,7 @@ namespace volt::gfx
     {
     private:
         GLuint                      attribIndex = 0;
-        GLuint                      vao         = 0;
+        GLuint                      vao;
         VBO<VertT, GL_STATIC_DRAW>  vertVBO;
         VBO<InstT, GL_DYNAMIC_DRAW> instVBO;
         IBO                         ibo;
@@ -27,19 +27,19 @@ namespace volt::gfx
         {
         }
 
-        VAO(const VAO &other)
-            : vao(VAOGen::GenerateVAO()), vertVBO(other.vertVBO),
-              instVBO(other.instVBO), ibo(other.ibo)
-        {
-        }
+        VAO(const VAO &other) = delete;
+        // : vao(VAOGen::GenerateVAO()), vertVBO(other.vertVBO),
+        //   instVBO(other.instVBO), ibo(other.ibo){}
 
-        VAO &operator=(const VAO &other)
-        {
-            this->vao     = VAOGen::GenerateVAO();
-            this->vertVBO = other.vertVBO;
-            this->instVBO = other.instVBO;
-            return *this;
-        }
+        VAO &operator=(const VAO &other) = delete;
+        // {
+        //     this->attribIndex = 0;
+        //     this->vao         = VAOGen::GenerateVAO();
+        //     // this->vertVBO = other.vertVBO;
+        //     // this->instVBO = other.instVBO;
+        //     this->vertVBO = VBO<VertT, GL_STATIC_DRAW>(vao, attribIndex);
+        //     return *this;
+        // }
 
         VAO(VAO &&other)
             : vao(std::move(other.vao)), vertVBO(std::move(other.vertVBO)),

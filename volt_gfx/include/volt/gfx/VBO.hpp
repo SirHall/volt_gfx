@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef VOLT_GFX_VBO_HPP
 #define VOLT_GFX_VBO_HPP
 
@@ -12,7 +12,7 @@
 namespace volt::gfx
 {
     template <typename T>
-    GLuint GenVBO(GLuint vbo, GLuint attribIndex);
+    GLuint GenVBO(GLuint attribIndex);
 
     template <typename T, GLenum VBOUsage>
     class VBO : public Buffer<T, GL_ARRAY_BUFFER, VBOUsage>
@@ -26,37 +26,44 @@ namespace volt::gfx
             : Buffer(vaoID), initAttribIndex(attribIndex)
         {
             this->Bind();
-            attribIndex = GenVBO<T>(this->vbo, attribIndex);
+            attribIndex = GenVBO<T>(attribIndex);
         }
 
-        VBO(const VBO &other)
-            : Buffer(other), initAttribIndex(other.initAttribIndex)
-        {
-            this->Bind();
-            GenVBO<T>(this->vbo, this->initAttribIndex);
-        }
+        VBO(const VBO &other) = delete;
+        //     : Buffer(other), initAttribIndex(other.initAttribIndex)
+        // {
+        //     this->Bind();
+        //     GenVBO<T>(this->initAttribIndex);
+        // }
 
-        VBO &operator=(const VBO &other)
-        {
-            Buffer::operator      =(other);
-            this->initAttribIndex = other.initAttribIndex;
-            this->Bind();
-            GenVBO<T>(this->vbo, this->initAttribIndex);
-            return *this;
-        }
+        VBO &operator=(const VBO &other) = delete;
+        // {
+        //     Buffer::operator      =(other);
+        //     this->initAttribIndex = other.initAttribIndex;
+        //     this->Bind();
+        //     GenVBO<T>(this->initAttribIndex);
+        //     return *this;
+        // }
 
-        VBO(VBO &&other) : Buffer(other), initAttribIndex(other.initAttribIndex)
+        VBO(VBO &&other)
+            : Buffer<T, GL_ARRAY_BUFFER, VBOUsage>(std::move(other)),
+              initAttribIndex(other.initAttribIndex)
         {
         }
 
         VBO &operator=(VBO &&other)
         {
-            Buffer::operator      =(other);
             this->initAttribIndex = other.initAttribIndex;
+
+            Buffer<T, GL_ARRAY_BUFFER, VBOUsage>::operator=(std::move(other));
             return *this;
         }
 
-        ~VBO() {}
+        ~VBO()
+        {
+            if (this->vbo != 0)
+                GLCall(glDeleteBuffers(1, &this->vbo));
+        }
     };
 } // namespace volt::gfx
 #endif
