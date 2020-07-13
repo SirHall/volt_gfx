@@ -16,7 +16,7 @@ MeshInstanceData &MeshInstanceData::operator=(const MeshInstanceData &other)
 MeshInstanceData::~MeshInstanceData() {}
 
 template <>
-GLuint volt::gfx::GenVBO<MeshInstanceData>(GLuint vbo, GLuint attribIndex)
+GLuint volt::gfx::GenVBO<MeshInstanceData>(GLuint attribIndex)
 {
     attribIndex = VAOGen::GenVertAttrib<glm::mat4>(
         "gfxTransform", attribIndex, sizeof(MeshInstanceData),

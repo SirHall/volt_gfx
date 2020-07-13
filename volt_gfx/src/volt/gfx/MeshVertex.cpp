@@ -44,7 +44,7 @@ MeshVertex &MeshVertex::operator=(const MeshVertex &other)
 MeshVertex::~MeshVertex() {}
 
 template <>
-GLuint volt::gfx::GenVBO<MeshVertex>(GLuint vbo, GLuint attribIndex)
+GLuint volt::gfx::GenVBO<MeshVertex>(GLuint attribIndex)
 {
     attribIndex = VAOGen::GenVertAttrib<glm::vec3>(
         "gfxPos", attribIndex, sizeof(MeshVertex),

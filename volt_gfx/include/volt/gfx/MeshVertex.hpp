@@ -26,7 +26,7 @@ namespace volt::gfx
     };
 
     template <>
-    GLuint GenVBO<MeshVertex>(GLuint vbo, GLuint attribIndex);
+    GLuint GenVBO<MeshVertex>(GLuint attribIndex);
 } // namespace volt::gfx
 
 #endif
