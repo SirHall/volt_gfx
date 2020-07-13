@@ -1,4 +1,4 @@
-#include "volt/gfx/VAOGen.hpp"
+﻿#include "volt/gfx/VAOGen.hpp"
 #include "volt/gfx/GLUtilities.hpp"
 
 using namespace volt::gfx::VAOGen;
@@ -12,13 +12,30 @@ GLuint volt::gfx::VAOGen::GenerateVAO()
     return vao;
 }
 
+template <>
+GLuint volt::gfx::VAOGen::GenVertAttrib<glm::float32>(std::string const &name,
+                                                      GLuint      startIndex,
+                                                      std::size_t stride,
+                                                      std::size_t offset,
+                                                      bool        instanced)
+{
+    GLCall(glEnableVertexAttribArray(startIndex));
+    GLCall(glVertexAttribPointer(startIndex, 1, GetGlType<float>(), GL_FALSE,
+                                 GLsizei(stride),
+                                 reinterpret_cast<void *>(offset)));
+    if (instanced)
+        glVertexAttribDivisor(startIndex, 1);
+    return startIndex + 1;
+}
+
 GLuint GenNVecVertAttrib(std::string const &name, GLuint startIndex,
                          std::size_t stride, std::size_t offset, bool instanced,
                          std::size_t size)
 {
     GLCall(glEnableVertexAttribArray(startIndex));
-    GLCall(glVertexAttribPointer(startIndex, size, GetGlType<float>(), GL_FALSE,
-                                 stride, reinterpret_cast<void *>(offset)));
+    GLCall(glVertexAttribPointer(startIndex, GLint(size), GetGlType<float>(),
+                                 GL_FALSE, GLsizei(stride),
+                                 reinterpret_cast<GLvoid *>(offset)));
     if (instanced)
         GLCall(glVertexAttribDivisor(startIndex, 1));
     return startIndex + 1;

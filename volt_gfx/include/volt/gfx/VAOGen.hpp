@@ -18,15 +18,16 @@ namespace volt::gfx::VAOGen
     template <typename T>
     GLuint GenVertAttrib(std::string const &name, GLuint startIndex,
                          std::size_t stride, std::size_t offset,
-                         bool instanced = false)
-    { // TODO: Ensure that this can only run with integral types
-        GLCall(glEnableVertexAttribArray(startIndex));
-        GLCall(glVertexAttribPointer(startIndex, 1, GetGlType<T>(), GL_FALSE,
-                                     stride, reinterpret_cast<void *>(offset)));
-        if (instanced)
-            glVertexAttribDivisor(startIndex, 1);
-        return startIndex + 1;
-    }
+                         bool instanced = false);
+    // { // TODO: Ensure that this can only run with integral types
+    //     GLCall(glEnableVertexAttribArray(startIndex));
+    //     GLCall(glVertexAttribPointer(startIndex, 1, GetGlType<T>(), GL_FALSE,
+    //                                  stride, reinterpret_cast<void
+    //                                  *>(offset)));
+    //     if (instanced)
+    //         glVertexAttribDivisor(startIndex, 1);
+    //     return startIndex + 1;
+    // }
 
     // Declare vertex attribute generators for specialized types
     // // Integers
