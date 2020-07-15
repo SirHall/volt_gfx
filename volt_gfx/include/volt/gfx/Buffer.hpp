@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef BUFFER_HPP
 #define BUFFER_HPP
 
@@ -21,41 +21,31 @@ protected:
 public:
     Buffer(GLuint vaoID) : vao(vaoID) { GLCall(glGenBuffers(1, &this->vbo)); }
 
-    Buffer(const Buffer &other) = delete;
-    // : allocated(other.used), used(other.used)
-    // { // Setup initial buffers
-    //     GLCall(glGenBuffers(1, &this->vbo));
-    //     GLCall(glBindVertexArray(this->vao));
-    //     GLCall(glBindBuffer(BuffTarget, this->vbo));
-    //     GLCall(glBufferData(BuffTarget, this->allocated, nullptr,
-    //     BuffUsage));
-    //     // Bind for copy-pasting
-    //     GLCall(glBindBuffer(GL_COPY_WRITE_BUFFER, this->vbo));
-    //     GLCall(glBindBuffer(GL_COPY_READ_BUFFER, other.vbo));
-    //     GLCall(glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER,
-    //     0,
-    //                                0, this->allocated));
-    // }
+    Buffer(Buffer const &other) : allocated(other.used), used(other.used)
+    { // Setup initial buffers
 
-    Buffer &operator=(const Buffer &other) = delete;
-    // {
-    //     // Don't make this buffer larger than it has to be
-    //     this->allocated = other.used;
-    //     this->used      = other.used;
-    //     // Setup initial buffers
-    //     GLCall(glGenBuffers(1, &this->vbo));
-    //     GLCall(glBindVertexArray(this->vao));
-    //     GLCall(glBindBuffer(BuffTarget, this->vbo));
-    //     GLCall(glBufferData(BuffTarget, this->allocated, nullptr,
-    //     BuffUsage));
-    //     // Bind for copy-pasting
-    //     GLCall(glBindBuffer(GL_COPY_WRITE_BUFFER, this->vbo));
-    //     GLCall(glBindBuffer(GL_COPY_READ_BUFFER, other.vbo));
-    //     GLCall(glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER,
-    //     0,
-    //                                0, this->allocated));
-    //     return *this;
-    // }
+        GLCall(glGenBuffers(1, &this->vbo));
+        GLCall(glBindBuffer(GL_COPY_READ_BUFFER, this->vbo));
+        GLCall(glBufferData(GL_COPY_READ_BUFFER, other.used * sizeof(T),
+                            nullptr, BuffUsage));
+        GLCall(glBindBuffer(GL_COPY_READ_BUFFER, other.vbo));
+        GLCall(glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0,
+                                   0, other.used * sizeof(T)));
+    }
+
+    Buffer &operator=(const Buffer &other)
+    {
+        // Don't make this buffer larger than it has to be
+        this->allocated = other.used;
+        this->used      = other.used;
+        GLCall(glBindBuffer(GL_COPY_READ_BUFFER, this->vbo));
+        GLCall(glBufferData(GL_COPY_READ_BUFFER, other.used * sizeof(T),
+                            nullptr, BuffUsage));
+        GLCall(glBindBuffer(GL_COPY_READ_BUFFER, other.vbo));
+        GLCall(glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0,
+                                   0, other.used * sizeof(T)));
+        return *this;
+    }
 
     Buffer(Buffer &&other)
         : vao(other.vao), vbo(other.vbo), allocated(other.allocated),
@@ -82,7 +72,8 @@ public:
 
     ~Buffer()
     {
-        GLCall(glDeleteBuffers(1, &this->vbo));
+        if (this->vbo != 0)
+            GLCall(glDeleteBuffers(1, &this->vbo));
         this->vbo = 0; // Just incase
     }
 
@@ -98,22 +89,24 @@ public:
     {
         if (newSize == this->allocated)
             return;
-        bool expand = newSize > this->allocated;
-        this->Bind();
+        bool   expand = newSize > this->allocated;
         GLuint tmpVBO = 0;
         // Temporarily copy the data to a new buffer, then copy it back
         GLCall(glGenBuffers(1, &tmpVBO));
         GLCall(glBindBuffer(GL_COPY_WRITE_BUFFER, tmpVBO));
-        GLCall(glBufferData(GL_COPY_WRITE_BUFFER, this->used, nullptr,
-                            GL_STATIC_READ));
+        GLCall(glBufferData(GL_COPY_WRITE_BUFFER, this->used * sizeof(T),
+                            nullptr, GL_STATIC_READ));
         GLCall(glBindBuffer(GL_COPY_READ_BUFFER, this->vbo));
-        GLCall(glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0,
-                                   0, expand ? this->used : newSize));
+        GLCall(
+            glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0,
+                                (expand ? this->used : newSize) * sizeof(T)));
         // Data has been copied to temporary storage, now expand main vbo and
         // copy back
-        GLCall(glBufferData(GL_COPY_READ_BUFFER, newSize, nullptr, BuffUsage));
-        GLCall(glCopyBufferSubData(GL_COPY_WRITE_BUFFER, GL_COPY_READ_BUFFER, 0,
-                                   0, expand ? this->used : newSize));
+        GLCall(glBufferData(GL_COPY_READ_BUFFER, newSize * sizeof(T), nullptr,
+                            BuffUsage));
+        GLCall(
+            glCopyBufferSubData(GL_COPY_WRITE_BUFFER, GL_COPY_READ_BUFFER, 0, 0,
+                                (expand ? this->used : newSize) * sizeof(T)));
         GLCall(glDeleteBuffers(1, &tmpVBO));
         this->allocated = newSize;
     }
@@ -121,26 +114,29 @@ public:
     void OptimizeReserve(std::size_t newSize)
     {
         // Expand by 1.5x, shrink when less than 0.5x
-        if (newSize >= this->allocated)
+        if (newSize > this->allocated)
             this->Reserve(newSize + (newSize / 2));
-        else if (newSize < this->allocated / 2)
+        else if (newSize < (this->allocated / 2))
             this->Reserve(newSize);
     }
 
     void SetData(std::vector<T> const &vec)
     {
-        this->Bind();
         this->OptimizeReserve(vec.size());
-        GLCall(glBufferData(BuffTarget, vec.size() * sizeof(T), vec.data(),
+        this->used = vec.size();
+        this->Bind();
+        GLCall(glBufferData(BuffTarget, vec.size() * sizeof(T),
+                            reinterpret_cast<void const *>(vec.data()),
                             BuffUsage));
     }
 
-    std::vector<T> &&GetData()
+    std::vector<T> GetData() const
     {
         this->Bind();
         std::vector<T> data;
         data.resize(this->Size());
-        glGetBufferSubData(BuffTarget, 0, this->Size(), data.data());
+        GLCall(glGetBufferSubData(BuffTarget, 0, this->Size() * sizeof(T),
+                                  data.data()));
         return std::move(data);
     }
 
@@ -151,7 +147,7 @@ public:
         if (i >= this->Size())
             throw std::runtime_error("'i' buffer index overflow for VBO");
         T val;
-        GLCall(glGetBufferSubData(GL_ARRAY_BUFFER, i * sizeof(T), T,
+        GLCall(glGetBufferSubData(GL_ARRAY_BUFFER, i * sizeof(T), sizeof(T),
                                   reinterpret_cast<void *>(&val)));
         return val;
     }
@@ -167,14 +163,14 @@ public:
 
     void CopyTo(Buffer<T, BuffTarget, BuffUsage> &other) const
     {
-        this->Bind();
         // Temporarily copy the data to a new buffer, then copy it back
         GLCall(glBindBuffer(GL_COPY_READ_BUFFER, this->vbo));
         GLCall(glBindBuffer(GL_COPY_WRITE_BUFFER, other.vbo));
-        glBufferData(GL_COPY_WRITE_BUFFER, this->Size() * sizeof(T), nullptr,
-                     BuffUsage);
+        GLCall(glBufferData(GL_COPY_WRITE_BUFFER, this->Size() * sizeof(T),
+                            nullptr, BuffUsage));
         GLCall(glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0,
                                    0, this->Size() * sizeof(T)));
+        other.used = other.allocated = this->used;
     }
     // TODO: Probably add in append/insert/remove functions
 };
