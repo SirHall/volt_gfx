@@ -60,7 +60,8 @@ namespace volt::gfx
 
         ~VAO()
         {
-            GLCall(glDeleteVertexArrays(1, &this->vao));
+            if (this->vao != 0)
+                GLCall(glDeleteVertexArrays(1, &this->vao));
             this->vao = 0; // Just incase
         }
 
@@ -82,15 +83,6 @@ namespace volt::gfx
         }
         IBO &      GetIBO() { return this->ibo; }
         IBO const &GetIBO() const { return this->ibo; }
-
-        void SetIndexBufferData(std::vector<std::size_t> const &indices)
-        {
-            this->Bind();
-            GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo));
-            GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                                indices * sizeof(std::size_t), indices.data(),
-                                GL_DYNAMIC_DRAW));
-        }
 
         bool IsValid() const { return this->vao != 0; }
     };
