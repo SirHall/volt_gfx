@@ -46,8 +46,8 @@ namespace volt::gfx
         // }
 
         VBO(VBO &&other)
-            : Buffer<T, GL_ARRAY_BUFFER, VBOUsage>(std::move(other)),
-              initAttribIndex(other.initAttribIndex)
+            : initAttribIndex(other.initAttribIndex),
+              Buffer<T, GL_ARRAY_BUFFER, VBOUsage>(std::move(other))
         {
         }
 
@@ -59,11 +59,7 @@ namespace volt::gfx
             return *this;
         }
 
-        ~VBO()
-        {
-            if (this->vbo != 0)
-                GLCall(glDeleteBuffers(1, &this->vbo));
-        }
+        ~VBO() {}
     };
 } // namespace volt::gfx
 #endif
