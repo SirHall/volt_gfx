@@ -14,21 +14,21 @@ std::size_t GetVecTypeSize(const std::vector<T> &vec)
 }
 
 template <typename T>
-std::size_t VecTotalSize(const std::vector<T> &vec)
+std::size_t VecTotalSize(std::vector<T> const &vec)
 {
     return GetVecTypeSize(vec) * vec.size();
 }
 
 Mesh::Mesh() : vao() {}
 
-Mesh::Mesh(const Mesh &other) : vao()
+Mesh::Mesh(Mesh const &other) : vao()
 {
     other.GetVAO().GetIBO().CopyTo(this->vao.GetIBO());
     other.GetVAO().GetVertVBO().CopyTo(this->vao.GetVertVBO());
     other.GetVAO().GetInstVBO().CopyTo(this->vao.GetInstVBO());
 }
 
-Mesh &Mesh::operator=(const Mesh &other)
+Mesh &Mesh::operator=(Mesh const &other)
 {
     other.GetVAO().GetIBO().CopyTo(this->vao.GetIBO());
     other.GetVAO().GetVertVBO().CopyTo(this->vao.GetVertVBO());
@@ -36,18 +36,11 @@ Mesh &Mesh::operator=(const Mesh &other)
     return *this;
 }
 
-Mesh::Mesh(Mesh &&other)
-    : vao(std::move(other.vao)), vertices(std::move(other.vertices)),
-      indices(std::move(other.indices))
-{
-}
+Mesh::Mesh(Mesh &&other) : vao(std::move(other.vao)) {}
 
 Mesh &Mesh::operator=(Mesh &&other)
 {
-    vao      = std::move(other.vao);
-    vertices = std::move(other.vertices);
-    indices  = std::move(other.indices);
-
+    this->vao = std::move(other.vao);
     return *this;
 }
 
@@ -56,10 +49,8 @@ Mesh::~Mesh() {}
 void Mesh::CreateMesh(std::vector<MeshVertex> const &   vertices,
                       std::vector<std::uint32_t> const &indices)
 {
-    this->vertices = vertices;
-    this->indices  = indices;
-    this->vao.GetVertVBO().SetData(this->vertices);
-    this->vao.GetIBO().SetData(this->indices);
+    this->vao.GetVertVBO().SetData(vertices);
+    this->vao.GetIBO().SetData(indices);
 }
 
 void Mesh::RenderMesh()
@@ -70,18 +61,18 @@ void Mesh::RenderMesh()
     this->vao.Bind();
 
     // The draw call
-    GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(),
+    GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)this->vao.GetVertVBO().Size(),
                           GL_UNSIGNED_INT, 0));
 }
 
-const std::vector<MeshVertex> &Mesh::GetVertices() const
+std::vector<MeshVertex> Mesh::GetVertices() const
 {
-    return this->vertices;
+    return std::move(this->vao.GetVertVBO().GetData());
 }
 
-const std::vector<std::uint32_t> &Mesh::GetIndices() const
+std::vector<std::uint32_t> Mesh::GetIndices() const
 {
-    return this->indices;
+    return std::move(this->vao.GetIBO().GetData());
 }
 
 bool Mesh::IsValid() const { return this->vao.IsValid(); }

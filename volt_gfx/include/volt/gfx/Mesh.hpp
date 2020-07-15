@@ -18,8 +18,8 @@ namespace volt::gfx
     private:
         VAO<MeshVertex, MeshInstanceData> vao;
 
-        std::vector<MeshVertex>    vertices;
-        std::vector<std::uint32_t> indices;
+        // std::vector<MeshVertex>    vertices;
+        // std::vector<std::uint32_t> indices;
 
     public:
         Mesh();
@@ -34,8 +34,8 @@ namespace volt::gfx
                         std::vector<std::uint32_t> const &indices);
         void RenderMesh();
 
-        const std::vector<MeshVertex> &   GetVertices() const;
-        const std::vector<std::uint32_t> &GetIndices() const;
+        std::vector<MeshVertex>    GetVertices() const;
+        std::vector<std::uint32_t> GetIndices() const;
 
         bool IsValid() const;
 
