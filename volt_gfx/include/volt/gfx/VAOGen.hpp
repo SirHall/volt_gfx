@@ -70,10 +70,10 @@ namespace volt::gfx::VAOGen
     //                                   std::size_t offset, bool instanced);
 
     // // Floating point
-    // template <>
-    // GLuint GenVertAttrib<glm::float32>(std::string const &name,
-    //                                    GLuint startIndex, std::size_t stride,
-    //                                    std::size_t offset, bool instanced);
+    template <>
+    GLuint GenVertAttrib<glm::float32>(std::string const &name,
+                                       GLuint startIndex, std::size_t stride,
+                                       std::size_t offset, bool instanced);
     // template <>
     // GLuint GenVertAttrib<glm::float64>(std::string const &name,
     //                                    GLuint startIndex, std::size_t stride,
