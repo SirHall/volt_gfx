@@ -40,8 +40,8 @@ RenderObject::~RenderObject() {}
 
 void RenderObject::Bind() const
 {
-    this->material.Bind();
     this->mesh.Bind();
+    this->material.Bind();
     for (std::size_t i = 0; i < this->texUnits.size(); i++)
     {
         if (this->texUnits[i].has_value())
@@ -73,3 +73,12 @@ bool RenderObject::HasTexture(std::uint8_t texUnit)
     assert(texUnit < 16);
     return this->texUnits[texUnit].has_value();
 }
+
+bool RenderObject::IsValid() const
+{
+    return this->IsShaderValid() && this->IsMeshValid();
+}
+
+bool RenderObject::IsShaderValid() const { return this->material.IsValid(); }
+
+bool RenderObject::IsMeshValid() const { return this->mesh.IsValid(); }

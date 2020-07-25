@@ -40,6 +40,10 @@ namespace volt::gfx
         void SetTexture(Texture tex, std::uint8_t texUnit);
         void ClearTexture(std::uint8_t texUnit);
         bool HasTexture(std::uint8_t texUnit);
+
+        bool IsValid() const;
+        bool IsShaderValid() const;
+        bool IsMeshValid() const;
     };
 
 } // namespace volt::gfx
