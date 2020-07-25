@@ -128,6 +128,8 @@ Shader::~Shader() {}
 //     AssignUniform<T>(uniformLoc, value);
 // }
 
+bool Shader::IsValid() const { return *this->program != 0; }
+
 #pragma region Uniform Assignment
 
 namespace volt::gfx

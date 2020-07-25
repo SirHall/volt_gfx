@@ -154,7 +154,7 @@ namespace volt::gfx
             AssignUniform<T>(uniformLoc, value);
         }
 
-        inline bool IsValid() { return *this->program > 0; }
+        bool IsValid() const;
     };
 } // namespace volt::gfx
 #endif
