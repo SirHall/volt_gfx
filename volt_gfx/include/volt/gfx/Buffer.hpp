@@ -21,7 +21,7 @@ protected:
 public:
     Buffer(GLuint vaoID) : vao(vaoID)
     {
-        GLCall(glBindVertexArray(this->vao));
+        GLCall(glBindVertexArray(this->vao)); // This probably isn't needed
         GLCall(glGenBuffers(1, &this->vbo));
     }
 
