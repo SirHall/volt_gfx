@@ -19,7 +19,11 @@ protected:
     std::size_t allocated = 0, used = 0;
 
 public:
-    Buffer(GLuint vaoID) : vao(vaoID) { GLCall(glGenBuffers(1, &this->vbo)); }
+    Buffer(GLuint vaoID) : vao(vaoID)
+    {
+        GLCall(glBindVertexArray(this->vao));
+        GLCall(glGenBuffers(1, &this->vbo));
+    }
 
     Buffer(Buffer const &other) : allocated(other.used), used(other.used)
     { // Setup initial buffers
@@ -125,9 +129,8 @@ public:
         this->OptimizeReserve(vec.size());
         this->used = vec.size();
         this->Bind();
-        GLCall(glBufferData(BuffTarget, vec.size() * sizeof(T),
-                            reinterpret_cast<void const *>(vec.data()),
-                            BuffUsage));
+        GLCall(glBufferSubData(BuffTarget, 0, vec.size() * sizeof(T),
+                               reinterpret_cast<void const *>(vec.data())));
     }
 
     std::vector<T> GetData() const
@@ -172,6 +175,9 @@ public:
                                    0, this->Size() * sizeof(T)));
         other.used = other.allocated = this->used;
     }
+
+    bool IsValid() const { return this->vbo != 0 && this->vao != 0; }
+
     // TODO: Probably add in append/insert/remove functions
 };
 
