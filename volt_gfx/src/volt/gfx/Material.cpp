@@ -105,3 +105,5 @@ void Material::SetUniformTex(std::uint8_t imageUnit)
 #pragma endregion
 
 void Material::Bind() const { this->sh.Bind(); }
+
+bool Material::IsValid() const { return this->sh.IsValid(); }

@@ -48,6 +48,8 @@ namespace volt::gfx
         void Bind() const;
 
         Shader &GetShader() { return this->sh; }
+
+        bool IsValid() const;
     };
 
 } // namespace volt::gfx
