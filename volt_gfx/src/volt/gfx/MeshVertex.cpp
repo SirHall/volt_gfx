@@ -11,32 +11,32 @@ MeshVertex::MeshVertex() {}
 MeshVertex::MeshVertex(GLfloat pos_x, GLfloat pos_y, GLfloat pos_z,
                        GLfloat uv_x, GLfloat uv_y)
 {
-    position[0] = pos_x;
-    position[1] = pos_y;
-    position[2] = pos_z;
+    position.x = pos_x;
+    position.y = pos_y;
+    position.z = pos_z;
 
-    uv[0] = uv_x;
-    uv[1] = uv_y;
+    uv.x = uv_x;
+    uv.y = uv_y;
 }
 
 MeshVertex::MeshVertex(const MeshVertex &other)
 {
-    this->position[0] = other.position[0];
-    this->position[1] = other.position[1];
-    this->position[2] = other.position[2];
+    this->position.x = other.position.x;
+    this->position.y = other.position.y;
+    this->position.z = other.position.z;
 
-    this->uv[0] = other.uv[0];
-    this->uv[1] = other.uv[1];
+    this->uv.x = other.uv.x;
+    this->uv.y = other.uv.y;
 }
 
 MeshVertex &MeshVertex::operator=(const MeshVertex &other)
 {
-    this->position[0] = other.position[0];
-    this->position[1] = other.position[1];
-    this->position[2] = other.position[2];
+    this->position.x = other.position.x;
+    this->position.y = other.position.y;
+    this->position.z = other.position.z;
 
-    this->uv[0] = other.uv[0];
-    this->uv[1] = other.uv[1];
+    this->uv.x = other.uv.x;
+    this->uv.y = other.uv.y;
 
     return *this;
 }
