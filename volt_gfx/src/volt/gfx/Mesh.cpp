@@ -53,18 +53,6 @@ void Mesh::CreateMesh(std::vector<MeshVertex> const &   vertices,
     this->vao.GetIBO().SetData(indices);
 }
 
-void Mesh::RenderMesh()
-{
-    if (!this->vao.IsValid())
-        std::cerr << "VAO is invalid" << std::endl;
-
-    this->vao.Bind();
-
-    // The draw call
-    GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)this->vao.GetVertVBO().Size(),
-                          GL_UNSIGNED_INT, 0));
-}
-
 std::vector<MeshVertex> Mesh::GetVertices() const
 {
     return std::move(this->vao.GetVertVBO().GetData());

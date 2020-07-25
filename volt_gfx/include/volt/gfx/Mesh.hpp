@@ -32,7 +32,6 @@ namespace volt::gfx
 
         void CreateMesh(std::vector<MeshVertex> const &   vertices,
                         std::vector<std::uint32_t> const &indices);
-        void RenderMesh();
 
         std::vector<MeshVertex>    GetVertices() const;
         std::vector<std::uint32_t> GetIndices() const;
