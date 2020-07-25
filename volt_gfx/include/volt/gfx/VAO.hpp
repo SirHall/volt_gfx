@@ -84,7 +84,11 @@ namespace volt::gfx
         IBO &      GetIBO() { return this->ibo; }
         IBO const &GetIBO() const { return this->ibo; }
 
-        bool IsValid() const { return this->vao != 0; }
+        bool IsValid() const
+        {
+            return this->vao != 0 && this->vertVBO.IsValid() &&
+                   this->instVBO.IsValid() && this->ibo.IsValid();
+        }
     };
 } // namespace volt::gfx
 #endif
