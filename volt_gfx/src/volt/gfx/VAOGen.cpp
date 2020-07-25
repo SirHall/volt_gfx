@@ -23,8 +23,7 @@ GLuint volt::gfx::VAOGen::GenVertAttrib<glm::float32>(std::string const &name,
     GLCall(glVertexAttribPointer(startIndex, 1, GetGlType<float>(), GL_FALSE,
                                  GLsizei(stride),
                                  reinterpret_cast<void *>(offset)));
-    if (instanced)
-        glVertexAttribDivisor(startIndex, 1);
+    GLCall(glVertexAttribDivisor(startIndex, instanced ? 1 : 0));
     return startIndex + 1;
 }
 
@@ -36,8 +35,7 @@ GLuint GenNVecVertAttrib(std::string const &name, GLuint startIndex,
     GLCall(glVertexAttribPointer(startIndex, GLint(size), GetGlType<float>(),
                                  GL_FALSE, GLsizei(stride),
                                  reinterpret_cast<GLvoid *>(offset)));
-    if (instanced)
-        GLCall(glVertexAttribDivisor(startIndex, 1));
+    GLCall(glVertexAttribDivisor(startIndex, instanced ? 1 : 0));
     return startIndex + 1;
 }
 
@@ -86,13 +84,13 @@ GLuint GemNMatVertAttrib(std::string const &name, GLuint startIndex,
     for (std::size_t i = 0; i < I; i++)
     {
         GLCall(glEnableVertexAttribArray(startIndex));
-        GLCall(glVertexAttribPointer(
-            startIndex, J, GetGlType<float>(), GL_FALSE, GLsizei(stride),
-            reinterpret_cast<void *>(offset + (i * J))));
-        if (instanced)
-            glVertexAttribDivisor(startIndex, 1);
+        glVertexAttribPointer(startIndex, GLint(J), GetGlType<float>(),
+                              GL_FALSE, GLsizei(stride),
+                              reinterpret_cast<void const *>(offset + (i * J)));
+        GLCall(glVertexAttribDivisor(startIndex, instanced ? 1 : 0));
         startIndex++;
     }
+
     return startIndex;
 }
 
