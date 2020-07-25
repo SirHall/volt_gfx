@@ -333,11 +333,18 @@ bool Renderer::Initialize(GFXSettings settings)
 //     this->renderMode = renderMode;
 // }
 
+// TODO: Phase this oout to use instanced rendering by default
 void Renderer::DirectRender(RenderObject &obj, Camera const &cam)
 {
-    if (!obj.GetMesh().IsValid())
+    if (!obj.IsMeshValid())
     {
-        std::cerr << "Attempted to perform a direct render with invalid VAO"
+        std::cerr << "Attempted to perform a direct render with invalid mesh"
+                  << std::endl;
+        return;
+    }
+    if (!obj.IsShaderValid())
+    {
+        std::cerr << "Attempted to perform a direct render with invalid shader"
                   << std::endl;
         return;
     }
@@ -348,7 +355,7 @@ void Renderer::DirectRender(RenderObject &obj, Camera const &cam)
                                     obj.GetTransform().GetMatrix());
     // The draw call
     GLCall(glDrawElements(GL_TRIANGLES,
-                          (GLsizei)obj.GetMesh().GetIndices().size(),
+                          (GLsizei)obj.GetMesh().GetVAO().GetIBO().Size(),
                           GL_UNSIGNED_INT, 0));
 }
 
