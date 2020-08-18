@@ -5,6 +5,7 @@
 #include "volt/gfx/Buffer.hpp"
 #include "volt/gfx/GLImport.hpp"
 #include "volt/gfx/GLUtilities.hpp"
+#include "volt/gfx/VertAttribData.hpp"
 
 #include <stdexcept>
 #include <vector>
@@ -12,7 +13,7 @@
 namespace volt::gfx
 {
     template <typename T>
-    GLuint GenVBO(GLuint attribIndex);
+    GLuint GenVBO(GLuint attribIndex, std::vector<VertAttribData> &verts);
 
     template <typename T, GLenum VBOUsage>
     class VBO : public Buffer<T, GL_ARRAY_BUFFER, VBOUsage>
@@ -26,7 +27,10 @@ namespace volt::gfx
             : Buffer(vaoID), initAttribIndex(attribIndex)
         {
             this->Bind();
-            attribIndex = GenVBO<T>(attribIndex);
+            auto vboData = std::vector<VertAttribData>();
+            attribIndex  = GenVBO<T>(attribIndex, vboData);
+            for (auto const &attribData : vboData)
+                attribData.generator();
         }
 
         VBO(const VBO &other) = delete;
