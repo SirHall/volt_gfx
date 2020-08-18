@@ -4,6 +4,8 @@
 
 #include "volt/gfx/GLImport.hpp"
 #include "volt/gfx/ShaderSource.hpp"
+#include "volt/gfx/VBO.hpp"
+#include "volt/gfx/VertAttribData.hpp"
 
 #include <array>
 #include <functional>
@@ -155,6 +157,22 @@ namespace volt::gfx
         }
 
         bool IsValid() const;
+
+        template <typename VertT, typename InstT>
+        void SetVBODataTypes()
+        {
+            std::vector<VertAttribData> vboData;
+            GLuint                      attribIndex = 0;
+            attribIndex = GenVBO<VertT>(attribIndex, vboData);
+            attribIndex = GenVBO<InstT>(attribIndex, vboData);
+
+            for (auto const &attribData : vboData)
+                GLCall(glBindAttribLocation(this->program,
+                                            attribData.startIndex,
+                                            attribData.name.c_str()));
+
+            GLCall(glLinkProgram(this->program));
+        }
     };
 } // namespace volt::gfx
 #endif
