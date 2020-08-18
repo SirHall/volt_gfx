@@ -44,12 +44,17 @@ MeshVertex &MeshVertex::operator=(const MeshVertex &other)
 MeshVertex::~MeshVertex() {}
 
 template <>
-GLuint volt::gfx::GenVBO<MeshVertex>(GLuint attribIndex)
+GLuint volt::gfx::GenVBO<MeshVertex>(GLuint                       attribIndex,
+                                     std::vector<VertAttribData> &verts)
 {
-    attribIndex = VAOGen::GenVertAttrib<glm::vec3>(
-        "gfxPos", attribIndex, sizeof(MeshVertex),
-        offsetof(MeshVertex, position));
-    attribIndex = VAOGen::GenVertAttrib<glm::vec2>(
-        "gfxUV", attribIndex, sizeof(MeshVertex), offsetof(MeshVertex, uv));
+    verts.push_back(VertAttribData("gfxPos", attribIndex, sizeof(MeshVertex),
+                                   offsetof(MeshVertex, position)));
+    verts.back().SetGenerator<glm::vec3>();
+    attribIndex += VAOGen::AttribTypeSize<glm::vec3>();
+    verts.push_back(VertAttribData("gfxUV", attribIndex, sizeof(MeshVertex),
+                                   offsetof(MeshVertex, uv)));
+    verts.back().SetGenerator<glm::vec2>();
+    attribIndex += VAOGen::AttribTypeSize<glm::vec2>();
+
     return attribIndex;
 }

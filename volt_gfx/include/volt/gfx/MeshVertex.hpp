@@ -4,8 +4,11 @@
 
 #include "volt/gfx/GLImport.hpp"
 #include "volt/gfx/VBO.hpp"
+#include "volt/gfx/VertAttribData.hpp"
 
 #include <glm/glm.hpp>
+
+#include <vector>
 
 namespace volt::gfx
 {
@@ -26,7 +29,8 @@ namespace volt::gfx
     };
 
     template <>
-    GLuint GenVBO<MeshVertex>(GLuint attribIndex);
+    GLuint GenVBO<MeshVertex>(GLuint                       attribIndex,
+                              std::vector<VertAttribData> &verts);
 } // namespace volt::gfx
 
 #endif

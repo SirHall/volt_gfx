@@ -1,6 +1,6 @@
 #include "volt/gfx/MeshInstanceData.hpp"
-
 #include "volt/gfx/VAOGen.hpp"
+#include "volt/gfx/VertAttribData.hpp"
 
 using namespace volt::gfx;
 
@@ -16,10 +16,13 @@ MeshInstanceData &MeshInstanceData::operator=(const MeshInstanceData &other)
 MeshInstanceData::~MeshInstanceData() {}
 
 template <>
-GLuint volt::gfx::GenVBO<MeshInstanceData>(GLuint attribIndex)
+GLuint volt::gfx::GenVBO<MeshInstanceData>(GLuint attribIndex,
+                                           std::vector<VertAttribData> &verts)
 {
-    attribIndex = VAOGen::GenVertAttrib<glm::mat4>(
-        "gfxTransform", attribIndex, sizeof(MeshInstanceData),
-        offsetof(MeshInstanceData, transform));
+    verts.push_back(VertAttribData("gfxTransform", attribIndex,
+                                   sizeof(MeshInstanceData),
+                                   offsetof(MeshInstanceData, transform)));
+    verts.back().SetGenerator<glm::vec4>();
+    attribIndex = VAOGen::AttribTypeSize<glm::mat4>();
     return attribIndex;
 }
