@@ -135,5 +135,37 @@ namespace volt::gfx::VAOGen
                                       GLuint startIndex, std::size_t stride,
                                       std::size_t offset, bool instanced);
 
+    template <typename T>
+    GLsizei AttribTypeSize();
+
+    template <>
+    GLsizei AttribTypeSize<glm::float32>();
+    template <>
+    GLsizei AttribTypeSize<glm::vec1>();
+    template <>
+    GLsizei AttribTypeSize<glm::vec2>();
+    template <>
+    GLsizei AttribTypeSize<glm::vec3>();
+    template <>
+    GLsizei AttribTypeSize<glm::vec4>();
+    template <>
+    GLsizei AttribTypeSize<glm::mat2x2>();
+    template <>
+    GLsizei AttribTypeSize<glm::mat2x3>();
+    template <>
+    GLsizei AttribTypeSize<glm::mat2x4>();
+    template <>
+    GLsizei AttribTypeSize<glm::mat3x2>();
+    template <>
+    GLsizei AttribTypeSize<glm::mat3x3>();
+    template <>
+    GLsizei AttribTypeSize<glm::mat4x4>();
+    template <>
+    GLsizei AttribTypeSize<glm::mat4x2>();
+    template <>
+    GLsizei AttribTypeSize<glm::mat4x3>();
+    template <>
+    GLsizei AttribTypeSize<glm::mat4x4>();
+
 } // namespace volt::gfx::VAOGen
 #endif

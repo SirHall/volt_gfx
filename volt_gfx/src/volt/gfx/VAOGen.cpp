@@ -175,3 +175,74 @@ GLuint volt::gfx::VAOGen::GenVertAttrib<glm::mat4x4>(std::string const &name,
 {
     return GemNMatVertAttrib(name, startIndex, stride, offset, instanced, 4, 4);
 }
+
+template <>
+GLsizei volt::gfx::VAOGen::AttribTypeSize<glm::float32>()
+{
+    return GLsizei(1);
+}
+template <>
+GLsizei volt::gfx::VAOGen::AttribTypeSize<glm::vec1>()
+{
+    return GLsizei(1);
+}
+template <>
+GLsizei volt::gfx::VAOGen::AttribTypeSize<glm::vec2>()
+{
+    return GLsizei(1);
+}
+template <>
+GLsizei volt::gfx::VAOGen::AttribTypeSize<glm::vec3>()
+{
+    return GLsizei(1);
+}
+template <>
+GLsizei volt::gfx::VAOGen::AttribTypeSize<glm::vec4>()
+{
+    return GLsizei(1);
+}
+template <>
+GLsizei volt::gfx::VAOGen::AttribTypeSize<glm::mat2x2>()
+{
+    return GLsizei(2);
+}
+template <>
+GLsizei volt::gfx::VAOGen::AttribTypeSize<glm::mat2x3>()
+{
+    return GLsizei(2);
+}
+template <>
+GLsizei volt::gfx::VAOGen::AttribTypeSize<glm::mat2x4>()
+{
+    return GLsizei(2);
+}
+template <>
+GLsizei volt::gfx::VAOGen::AttribTypeSize<glm::mat3x2>()
+{
+    return GLsizei(3);
+}
+template <>
+GLsizei volt::gfx::VAOGen::AttribTypeSize<glm::mat3x3>()
+{
+    return GLsizei(3);
+}
+template <>
+GLsizei volt::gfx::VAOGen::AttribTypeSize<glm::mat3x4>()
+{
+    return GLsizei(3);
+}
+template <>
+GLsizei volt::gfx::VAOGen::AttribTypeSize<glm::mat4x2>()
+{
+    return GLsizei(4);
+}
+template <>
+GLsizei volt::gfx::VAOGen::AttribTypeSize<glm::mat4x3>()
+{
+    return GLsizei(4);
+}
+template <>
+GLsizei volt::gfx::VAOGen::AttribTypeSize<glm::mat4x4>()
+{
+    return GLsizei(4);
+}
