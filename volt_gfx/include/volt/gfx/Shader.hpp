@@ -167,11 +167,12 @@ namespace volt::gfx
             attribIndex = GenVBO<InstT>(attribIndex, vboData);
 
             for (auto const &attribData : vboData)
-                GLCall(glBindAttribLocation(this->program,
+            {
+                GLCall(glBindAttribLocation(*this->program,
                                             attribData.startIndex,
                                             attribData.name.c_str()));
-
-            GLCall(glLinkProgram(this->program));
+            }
+            GLCall(glLinkProgram(*this->program));
         }
     };
 } // namespace volt::gfx
