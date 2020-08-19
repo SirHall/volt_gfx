@@ -83,6 +83,9 @@ int main(int argc, char *argv[])
         std::cout << "All shaders compiled successfully" << std::endl;
     }
 
+    // Setup attribute names
+    shader.SetVBODataTypes<MeshVertex, MeshInstanceData>();
+
     Material mat = Material(shader);
 
 #pragma endregion
