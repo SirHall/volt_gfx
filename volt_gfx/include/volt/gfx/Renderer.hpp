@@ -66,13 +66,15 @@ namespace volt::gfx
 
         // void SetRenderMode(RenderMode renderMode);
 
-        void DirectRender(RenderObject &obj, Camera const &cam);
+        void DirectRender(RenderObject &obj, Transform const &transform,
+                          Camera const &cam);
 
         void RenderFramebuffer(Framebuffer &fb, Material &mat,
                                std::uint8_t attachmentIndex = 0);
 
-        void InstancedRender(const std::vector<Transform> &transforms,
-                             const Mesh &                  mesh);
+        void InstancedRender(RenderObject &                       obj,
+                             std::vector<MeshInstanceData> const &transforms,
+                             Camera const &                       cam);
 
         void DisplayFrame();
 

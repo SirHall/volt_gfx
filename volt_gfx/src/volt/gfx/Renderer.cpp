@@ -3,6 +3,7 @@
 #include "volt/gfx/Framebuffer.hpp"
 #include "volt/gfx/GLImport.hpp"
 #include "volt/gfx/GLUtilities.hpp"
+#include "volt/gfx/MeshInstanceData.hpp"
 #include "volt/gfx/RenderObject.hpp"
 #include "volt/gfx/Shader.hpp"
 #include "volt/gfx/Sprite.hpp"
@@ -328,13 +329,9 @@ bool Renderer::Initialize(GFXSettings settings)
     return true;
 }
 
-// void Renderer::SetRenderMode(RenderMode renderMode)
-// {
-//     this->renderMode = renderMode;
-// }
-
 // TODO: Phase this oout to use instanced rendering by default
-void Renderer::DirectRender(RenderObject &obj, Camera const &cam)
+void Renderer::DirectRender(RenderObject &obj, Transform const &transform,
+                            Camera const &cam)
 {
     if (!obj.IsMeshValid())
     {
@@ -352,7 +349,7 @@ void Renderer::DirectRender(RenderObject &obj, Camera const &cam)
     obj.Bind();
     obj.GetMaterial().SetUniformPVM(cam.GetProjection(),
                                     cam.GetTransform().GetMatrix(),
-                                    obj.GetTransform().GetMatrix());
+                                    transform.GetMatrix());
     // The draw call
     GLCall(glDrawElements(GL_TRIANGLES,
                           (GLsizei)obj.GetMesh().GetVAO().GetIBO().Size(),
@@ -390,25 +387,40 @@ void Renderer::RenderFramebuffer(Framebuffer &fb, Material &mat,
     this->SetContextSize(this->GetFrameBufferSize());
 }
 
-void Renderer::InstancedRender(const std::vector<Transform> &transforms,
-                               const Mesh &                  mesh)
+void Renderer::InstancedRender(RenderObject &                       obj,
+                               std::vector<MeshInstanceData> const &transforms,
+                               Camera const &                       cam)
 {
-    if (mesh.GetVAO().IsValid())
+    if (!obj.IsMeshValid())
     {
-        std::cerr << "Attempted to instance render with invalid VAO"
-                  << std::endl;
+        std::cerr
+            << "Attempted to perform an instanced render with invalid mesh"
+            << std::endl;
+        return;
+    }
+    if (!obj.IsShaderValid())
+    {
+        std::cerr
+            << "Attempted to perform an instanced render with invalid shader"
+            << std::endl;
         return;
     }
 
-    mesh.GetVAO().Bind();
+    obj.Bind();
+    obj.GetMaterial().SetUniformPVM(
+        cam.GetProjection(), cam.GetTransform().GetMatrix(), glm::mat4(1.0));
 
-    glDrawElementsInstanced(GL_TRIANGLES, (GLsizei)mesh.GetIndices().size(),
-                            GL_UNSIGNED_INT, 0, (GLsizei)transforms.size());
+    obj.GetMesh().GetVAO().GetInstVBO().SetData(transforms);
+    obj.GetMesh().GetVAO().Bind();
+
+    GLCall(glDrawElementsInstanced(
+        GL_TRIANGLES, (GLsizei)obj.GetMesh().GetIndices().size(),
+        GL_UNSIGNED_INT, 0, (GLsizei)transforms.size()));
 }
 
 void Renderer::DisplayFrame()
 {
-    glfwSwapBuffers(window);
+    GLCall(glfwSwapBuffers(window));
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
