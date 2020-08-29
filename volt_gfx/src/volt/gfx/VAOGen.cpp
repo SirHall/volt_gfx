@@ -84,9 +84,9 @@ GLuint GemNMatVertAttrib(std::string const &name, GLuint startIndex,
     for (std::size_t i = 0; i < I; i++)
     {
         GLCall(glEnableVertexAttribArray(startIndex));
-        glVertexAttribPointer(startIndex, GLint(J), GetGlType<float>(),
-                              GL_FALSE, GLsizei(stride),
-                              reinterpret_cast<void const *>(offset + (i * J)));
+        GLCall(glVertexAttribPointer(
+            startIndex, GLint(J), GetGlType<float>(), GL_FALSE, GLsizei(stride),
+            reinterpret_cast<void const *>(offset + (i * J * sizeof(float)))));
         GLCall(glVertexAttribDivisor(startIndex, instanced ? 1 : 0));
         startIndex++;
     }
