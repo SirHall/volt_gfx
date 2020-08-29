@@ -4,35 +4,29 @@
 
 using namespace volt::gfx;
 
-RenderObject::RenderObject(Material mat, Mesh m, Transform t)
-    : material(mat), mesh(m), transform(t)
-{
-}
+RenderObject::RenderObject(Material mat, Mesh m) : material(mat), mesh(m) {}
 
 RenderObject::RenderObject(const RenderObject &other)
-    : material(other.material), mesh(other.mesh), transform(other.transform)
+    : material(other.material), mesh(other.mesh)
 {
 }
 
 RenderObject &RenderObject::operator=(const RenderObject &other)
 {
-    this->material  = other.material;
-    this->mesh      = other.mesh;
-    this->transform = other.transform;
+    this->material = other.material;
+    this->mesh     = other.mesh;
     return *this;
 }
 
 RenderObject::RenderObject(RenderObject &&other)
-    : material(std::move(other.material)), mesh(std::move(other.mesh)),
-      transform(std::move(other.transform))
+    : material(std::move(other.material)), mesh(std::move(other.mesh))
 {
 }
 
 RenderObject &RenderObject::operator=(RenderObject &&other)
 {
-    this->material  = std::move(other.material);
-    this->mesh      = std::move(other.mesh);
-    this->transform = std::move(other.transform);
+    this->material = std::move(other.material);
+    this->mesh     = std::move(other.mesh);
     return *this;
 }
 
@@ -52,9 +46,8 @@ void RenderObject::Bind() const
     }
 }
 
-Material & RenderObject::GetMaterial() { return this->material; }
-Mesh &     RenderObject::GetMesh() { return this->mesh; }
-Transform &RenderObject::GetTransform() { return this->transform; }
+Material &RenderObject::GetMaterial() { return this->material; }
+Mesh &    RenderObject::GetMesh() { return this->mesh; }
 
 void RenderObject::SetTexture(Texture tex, std::uint8_t texUnit)
 {

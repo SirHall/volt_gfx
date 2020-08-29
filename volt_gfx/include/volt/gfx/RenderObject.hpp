@@ -17,14 +17,13 @@ namespace volt::gfx
     class RenderObject
     {
     private:
-        Material  material;
-        Mesh      mesh;
-        Transform transform;
+        Material material;
+        Mesh     mesh;
 
         std::array<std::optional<Texture>, 16> texUnits;
 
     public:
-        RenderObject(Material mat, Mesh m, Transform t);
+        RenderObject(Material mat, Mesh m);
         RenderObject(const RenderObject &other);
         RenderObject &operator=(const RenderObject &other);
         RenderObject(RenderObject &&other);
@@ -33,9 +32,8 @@ namespace volt::gfx
 
         void Bind() const;
 
-        Material & GetMaterial();
-        Mesh &     GetMesh();
-        Transform &GetTransform();
+        Material &GetMaterial();
+        Mesh &    GetMesh();
 
         void SetTexture(Texture tex, std::uint8_t texUnit);
         void ClearTexture(std::uint8_t texUnit);
