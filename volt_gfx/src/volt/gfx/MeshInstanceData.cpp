@@ -4,12 +4,20 @@
 
 using namespace volt::gfx;
 
-MeshInstanceData::MeshInstanceData() {}
+MeshInstanceData::MeshInstanceData() : transform(1) {}
+MeshInstanceData::MeshInstanceData(glm::mat4 transformMat)
+    : transform(transformMat)
+{
+}
 
-MeshInstanceData::MeshInstanceData(const MeshInstanceData &other) {}
+MeshInstanceData::MeshInstanceData(const MeshInstanceData &other)
+    : transform(other.transform)
+{
+}
 
 MeshInstanceData &MeshInstanceData::operator=(const MeshInstanceData &other)
 {
+    this->transform = other.transform;
     return *this;
 }
 
@@ -19,10 +27,10 @@ template <>
 GLuint volt::gfx::GenVBO<MeshInstanceData>(GLuint attribIndex,
                                            std::vector<VertAttribData> &verts)
 {
-    verts.push_back(VertAttribData("gfxTransform", attribIndex,
-                                   sizeof(MeshInstanceData),
-                                   offsetof(MeshInstanceData, transform)));
-    verts.back().SetGenerator<glm::vec4>();
-    attribIndex = VAOGen::AttribTypeSize<glm::mat4>();
+    verts.push_back(
+        VertAttribData("gfxTransform", attribIndex, sizeof(MeshInstanceData),
+                       offsetof(MeshInstanceData, transform), true));
+    verts.back().SetGenerator<glm::mat4>();
+    attribIndex += VAOGen::AttribTypeSize<glm::mat4>();
     return attribIndex;
 }

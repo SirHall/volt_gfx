@@ -13,6 +13,7 @@ namespace volt::gfx
     {
     public:
         MeshInstanceData();
+        MeshInstanceData(glm::mat4 transformMat);
         MeshInstanceData(const MeshInstanceData &other);
         MeshInstanceData &operator=(const MeshInstanceData &other);
         ~MeshInstanceData();
