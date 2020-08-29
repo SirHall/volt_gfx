@@ -1,6 +1,5 @@
 #version 330 core
 
-in vec3 vertPos;
 in vec2 texCoord;
 
 uniform vec4 u_Color;
