@@ -164,12 +164,12 @@ int main(int argc, char *argv[])
     Framebuffer framebuffer = Framebuffer();
     framebuffer.AttachTexture(tex, FramebufferTarget::ReadWrite(), 0);
 
+    Transform transform2 =
+        Transform(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+
     RenderObject obj2 =
-        RenderObject(mat2,
-                     Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
-                                        glm::vec2(1.0f, 1.0f)),
-                     Transform(glm::translate(glm::mat4(1.0f),
-                                              glm::vec3(0.0f, 0.0f, 0.0f))));
+        RenderObject(mat2, Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+                                              glm::vec2(1.0f, 1.0f)));
 
     Camera cam = Camera();
     cam.SetTransform(Transform(glm::lookAt(glm::vec3(0.0f, 0.0f, 10.0f),
@@ -226,7 +226,7 @@ int main(int argc, char *argv[])
         tex.GenerateMipmap();
 
         Framebuffer::BindDefaultFramebuffer();
-        renderer.DirectRender(obj2, cam);
+        renderer.DirectRender(obj2, transform2, cam);
 
         renderer.DisplayFrame();
 

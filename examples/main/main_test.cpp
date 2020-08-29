@@ -94,20 +94,18 @@ int main(int argc, char *argv[])
     Image   img = Image("res/tree.png");
     Texture tex = Texture(img);
 
+    Transform transform1 =
+        Transform(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
     RenderObject obj1 =
-        RenderObject(mat,
-                     Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
-                                        glm::vec2(5.0f, 5.0f)),
-                     Transform(glm::translate(glm::mat4(1.0f),
-                                              glm::vec3(0.0f, 0.0f, 0.0f))));
+        RenderObject(mat, Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+                                             glm::vec2(5.0f, 5.0f)));
     obj1.SetTexture(tex, 0);
 
+    Transform transform2 = Transform(
+        glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.0f)));
     RenderObject obj2 =
-        RenderObject(mat,
-                     Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
-                                        glm::vec2(5.0f, 5.0f)),
-                     Transform(glm::translate(glm::mat4(1.0f),
-                                              glm::vec3(0.0f, 0.0f, -2.0f))));
+        RenderObject(mat, Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+                                             glm::vec2(5.0f, 5.0f)));
     obj2.SetTexture(tex, 0);
 
     Camera cam = Camera();
@@ -123,15 +121,15 @@ int main(int argc, char *argv[])
     while (renderer.WindowOpen())
     {
         // Rotate model a bit
-        obj1.GetTransform().RotateGlobal(
+        transform1.RotateGlobal(
             glm::rotate(glm::mat4(1.0f), 0.01f, glm::vec3(1.0f, 1.0f, 1.0f)));
 
         renderer.PollEvents();
         cam.SetAspectRatio(renderer.GetFrameBufferSizeRatio());
 
-        renderer.DirectRender(obj1, cam);
+        renderer.DirectRender(obj1, transform1, cam);
 
-        renderer.DirectRender(obj2, cam);
+        renderer.DirectRender(obj2, transform2, cam);
 
         renderer.DisplayFrame();
         renderer.SleepForFrame();
