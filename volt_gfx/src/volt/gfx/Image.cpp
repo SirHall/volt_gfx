@@ -56,6 +56,14 @@ Image::Image(std::vector<std::uint8_t> &&data, GLsizei w, GLsizei h)
     this->imageData = std::move(data);
 }
 
+Image::Image(GLsizei w, GLsizei h)
+{
+    this->width     = w;
+    this->height    = h;
+    this->imageData = std::vector<std::uint8_t>();
+    this->imageData.resize(w * h * 4);
+}
+
 Image::Image(const Image &other)
     : imageData(other.imageData), width(other.width), height(other.height)
 {
