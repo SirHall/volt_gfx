@@ -39,7 +39,7 @@ namespace volt::gfx
         Texture(Image const &image, bool enableMipmaps = true);
         Texture(GLsizei width, GLsizei height, bool enableMipmaps = true);
 
-        Texture(const Texture &other);
+        Texture(Texture const &other);
         Texture(Texture &&other);
         Texture &operator=(const Texture &other);
         Texture &operator=(Texture &&other);
@@ -56,6 +56,9 @@ namespace volt::gfx
 
         GLsizei GetWidth();
         GLsizei GetHeight();
+
+        void SetImage(Image const &image);
+        void SetImage(void const *data, GLsizei width, GLsizei height);
 
         // Wil resize a texture on th GPU, useful for framebuffers when the
         // window is resized

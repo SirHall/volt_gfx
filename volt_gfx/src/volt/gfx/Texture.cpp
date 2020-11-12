@@ -66,10 +66,7 @@ void Texture::CreateTexture(GLsizei width, GLsizei height, bool enableMipmaps,
             delete ptr;
         }));
 
-    this->Bind();
-    GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA,
-                        GL_UNSIGNED_BYTE, data));
-    this->GenerateMipmap();
+    this->SetImage() this->GenerateMipmap();
 
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
@@ -103,6 +100,19 @@ GLsizei Texture::GetHeight()
     GLCall(
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height));
     return height;
+}
+
+void Texture::SetImage(Image const &image)
+{
+    this->SetImage(image.GetImageData().data(), image.GetWidth(),
+                   image.GetHeight());
+}
+
+void Texture::SetImage(void const *data, GLsizei width, GLsizei height)
+{
+    this->Bind();
+    GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA,
+                        GL_UNSIGNED_BYTE, data));
 }
 
 void Texture::Resize(GLsizei newWidth, GLsizei newHeight)
