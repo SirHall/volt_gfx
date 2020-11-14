@@ -17,9 +17,19 @@ set(OpenGL_GL_PREFERENCE GLVND)
 add_library(volt_gfx ${VOLT_GFX_SRCS})
 target_include_directories(volt_gfx PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
 target_link_libraries(volt_gfx ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(volt_gfx ${CONAN_LIBS})
+# target_link_libraries(volt_gfx ${CONAN_LIBS})
 # target_link_libraries(volt_gfx volt_event)
 # target_link_libraries(volt_gfx LINK_PUBLIC ${Boost_LIBRARIES})
+
+find_package(glfw3 CONFIG REQUIRED)
+find_package(glew CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
+add_dependencies(volt_gfx volt_event)
+find_package(Boost CONFIG REQUIRED system filesystem)
+target_link_libraries(volt_gfx PUBLIC volt_event glfw glew::glew glm Boost::system Boost::filesystem)
+
+
+
 set_property(TARGET volt_gfx PROPERTY CXX_STANDARD 17)
 
 # Flags
