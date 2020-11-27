@@ -24,7 +24,8 @@ namespace volt::gfx
     public:
         // TODO: Only allow this class to be instantiated withint volt_gfx
         VBO(GLuint vaoID, GLuint &attribIndex)
-            : Buffer(vaoID), initAttribIndex(attribIndex)
+            : Buffer<T, GL_ARRAY_BUFFER, VBOUsage>(vaoID),
+              initAttribIndex(attribIndex)
         {
             this->Bind();
             auto vboData = std::vector<VertAttribData>();
