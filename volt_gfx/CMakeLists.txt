@@ -8,39 +8,29 @@ file(GLOB_RECURSE VOLT_GFX_SRCS
 )
 
 # Copy resource files to build output 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res DESTINATION ${CMAKE_BINARY_DIR}/.)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res DESTINATION ${CMAKE_BINARY_DIR})
 
 set(OpenGL_GL_PREFERENCE GLVND)
 
-# find_package (Threads)
+find_package (Threads)
+
+# Boost
+hunter_add_package(Boost COMPONENTS system filesystem)
+find_package(Boost CONFIG REQUIRED system filesystem)
+# glew
+hunter_add_package(glew)
+find_package(glew CONFIG REQUIRED)
+# glfw
+hunter_add_package(glfw)
+find_package(glfw3 CONFIG REQUIRED)
+# glm
+hunter_add_package(glm)
+find_package(glm CONFIG REQUIRED)
+# volt_event
+hunter_add_package(volt_event)
+find_package(volt_event CONFIG REQUIRED)
 
 add_library(volt_gfx ${VOLT_GFX_SRCS})
-target_include_directories(volt_gfx PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
-target_link_libraries(volt_gfx ${CMAKE_THREAD_LIBS_INIT})
-# target_link_libraries(volt_gfx ${CONAN_LIBS})
-# target_link_libraries(volt_gfx volt_event)
-# target_link_libraries(volt_gfx LINK_PUBLIC ${Boost_LIBRARIES})
-
-find_package(glfw3 CONFIG REQUIRED)
-find_package(glew CONFIG REQUIRED)
-find_package(glm CONFIG REQUIRED)
-add_dependencies(volt_gfx volt_event)
-find_package(Boost CONFIG REQUIRED system filesystem)
-target_link_libraries(volt_gfx PUBLIC volt_event glfw glew::glew glm Boost::system Boost::filesystem)
-
-
-
+target_include_directories(volt_gfx PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
+target_link_libraries(volt_gfx ${CMAKE_THREAD_LIBS_INIT} volt_event glfw glew::glew glm Boost::boost Boost::system Boost::filesystem)
 set_property(TARGET volt_gfx PROPERTY CXX_STANDARD 17)
-
-# Flags
-# if(MSVC)
-#     target_compile_options(volt_gfx PRIVATE /W4 /WX)
-# else()
-#     set(WARNING_FLAGS "-Wall -Wextra -pedantic -Werror -Wno-unknown-pragmas -Wno-unused-parameter")
-#     if(DEFINED CMAKE_BUILD_TYPE AND CMAKE_BUILD_TYPE EQUAL "Debug")
-#         target_compile_options(volt_gfx PRIVATE "${WARNING_FLAGS} -g -fprofile-arcs -ftest-coverage")
-#     endif()
-#     if(DEFINED CMAKE_BUILD_TYPE AND CMAKE_BUILD_TYPE EQUAL "Release")
-#         target_compile_options(volt_gfx PRIVATE "${WARNING_FLAGS} -flto -O3")
-#     endif()
-# endif()
