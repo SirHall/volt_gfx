@@ -66,7 +66,8 @@ void Texture::CreateTexture(GLsizei width, GLsizei height, bool enableMipmaps,
             delete ptr;
         }));
 
-    this->SetImage() this->GenerateMipmap();
+    this->SetImage(data, width, height);
+    this->GenerateMipmap();
 
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
