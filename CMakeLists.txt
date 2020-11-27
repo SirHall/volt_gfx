@@ -1,34 +1,12 @@
 cmake_minimum_required(VERSION 3.7)
 
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/HunterGate.cmake")
-HunterGate(
-    URL "https://github.com/cpp-pm/hunter/archive/v0.23.283.tar.gz"
-    SHA1 "f445fbb4716e5485e83f6acf110b51d3b8916b2c"
-)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/volt_hunt.cmake)
 
-project(volt_ge_gfx)
+project(volt_gfx VERSION 0.0.1)
 
 include(ExternalProject)
 set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/dep)
 include_directories(${EXTERNAL_INSTALL_LOCATION}/include)
-
-ExternalProject_Add(volt_event
-    GIT_REPOSITORY https://github.com/SirHall/volt_event
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
-)
-
-hunter_add_package(Boost COMPONENTS system filesystem)
-hunter_add_package(glew)
-hunter_add_package(glfw)
-hunter_add_package(glm)
-
-
-# volt_event/0.0.1@volt/dev
-
-# Setup Conan
-# include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-# conan_basic_setup()
-# message(STATUS "Libs: ${CONAN_LIBS}")
 
 # Add in volt_gfx
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/volt_gfx/)
