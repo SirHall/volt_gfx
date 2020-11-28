@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.7)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/volt_hunt.cmake)
 
-project(volt_gfx VERSION 0.0.1)
+# set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/inst/") # For testing
+
+project(volt_gfx VERSION 0.0.2)
 
 include(ExternalProject)
 set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/dep)
