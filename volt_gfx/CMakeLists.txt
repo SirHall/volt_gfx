@@ -32,7 +32,7 @@ find_package(volt_event CONFIG REQUIRED)
 
 add_library(volt_gfx ${VOLT_GFX_SRCS})
 target_include_directories(volt_gfx PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
-target_link_libraries(volt_gfx ${CMAKE_THREAD_LIBS_INIT} volt_event glfw glew::glew glm Boost::boost Boost::system Boost::filesystem)
+target_link_libraries(volt_gfx PUBLIC ${CMAKE_THREAD_LIBS_INIT} volt_event glfw glew::glew glm Boost::boost Boost::system Boost::filesystem)
 set_property(TARGET volt_gfx PROPERTY CXX_STANDARD 17)
 
 # Installation
