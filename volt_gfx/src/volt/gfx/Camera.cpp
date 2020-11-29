@@ -1,16 +1,58 @@
 #include "volt/gfx/Camera.hpp"
 
+#include <memory>
+
 using namespace volt::gfx;
 
 Camera::Camera() {}
 
-Camera::Camera(const Camera &other) {}
+Camera::Camera(const Camera &other)
+    : transform(other.transform), projectionDirty(other.projectionDirty),
+      projection(other.projection), isPerspective(other.isPerspective),
+      ratio(other.ratio), orthoSize(other.orthoSize),
+      perspectiveFov(other.perspectiveFov), nearPlane(other.nearPlane),
+      farPlane(other.farPlane)
+{
+}
 
-Camera &Camera::operator=(const Camera &other) { return *this; }
+Camera &Camera::operator=(const Camera &other)
+{
+    transform       = other.transform;
+    projectionDirty = other.projectionDirty;
+    projection      = other.projection;
+    isPerspective   = other.isPerspective;
+    ratio           = other.ratio;
+    orthoSize       = other.orthoSize;
+    perspectiveFov  = other.perspectiveFov;
+    nearPlane       = other.nearPlane;
+    farPlane        = other.farPlane;
+    return *this;
+}
 
-Camera::Camera(Camera &&other) {}
+Camera::Camera(Camera &&other)
+    : transform(std::move(other.transform)),
+      projectionDirty(std::move(other.projectionDirty)),
+      projection(std::move(other.projection)),
+      isPerspective(std::move(other.isPerspective)),
+      ratio(std::move(other.ratio)), orthoSize(std::move(other.orthoSize)),
+      perspectiveFov(std::move(other.perspectiveFov)),
+      nearPlane(std::move(other.nearPlane)), farPlane(std::move(other.farPlane))
+{
+}
 
-Camera &Camera::operator=(Camera &&other) { return *this; }
+Camera &Camera::operator=(Camera &&other)
+{
+    transform       = std::move(other.transform);
+    projectionDirty = std::move(other.projectionDirty);
+    projection      = std::move(other.projection);
+    isPerspective   = std::move(other.isPerspective);
+    ratio           = std::move(other.ratio);
+    orthoSize       = std::move(other.orthoSize);
+    perspectiveFov  = std::move(other.perspectiveFov);
+    nearPlane       = std::move(other.nearPlane);
+    farPlane        = std::move(other.farPlane);
+    return *this;
+}
 
 Camera::~Camera() {}
 
