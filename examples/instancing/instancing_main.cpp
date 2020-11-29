@@ -107,6 +107,18 @@ int main(int argc, char *argv[])
                                                     float(j) - 4.0f, 0.0f)),
                            glm::vec3(0.1f))));
 
+    Mesh  spriteMesh = Sprite::CreateMesh(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f),
+                                         glm::vec2(5.0f, 5.0f));
+    auto &vao        = spriteMesh.GetVAO();
+
+    vao.GetInstVBO().SetData(instanceData);
+
+    if (!vao.IsValid())
+    {
+        std::cerr << "VAO is invalid" << std::endl;
+        std::exit(1);
+    }
+
     // Loop until the user closes
     // the window
     while (renderer.WindowOpen())
@@ -114,7 +126,9 @@ int main(int argc, char *argv[])
         renderer.PollEvents();
         cam.SetAspectRatio(renderer.GetFrameBufferSizeRatio());
 
-        renderer.InstancedRender(obj1, instanceData, cam);
+        // renderer.InstancedRender(obj1, instanceData, cam);
+        // obj1.Bind();
+        renderer.InstancedRender(vao, mat, cam);
 
         renderer.DisplayFrame();
         renderer.SleepForFrame();
