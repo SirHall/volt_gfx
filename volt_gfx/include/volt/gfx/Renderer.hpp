@@ -76,6 +76,29 @@ namespace volt::gfx
                              std::vector<MeshInstanceData> const &transforms,
                              Camera const &                       cam);
 
+        template <typename VertT, typename InstT>
+        void InstancedRender(VAO<VertT, InstT> &vao, Shader shader)
+        {
+            vao.Bind();
+            shader.Bind();
+            GLCall(glDrawElementsInstanced(
+                GL_TRIANGLES, (GLsizei)vao.GetIBO().Size(), GL_UNSIGNED_INT, 0,
+                (GLsizei)vao.GetInstVBO().Size()));
+        }
+
+        template <typename VertT, typename InstT>
+        void InstancedRender(VAO<VertT, InstT> &vao, Material mat,
+                             Camera const &cam)
+        {
+            vao.Bind();
+            mat.SetUniformPVM(cam.GetProjection(),
+                              cam.GetTransform().GetMatrix(), glm::mat4(1.0));
+            mat.Bind();
+            GLCall(glDrawElementsInstanced(
+                GL_TRIANGLES, (GLsizei)vao.GetIBO().Size(), GL_UNSIGNED_INT, 0,
+                (GLsizei)vao.GetInstVBO().Size()));
+        }
+
         void DisplayFrame();
 
         bool WindowOpen();
