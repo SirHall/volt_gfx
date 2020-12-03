@@ -19,11 +19,20 @@ using namespace std::chrono;
 
 namespace volt::gfx
 {
-    // enum RenderMode
-    // {
-    //     Direct,
-    //     Instanced
-    // };
+    enum class RenderMode
+    {
+        Points                 = GL_POINTS,
+        Lines                  = GL_LINES,
+        Triangles              = GL_TRIANGLES,
+        LineStrip              = GL_LINE_STRIP,
+        LineLoop               = GL_LINE_LOOP,
+        LineStripAdjacency     = GL_LINE_STRIP_ADJACENCY,
+        LinesAdjacency         = GL_LINES_ADJACENCY,
+        TriangleStrip          = GL_TRIANGLE_STRIP,
+        TriangleFan            = GL_TRIANGLE_FAN,
+        TriangleStripAdjacency = GL_TRIANGLE_STRIP_ADJACENCY,
+        TrianglesAdjacency     = GL_TRIANGLES_ADJACENCY
+    };
 
     struct GFXSettings
     {
@@ -37,12 +46,10 @@ namespace volt::gfx
     class Renderer
     {
     private:
-        bool initialized = false;
-        // RenderMode renderMode;
-        // int                      bufferWidth = 0, bufferHeight = 0;
-        GLFWwindow *             window    = nullptr;
-        float                    targetFPS = 60.0f;
-        float                    deltaTime = 0.0f;
+        bool                     initialized = false;
+        GLFWwindow *             window      = nullptr;
+        float                    targetFPS   = 60.0f;
+        float                    deltaTime   = 0.0f;
         steady_clock::time_point startTimePoint, frameTimePoint,
             lastFrameTimePoint;
 
@@ -77,26 +84,24 @@ namespace volt::gfx
                              Camera const &                       cam);
 
         template <typename VertT, typename InstT>
-        void InstancedRender(VAO<VertT, InstT> &vao, Shader shader)
+        void InstancedRender(VAO<VertT, InstT> &vao, Shader shader,
+                             RenderMode renderMode = RenderMode::Triangles)
         {
             vao.Bind();
             shader.Bind();
             GLCall(glDrawElementsInstanced(
-                GL_TRIANGLES, (GLsizei)vao.GetIBO().Size(), GL_UNSIGNED_INT, 0,
-                (GLsizei)vao.GetInstVBO().Size()));
+                (GLenum)renderMode, (GLsizei)vao.GetIBO().Size(),
+                GL_UNSIGNED_INT, 0, (GLsizei)vao.GetInstVBO().Size()));
         }
 
         template <typename VertT, typename InstT>
         void InstancedRender(VAO<VertT, InstT> &vao, Material mat,
-                             Camera const &cam)
+                             Camera const &cam,
+                             RenderMode    renderMode = RenderMode::Triangles)
         {
-            vao.Bind();
             mat.SetUniformPVM(cam.GetProjection(),
                               cam.GetTransform().GetMatrix(), glm::mat4(1.0));
-            mat.Bind();
-            GLCall(glDrawElementsInstanced(
-                GL_TRIANGLES, (GLsizei)vao.GetIBO().Size(), GL_UNSIGNED_INT, 0,
-                (GLsizei)vao.GetInstVBO().Size()));
+            InstancedRender(vao, mat.GetShader(), renderMode);
         }
 
         void DisplayFrame();
