@@ -77,7 +77,7 @@ glm::mat4 const &Camera::GetProjection() const
 
 glm::mat4 Camera::GetPV() const
 {
-    return this->transform.GetMatrix() * this->GetProjection();
+    return this->GetProjection() * this->transform.GetMatrix();
 }
 
 bool Camera::IsPerspective() const { return this->isPerspective; }
