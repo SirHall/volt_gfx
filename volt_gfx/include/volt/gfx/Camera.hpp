@@ -16,13 +16,13 @@ namespace volt::gfx
         Transform transform;
 
         mutable bool      projectionDirty = true;
-        mutable glm::mat4 projection;
-        bool              isPerspective = true;
-        float             ratio;
-        float             orthoSize;
-        float             perspectiveFov;
-        float             nearPlane = 0.1f;
-        float             farPlane  = 100.0f;
+        mutable glm::mat4 projection      = glm::mat4(1.0f);
+        bool              isPerspective   = true;
+        float             ratio           = 1.0f;
+        float             orthoSize       = 1.0f;
+        float             perspectiveFov  = 60.0f;
+        float             nearPlane       = 0.1f;
+        float             farPlane        = 100.0f;
 
     public:
         Camera();
