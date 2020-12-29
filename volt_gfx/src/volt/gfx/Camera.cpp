@@ -57,6 +57,7 @@ Camera &Camera::operator=(Camera &&other)
 Camera::~Camera() {}
 
 Transform const &Camera::GetTransform() const { return this->transform; }
+Transform &      Camera::GetTransform() { return this->transform; }
 void             Camera::SetTransform(Transform v) { this->transform = v; }
 
 glm::mat4 const &Camera::GetProjection() const

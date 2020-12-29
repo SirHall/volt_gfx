@@ -33,6 +33,7 @@ namespace volt::gfx
         ~Camera();
 
         Transform const &GetTransform() const;
+        Transform &      GetTransform();
         void             SetTransform(Transform v);
 
         glm::mat4 const &GetProjection() const;
