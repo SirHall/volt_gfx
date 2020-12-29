@@ -546,3 +546,5 @@ void Renderer::SetAutoResizeFrameBufs(bool autoResize)
 }
 
 bool Renderer::GetAutoResizeFrameBufs() { return this->autoResizeFrameBufs; }
+
+GLFWwindow *Renderer::GetWindow() { return this->window; }

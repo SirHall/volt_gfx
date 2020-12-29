@@ -143,6 +143,9 @@ namespace volt::gfx
         void SetAutoResizeFrameBufs(bool autoResize);
 
         bool GetAutoResizeFrameBufs();
+
+        // Not a very good idea
+        GLFWwindow *GetWindow();
     };
 } // namespace volt::gfx
 
