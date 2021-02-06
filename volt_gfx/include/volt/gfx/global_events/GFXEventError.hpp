@@ -16,8 +16,8 @@ namespace volt::gfx
     public:
         GFXEventError(int errorCode, std::string errorMsg);
 
-        inline int                GetErrorCode() { return this->code; }
-        inline std::string const &GetErrorMsg() { return this->msg; }
+        inline int                GetErrorCode() const { return this->code; }
+        inline std::string const &GetErrorMsg() const { return this->msg; }
     };
 
 } // namespace volt::gfx

@@ -26,8 +26,8 @@ namespace volt::gfx
     public:
         GFXEventJoystick(int jid, JoystickEvent event);
 
-        inline int           GetJoystickID() { return this->j; }
-        inline JoystickEvent GetJoystickEvent() { return this->e; }
+        inline int           GetJoystickID() const { return this->j; }
+        inline JoystickEvent GetJoystickEvent() const { return this->e; }
     };
 
 } // namespace volt::gfx
