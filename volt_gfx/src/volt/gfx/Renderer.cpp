@@ -424,7 +424,7 @@ void Renderer::DisplayFrame()
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
-bool Renderer::WindowOpen() { return !glfwWindowShouldClose(window); }
+bool Renderer::WindowOpen() const { return !glfwWindowShouldClose(window); }
 
 // GetTime implemented just to make time handling here easier
 float GetTime(steady_clock::time_point start, steady_clock::time_point now)
@@ -440,12 +440,12 @@ float GetTime(steady_clock::time_point start)
 
 void Renderer::SetTargetFPS(float fps) { targetFPS = fps; }
 
-float Renderer::GetDeltaTime()
+float Renderer::GetDeltaTime() const
 {
     return GetTime(this->lastFrameTimePoint, this->frameTimePoint);
 }
 
-float Renderer::GetUpTime() { return GetTime(this->startTimePoint); }
+float Renderer::GetUpTime() const { return GetTime(this->startTimePoint); }
 
 void Renderer::SleepForFrame()
 {
@@ -481,7 +481,7 @@ void Renderer::Close()
     }
 }
 
-std::tuple<int, int> Renderer::GetWindowSize()
+std::tuple<int, int> Renderer::GetWindowSize() const
 {
     int width = 0, height = 0;
     glfwGetWindowSize(this->window, &width, &height);
@@ -494,7 +494,7 @@ void Renderer::SetWindowSize(std::tuple<int, int> newSize)
     glfwSetWindowSize(this->window, width, height);
 }
 
-std::tuple<int, int> Renderer::GetFrameBufferSize()
+std::tuple<int, int> Renderer::GetFrameBufferSize() const
 {
     int width = 0, height = 0;
     glfwGetFramebufferSize(this->window, &width, &height);
@@ -513,13 +513,13 @@ void Renderer::CorrectContextSize()
     glViewport(0, 0, width, height);
 }
 
-float Renderer::GetFrameBufferSizeRatio()
+float Renderer::GetFrameBufferSizeRatio() const
 {
     auto [width, height] = this->GetFrameBufferSize();
     return (float)width / (float)height;
 }
 
-bool Renderer::IsFullscreen()
+bool Renderer::IsFullscreen() const
 {
     return glfwGetWindowMonitor(this->window) != nullptr;
 }
@@ -545,6 +545,9 @@ void Renderer::SetAutoResizeFrameBufs(bool autoResize)
     this->autoResizeFrameBufs = autoResize;
 }
 
-bool Renderer::GetAutoResizeFrameBufs() { return this->autoResizeFrameBufs; }
+bool Renderer::GetAutoResizeFrameBufs() const
+{
+    return this->autoResizeFrameBufs;
+}
 
 GLFWwindow *Renderer::GetWindow() { return this->window; }

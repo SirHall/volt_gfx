@@ -106,13 +106,13 @@ namespace volt::gfx
 
         void DisplayFrame();
 
-        bool WindowOpen();
+        bool WindowOpen() const;
 
         void SetTargetFPS(float fps);
 
-        float GetDeltaTime();
+        float GetDeltaTime() const;
 
-        float GetUpTime();
+        float GetUpTime() const;
 
         void SleepForFrame();
 
@@ -120,19 +120,19 @@ namespace volt::gfx
 
         void Close();
 
-        std::tuple<int, int> GetWindowSize();
+        std::tuple<int, int> GetWindowSize() const;
 
         void SetWindowSize(std::tuple<int, int> newSize);
 
-        std::tuple<int, int> GetFrameBufferSize();
+        std::tuple<int, int> GetFrameBufferSize() const;
 
         void SetContextSize(std::tuple<int, int> newSize);
 
         void CorrectContextSize();
 
-        float GetFrameBufferSizeRatio();
+        float GetFrameBufferSizeRatio() const;
 
-        bool IsFullscreen();
+        bool IsFullscreen() const;
 
         void Fullscreen(bool goFullscreen);
 
@@ -142,7 +142,7 @@ namespace volt::gfx
         // window is too.
         void SetAutoResizeFrameBufs(bool autoResize);
 
-        bool GetAutoResizeFrameBufs();
+        bool GetAutoResizeFrameBufs() const;
 
         // Not a very good idea
         GLFWwindow *GetWindow();
