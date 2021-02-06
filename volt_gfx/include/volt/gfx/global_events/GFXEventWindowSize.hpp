@@ -10,16 +10,16 @@ namespace volt::gfx
     class GFXEventWindowSize
     {
     private:
-        Renderer *renderer;
-        int const width;
-        int const height;
+        Renderer mutable *renderer;
+        int const         width;
+        int const         height;
 
     public:
         GFXEventWindowSize(Renderer *rendererRef, int w, int h);
 
-        inline Renderer &GetRenderer() { return *this->renderer; }
-        inline int       GetWidth() { return this->width; }
-        inline int       GetHeight() { return this->height; }
+        inline Renderer &GetRenderer() const { return *this->renderer; }
+        inline int       GetWidth() const { return this->width; }
+        inline int       GetHeight() const { return this->height; }
     };
 
 } // namespace volt::gfx

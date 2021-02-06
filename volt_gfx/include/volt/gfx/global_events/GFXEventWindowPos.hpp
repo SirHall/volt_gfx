@@ -10,16 +10,16 @@ namespace volt::gfx
     class GFXEventWindowPos
     {
     private:
-        Renderer *rend;
-        int const x;
-        int const y;
+        Renderer mutable *rend;
+        int const         x;
+        int const         y;
 
     public:
         GFXEventWindowPos(Renderer *renderer, int xPos, int yPos);
 
-        inline Renderer &GetRenderer() { return *this->rend; }
-        inline int       GetXPos() { return this->x; }
-        inline int       GetYPos() { return this->y; }
+        inline Renderer &GetRenderer() const { return *this->rend; }
+        inline int       GetXPos() const { return this->x; }
+        inline int       GetYPos() const { return this->y; }
     };
 
 } // namespace volt::gfx

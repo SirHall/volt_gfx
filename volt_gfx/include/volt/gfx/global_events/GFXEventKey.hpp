@@ -28,17 +28,17 @@ namespace volt::gfx
     struct GFXEventKey
     {
     private:
-        Renderer *      renderer;
-        int const       key;
-        int const       scanCode;
-        KeyAction const action;
-        int             mods;
+        Renderer mutable *renderer;
+        int const         key;
+        int const         scanCode;
+        KeyAction const   action;
+        int               mods;
 
     public:
         GFXEventKey(Renderer *rendererRef, int keyCode, int scanCodeID,
                     KeyAction keyAction, int modifiers);
 
-        inline Renderer &GetRenderer() { return *this->renderer; }
+        inline Renderer &GetRenderer() const { return *this->renderer; }
         inline int       GetKey() const { return this->key; }
         inline int       GetScanCode() const { return this->scanCode; }
         inline KeyAction GetAction() const { return this->action; }

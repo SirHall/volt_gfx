@@ -10,14 +10,14 @@ namespace volt::gfx
     class GFXEventWindowFocus
     {
     private:
-        Renderer *rend;
-        bool      f;
+        Renderer mutable *rend;
+        bool              f;
 
     public:
         GFXEventWindowFocus(Renderer *renderer, bool focused);
 
-        inline Renderer &GetRenderer() { return *this->rend; }
-        inline bool      GetFocused() { return this->f; }
+        inline Renderer &GetRenderer() const { return *this->rend; }
+        inline bool      GetFocused() const { return this->f; }
     };
 
 } // namespace volt::gfx

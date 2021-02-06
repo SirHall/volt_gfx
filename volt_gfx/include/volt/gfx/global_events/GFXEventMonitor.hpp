@@ -22,14 +22,14 @@ namespace volt::gfx
     class GFXEventMonitor
     {
     private:
-        GLFWmonitor *      mon;
-        MonitorEvent const e;
+        GLFWmonitor mutable *mon;
+        MonitorEvent const   e;
 
     public:
         GFXEventMonitor(GLFWmonitor *monitor, MonitorEvent event);
 
-        GLFWmonitor &GetMonitor() { return *this->mon; }
-        MonitorEvent GetMonitorEvent() { return this->e; }
+        GLFWmonitor &GetMonitor() const { return *this->mon; }
+        MonitorEvent GetMonitorEvent() const { return this->e; }
     };
 
 } // namespace volt::gfx

@@ -10,14 +10,14 @@ namespace volt::gfx
     class GFXEventWindowMaximize
     {
     private:
-        Renderer * rend;
-        bool const m;
+        Renderer mutable *rend;
+        bool const        m;
 
     public:
         GFXEventWindowMaximize(Renderer *renderer, bool maximized);
 
-        inline Renderer &GetRenderer() { return *this->rend; }
-        inline bool      GetMaximized() { return this->m; }
+        inline Renderer &GetRenderer() const { return *this->rend; }
+        inline bool      GetMaximized() const { return this->m; }
     };
 
 } // namespace volt::gfx

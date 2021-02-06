@@ -10,17 +10,17 @@ namespace volt::gfx
     class GFXEventWindowContentScale
     {
     private:
-        Renderer *rend;
-        float     x;
-        float     y;
+        Renderer mutable *rend;
+        float             x;
+        float             y;
 
     public:
         GFXEventWindowContentScale(Renderer *renderer, float xScale,
                                    float yScale);
 
-        inline Renderer &GetRenderer() { return *this->rend; }
-        inline float     GetXScale() { return this->x; }
-        inline float     GetYScale() { return this->y; }
+        inline Renderer &GetRenderer() const { return *this->rend; }
+        inline float     GetXScale() const { return this->x; }
+        inline float     GetYScale() const { return this->y; }
     };
 
 } // namespace volt::gfx

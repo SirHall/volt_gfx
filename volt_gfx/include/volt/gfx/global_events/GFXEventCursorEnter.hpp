@@ -10,14 +10,14 @@ namespace volt::gfx
     class GFXEventCursorEnter
     {
     private:
-        Renderer * rend;
-        bool const ent;
+         Renderer mutable  *rend;
+        bool const        ent;
 
     public:
         GFXEventCursorEnter(Renderer *renderer, bool entered);
 
-        inline Renderer &GetRenderer() { return *this->rend; }
-        inline bool      DidEnter() { return this->ent; }
+        inline Renderer &GetRenderer() const { return *this->rend; }
+        inline bool      DidEnter() const { return this->ent; }
     };
 
 } // namespace volt::gfx

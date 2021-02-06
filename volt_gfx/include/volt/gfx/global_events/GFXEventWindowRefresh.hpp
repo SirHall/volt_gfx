@@ -10,12 +10,12 @@ namespace volt::gfx
     class GFXEventWindowRefresh
     {
     private:
-        Renderer *rend;
+        Renderer mutable *rend;
 
     public:
         GFXEventWindowRefresh(Renderer *renderer);
 
-        inline Renderer &GetRenderer() { return *this->rend; }
+        inline Renderer &GetRenderer() const { return *this->rend; }
     };
 
 } // namespace volt::gfx

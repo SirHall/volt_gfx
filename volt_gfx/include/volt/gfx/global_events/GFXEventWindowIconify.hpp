@@ -10,14 +10,14 @@ namespace volt::gfx
     class GFXEventWindowIconify
     {
     private:
-        Renderer * rend;
-        bool const i;
+        Renderer mutable *rend;
+        bool const        i;
 
     public:
         GFXEventWindowIconify(Renderer *renderer, bool iconified);
 
-        inline Renderer &GetRenderer() { return *this->rend; }
-        inline bool      GetIconified() { return this->i; }
+        inline Renderer &GetRenderer() const { return *this->rend; }
+        inline bool      GetIconified() const { return this->i; }
     };
 
 } // namespace volt::gfx

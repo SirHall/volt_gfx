@@ -10,11 +10,11 @@ namespace volt::gfx
     class GFXEventWindowClose
     {
     private:
-        Renderer *rend;
+        Renderer mutable *rend;
 
     public:
         GFXEventWindowClose(Renderer *renderer);
-        inline Renderer &GetRenderer() { return *this->rend; }
+        inline Renderer &GetRenderer() const { return *this->rend; }
     };
 
 } // namespace volt::gfx
