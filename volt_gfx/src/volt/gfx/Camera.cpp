@@ -69,9 +69,10 @@ glm::mat4 const &Camera::GetProjection() const
             this->isPerspective
                 ? glm::perspective(this->perspectiveFov, this->ratio,
                                    this->nearPlane, this->farPlane)
-                : glm::ortho(0.0f, this->ratio * this->orthoSize,
-                             this->orthoSize, 0.0f, this->nearPlane,
-                             this->farPlane);
+                : glm::ortho(this->orthoSize * -0.5f, this->orthoSize * 0.5f,
+                             (this->ratio * this->orthoSize) * -0.5f,
+                             (this->ratio * this->orthoSize) * 0.5f,
+                             this->nearPlane, this->farPlane);
     }
     return this->projection;
 }
