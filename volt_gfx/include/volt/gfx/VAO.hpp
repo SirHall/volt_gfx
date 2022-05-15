@@ -16,8 +16,8 @@ namespace volt::gfx
     private:
         GLuint                      attribIndex = 0;
         GLuint                      vao;
-        VBO<VertT, GL_STATIC_DRAW>  vertVBO;
-        VBO<InstT, GL_DYNAMIC_DRAW> instVBO;
+        VBO<VertT, GL_STATIC_DRAW>  vertVBO; // Each object has this in common
+        VBO<InstT, GL_DYNAMIC_DRAW> instVBO; // Data unique to each object instance
         IBO                         ibo;
 
     public:
@@ -71,7 +71,7 @@ namespace volt::gfx
             this->ibo.Bind();
         }
 
-        VBO<VertT, GL_STATIC_DRAW> &      GetVertVBO() { return this->vertVBO; }
+        VBO<VertT, GL_STATIC_DRAW>       &GetVertVBO() { return this->vertVBO; }
         VBO<VertT, GL_STATIC_DRAW> const &GetVertVBO() const
         {
             return this->vertVBO;
@@ -81,7 +81,7 @@ namespace volt::gfx
         {
             return this->instVBO;
         }
-        IBO &      GetIBO() { return this->ibo; }
+        IBO       &GetIBO() { return this->ibo; }
         IBO const &GetIBO() const { return this->ibo; }
 
         bool IsValid() const
